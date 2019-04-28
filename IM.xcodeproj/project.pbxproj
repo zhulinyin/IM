@@ -22,6 +22,8 @@
 		FD085DC0226D64A800968B28 /* IMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DBF226D64A800968B28 /* IMTests.m */; };
 		FD085DCB226D64A800968B28 /* IMUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DCA226D64A800968B28 /* IMUITests.m */; };
 		FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */; };
+		FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEBADB22274106700EAE88F /* InfoViewController.m */; };
+		FDEBADBC2275941800EAE88F /* ChatMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,10 @@
 		FD085DCC226D64A800968B28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FD28F6D9226E1CE1008FB1F1 /* RegisterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
 		FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
+		FDEBADB12274106700EAE88F /* InfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
+		FDEBADB22274106700EAE88F /* InfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
+		FDEBADBA2275941800EAE88F /* ChatMessageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatMessageTableViewController.h; sourceTree = "<group>"; };
+		FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatMessageTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,25 +124,14 @@
 		FD085DA5226D64A500968B28 /* IM */ = {
 			isa = PBXGroup;
 			children = (
-				7127821E22740918002729E3 /* ContactPage.storyboard */,
-				712782162274081B002729E3 /* Info.storyboard */,
-				712782142274081B002729E3 /* Main.storyboard */,
-				712782122274081B002729E3 /* MessagePage.storyboard */,
-				7127820C22740805002729E3 /* ContactTableViewCell.h */,
-				7127820D22740805002729E3 /* ContactTableViewCell.m */,
-				7127820F22740806002729E3 /* ContactTableViewController.h */,
-				7127820E22740806002729E3 /* ContactTableViewController.m */,
+				FDEBADBD22768EC500EAE88F /* Index */,
+				FDEBADBE22768F4300EAE88F /* Main */,
 				FD085DA6226D64A500968B28 /* AppDelegate.h */,
 				FD085DA7226D64A500968B28 /* AppDelegate.m */,
-				FD085DA9226D64A500968B28 /* LoginViewController.h */,
-				FD085DAA226D64A500968B28 /* LoginViewController.m */,
-				FD085DAC226D64A500968B28 /* Index.storyboard */,
 				FD085DAF226D64A800968B28 /* Assets.xcassets */,
 				FD085DB1226D64A800968B28 /* LaunchScreen.storyboard */,
 				FD085DB4226D64A800968B28 /* Info.plist */,
 				FD085DB5226D64A800968B28 /* main.m */,
-				FD28F6D9226E1CE1008FB1F1 /* RegisterViewController.h */,
-				FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */,
 			);
 			path = IM;
 			sourceTree = "<group>";
@@ -157,6 +152,69 @@
 				FD085DCC226D64A800968B28 /* Info.plist */,
 			);
 			path = IMUITests;
+			sourceTree = "<group>";
+		};
+		FDEBADBD22768EC500EAE88F /* Index */ = {
+			isa = PBXGroup;
+			children = (
+				FD085DA9226D64A500968B28 /* LoginViewController.h */,
+				FD085DAA226D64A500968B28 /* LoginViewController.m */,
+				FD085DAC226D64A500968B28 /* Index.storyboard */,
+				FD28F6D9226E1CE1008FB1F1 /* RegisterViewController.h */,
+				FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */,
+			);
+			path = Index;
+			sourceTree = "<group>";
+		};
+		FDEBADBE22768F4300EAE88F /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				FDEBADC22276902B00EAE88F /* Model */,
+				FDEBADBF22768F7700EAE88F /* MessagePage */,
+				FDEBADC022768F8B00EAE88F /* ContactPage */,
+				FDEBADC122768FA300EAE88F /* InfoPage */,
+				712782142274081B002729E3 /* Main.storyboard */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		FDEBADBF22768F7700EAE88F /* MessagePage */ = {
+			isa = PBXGroup;
+			children = (
+				712782122274081B002729E3 /* MessagePage.storyboard */,
+				FDEBADBA2275941800EAE88F /* ChatMessageTableViewController.h */,
+				FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */,
+			);
+			path = MessagePage;
+			sourceTree = "<group>";
+		};
+		FDEBADC022768F8B00EAE88F /* ContactPage */ = {
+			isa = PBXGroup;
+			children = (
+				7127821E22740918002729E3 /* ContactPage.storyboard */,
+				7127820C22740805002729E3 /* ContactTableViewCell.h */,
+				7127820D22740805002729E3 /* ContactTableViewCell.m */,
+				7127820F22740806002729E3 /* ContactTableViewController.h */,
+				7127820E22740806002729E3 /* ContactTableViewController.m */,
+			);
+			path = ContactPage;
+			sourceTree = "<group>";
+		};
+		FDEBADC122768FA300EAE88F /* InfoPage */ = {
+			isa = PBXGroup;
+			children = (
+				712782162274081B002729E3 /* Info.storyboard */,
+				FDEBADB12274106700EAE88F /* InfoViewController.h */,
+				FDEBADB22274106700EAE88F /* InfoViewController.m */,
+			);
+			path = InfoPage;
+			sourceTree = "<group>";
+		};
+		FDEBADC22276902B00EAE88F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,6 +356,8 @@
 				7127821022740806002729E3 /* ContactTableViewCell.m in Sources */,
 				FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */,
 				7127821122740806002729E3 /* ContactTableViewController.m in Sources */,
+				FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */,
+				FDEBADBC2275941800EAE88F /* ChatMessageTableViewController.m in Sources */,
 				FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
