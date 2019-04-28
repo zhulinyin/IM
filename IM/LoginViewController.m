@@ -46,6 +46,8 @@
                     NSDictionary *result = object;
                     if([result[@"state"] isEqualToString:@"ok"]) {
                         NSLog(@"login success");
+                        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                        [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
                     }
                     else {
                         NSLog(@"login fail");
