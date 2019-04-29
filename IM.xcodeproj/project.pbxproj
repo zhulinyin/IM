@@ -13,10 +13,10 @@
 		7127821B2274081B002729E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 712782142274081B002729E3 /* Main.storyboard */; };
 		7127821C2274081B002729E3 /* Info.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 712782162274081B002729E3 /* Info.storyboard */; };
 		7127821F22740918002729E3 /* ContactPage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7127821E22740918002729E3 /* ContactPage.storyboard */; };
-		71278225227413CA002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 71278224227413CA002729E3 /* UserModel.m */; };
-		71278228227413E7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 71278227227413E7002729E3 /* MessageModel.m */; };
 		7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822A22769C43002729E3 /* MessageTableViewController.m */; };
 		7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822D22769C6A002729E3 /* MessageTableViewCell.m */; };
+		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
+		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
 		FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DA7226D64A500968B28 /* AppDelegate.m */; };
 		FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DAA226D64A500968B28 /* LoginViewController.m */; };
 		FD085DAE226D64A500968B28 /* Index.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD085DAC226D64A500968B28 /* Index.storyboard */; };
@@ -56,14 +56,14 @@
 		712782152274081B002729E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		712782172274081B002729E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Info.storyboard; sourceTree = "<group>"; };
 		7127821E22740918002729E3 /* ContactPage.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ContactPage.storyboard; sourceTree = "<group>"; };
-		71278223227413CA002729E3 /* UserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserModel.h; path = IM/Main/UserModel.h; sourceTree = SOURCE_ROOT; };
-		71278224227413CA002729E3 /* UserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UserModel.m; path = IM/Main/UserModel.m; sourceTree = SOURCE_ROOT; };
-		71278226227413E7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MessageModel.h; path = IM/Main/MessageModel.h; sourceTree = SOURCE_ROOT; };
-		71278227227413E7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MessageModel.m; path = IM/Main/MessageModel.m; sourceTree = SOURCE_ROOT; };
 		7127822922769C43002729E3 /* MessageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageTableViewController.h; sourceTree = "<group>"; };
 		7127822A22769C43002729E3 /* MessageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageTableViewController.m; sourceTree = "<group>"; };
 		7127822C22769C6A002729E3 /* MessageTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageTableViewCell.h; sourceTree = "<group>"; };
 		7127822D22769C6A002729E3 /* MessageTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MessageTableViewCell.m; sourceTree = "<group>"; };
+		712782342276A0D6002729E3 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		712782352276A0D7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageModel.h; sourceTree = "<group>"; };
+		712782362276A0D7002729E3 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
 		FD085DA3226D64A500968B28 /* IM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD085DA6226D64A500968B28 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FD085DA7226D64A500968B28 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -113,6 +113,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7127823A2276A0F8002729E3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				712782352276A0D7002729E3 /* MessageModel.h */,
+				712782372276A0D7002729E3 /* MessageModel.m */,
+				712782362276A0D7002729E3 /* UserModel.h */,
+				712782342276A0D6002729E3 /* UserModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		FD085D9A226D64A500968B28 = {
 			isa = PBXGroup;
 			children = (
@@ -181,7 +192,7 @@
 		FDEBADBE22768F4300EAE88F /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				FDEBADC22276902B00EAE88F /* Model */,
+				7127823A2276A0F8002729E3 /* Model */,
 				FDEBADBF22768F7700EAE88F /* MessagePage */,
 				FDEBADC022768F8B00EAE88F /* ContactPage */,
 				FDEBADC122768FA300EAE88F /* InfoPage */,
@@ -224,17 +235,6 @@
 				FDEBADB22274106700EAE88F /* InfoViewController.m */,
 			);
 			path = InfoPage;
-			sourceTree = "<group>";
-		};
-		FDEBADC22276902B00EAE88F /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				71278223227413CA002729E3 /* UserModel.h */,
-				71278224227413CA002729E3 /* UserModel.m */,
-				71278226227413E7002729E3 /* MessageModel.h */,
-				71278227227413E7002729E3 /* MessageModel.m */,
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -374,15 +374,15 @@
 				FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */,
 				7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */,
 				FD085DB6226D64A800968B28 /* main.m in Sources */,
+				712782382276A0D7002729E3 /* UserModel.m in Sources */,
 				7127821022740806002729E3 /* ContactTableViewCell.m in Sources */,
 				FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */,
 				7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */,
 				7127821122740806002729E3 /* ContactTableViewController.m in Sources */,
 				FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */,
-				71278225227413CA002729E3 /* UserModel.m in Sources */,
-				71278228227413E7002729E3 /* MessageModel.m in Sources */,
 				FDEBADBC2275941800EAE88F /* ChatMessageTableViewController.m in Sources */,
 				FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */,
+				712782392276A0D7002729E3 /* MessageModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
