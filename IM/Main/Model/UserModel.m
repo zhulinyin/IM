@@ -10,4 +10,24 @@
 
 @implementation UserModel
 
+- (instancetype)initWithProperties:(NSString *)UserID
+                          NickName:(NSString *)NickName
+                        RemarkName:(NSString *)RemarkName
+                            Gender:(NSString *)Gender
+                        Birthplace:(NSString *)Birthplace
+ProfilePicture:(NSString *)ProfilePicture;
+{
+    self = [super init];
+    if (self)
+    {
+        self.UserID = UserID;
+        self.NickName = NickName;
+        self.RemarkName = RemarkName;
+        self.Gender = Gender;
+        self.Birthplace = Birthplace;
+        self.ProfilePicture = ProfilePicture;
+    }
+    return self;
+}
+
 @end

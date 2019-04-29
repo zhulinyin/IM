@@ -10,16 +10,18 @@
 #import "ContactTableViewCell.h"
 
 @interface ContactTableViewController ()
-@property (nonatomic, strong) NSArray<NSString*> *ContactsName;
-@property (nonatomic, strong) NSArray<NSString*> *ContactsProfilePicture;
-@property (nonatomic, strong) NSArray<NSString*> *MessageAbstract;
+
+@property (nonatomic, strong) NSMutableArray<UserModel*> *ContactsArray;
+@property (nonatomic, strong) UserModel* SelectiveUser;
 @end
+
 
 @implementation ContactTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initializeFakeData];
+    NSLog(@"count:%lu", self.ContactsArray.count);
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -29,8 +31,11 @@
 
 - (void)initializeFakeData
 {
-    self.ContactsName = [NSArray arrayWithObjects:@"张三", @"李四", @"王五", nil];
-    self.ContactsProfilePicture = [NSArray arrayWithObjects:@"peppa.jpg", @"peppa.jpg", @"peppa.jpg", nil];
+    UserModel* FakeUser1 = [[UserModel alloc] initWithProperties:@"teemo2333" NickName:@"teemo" RemarkName:@"teemo" Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
+    UserModel* FakeUser2 = [[UserModel alloc] initWithProperties:@"peppa666" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
+    self.ContactsArray = [NSMutableArray array];
+    [self.ContactsArray addObject:FakeUser1];
+    [self.ContactsArray addObject:FakeUser2];
 }
 
 #pragma mark - Table view data source
@@ -40,7 +45,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.ContactsName.count;
+    return self.ContactsArray.count;
 }
 
 
@@ -57,11 +62,17 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
     }
 
 
-    cell.ContactProfilePicture.image = [UIImage imageNamed:self.ContactsProfilePicture[indexPath.row]];
-    cell.ContactName.text = self.ContactsName[indexPath.row];
+    cell.ContactProfilePicture.image = [UIImage imageNamed:self.ContactsArray[indexPath.row].ProfilePicture];
+    cell.ContactName.text = self.ContactsArray[indexPath.row].NickName;
     return cell;
 }
 
+/*
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.SelectiveUser = self.ContactsArray[indexPath.row];
+}
+*/
 
 /*
 // Override to support conditional editing of the table view.
@@ -97,14 +108,18 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
+    if ([[segue identifier] isEqualToString:@"ShowUserInfo"]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        InfoViewController *InfoVC = [segue destinationViewController];
+        InfoVC.User = self.ContactsArray[indexPath.row];
+    }
     // Pass the selected object to the new view controller.
 }
-*/
 
 @end

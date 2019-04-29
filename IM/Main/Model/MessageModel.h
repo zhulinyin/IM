@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) NSDate* TimeStamp;
 @property (weak, nonatomic) NSString* Type;
 @property (weak, nonatomic) NSString* Content;
+
 - (instancetype)initWithProperties:(NSInteger *)Seq
                           SenderID:(NSString *)SenderID
                         ReceiverID:(NSString *)ReceiverID
