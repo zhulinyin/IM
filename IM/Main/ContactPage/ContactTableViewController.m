@@ -31,8 +31,6 @@
 {
     self.ContactsName = [NSArray arrayWithObjects:@"张三", @"李四", @"王五", nil];
     self.ContactsProfilePicture = [NSArray arrayWithObjects:@"peppa.jpg", @"peppa.jpg", @"peppa.jpg", nil];
-    self.MessageAbstract = [NSArray arrayWithObjects:@"你好", @"恰饭了没", @"需求做完了吗", nil];
-    
 }
 
 #pragma mark - Table view data source
@@ -61,8 +59,6 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
 
     cell.ContactProfilePicture.image = [UIImage imageNamed:self.ContactsProfilePicture[indexPath.row]];
     cell.ContactName.text = self.ContactsName[indexPath.row];
-    cell.MessageAbstract.text = self.MessageAbstract[indexPath.row];
-
     return cell;
 }
 

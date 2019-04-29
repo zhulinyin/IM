@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ContactTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *ContactProfilePicture;
 @property (weak, nonatomic) IBOutlet UILabel *ContactName;
-@property (weak, nonatomic) IBOutlet UILabel *MessageAbstract;
 
 @end
 
