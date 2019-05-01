@@ -7,16 +7,18 @@
 //
 
 #import "ChatMessageTableViewController.h"
-
+#import "../../Model/MessageModel.h"
+#import "LeftMessageTableViewCell.h"
+#import "RightMessageTableViewCell.h"
 @interface ChatMessageTableViewController ()
-
+@property (nonatomic, strong) NSArray<MessageModel*> *messages;
 @end
 
 @implementation ChatMessageTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self initializeFakeData];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -24,27 +26,31 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+- (void)initializeFakeData
+{
+    
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 #warning Incomplete implementation, return the number of sections
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #warning Incomplete implementation, return the number of rows
-    return 0;
+    return 2;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    return [LeftMessageTableViewCell cellWithTableView:tableView];
     
     // Configure the cell...
     
-    return cell;
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.

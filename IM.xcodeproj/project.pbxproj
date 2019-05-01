@@ -26,8 +26,12 @@
 		FD085DC0226D64A800968B28 /* IMTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DBF226D64A800968B28 /* IMTests.m */; };
 		FD085DCB226D64A800968B28 /* IMUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DCA226D64A800968B28 /* IMUITests.m */; };
 		FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */; };
+		FDA75A1C227F25DB00B4B768 /* LeftMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA75A12227F25DB00B4B768 /* LeftMessageTableViewCell.m */; };
+		FDA75A1D227F25DB00B4B768 /* ChatMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA75A14227F25DB00B4B768 /* ChatMessageTableViewController.m */; };
+		FDA75A1E227F25DB00B4B768 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA75A16227F25DB00B4B768 /* ChatViewController.m */; };
+		FDA75A1F227F25DB00B4B768 /* BubbleView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA75A17227F25DB00B4B768 /* BubbleView.m */; };
+		FDA75A20227F25DB00B4B768 /* RightMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA75A19227F25DB00B4B768 /* RightMessageTableViewCell.m */; };
 		FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEBADB22274106700EAE88F /* InfoViewController.m */; };
-		FDEBADBC2275941800EAE88F /* ChatMessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,10 +86,18 @@
 		FD085DCC226D64A800968B28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FD28F6D9226E1CE1008FB1F1 /* RegisterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
 		FD28F6DA226E1CE1008FB1F1 /* RegisterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
+		FDA75A12227F25DB00B4B768 /* LeftMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeftMessageTableViewCell.m; sourceTree = "<group>"; };
+		FDA75A13227F25DB00B4B768 /* BubbleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BubbleView.h; sourceTree = "<group>"; };
+		FDA75A14227F25DB00B4B768 /* ChatMessageTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatMessageTableViewController.m; sourceTree = "<group>"; };
+		FDA75A15227F25DB00B4B768 /* RightMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightMessageTableViewCell.h; sourceTree = "<group>"; };
+		FDA75A16227F25DB00B4B768 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
+		FDA75A17227F25DB00B4B768 /* BubbleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BubbleView.m; sourceTree = "<group>"; };
+		FDA75A18227F25DB00B4B768 /* LeftMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeftMessageTableViewCell.h; sourceTree = "<group>"; };
+		FDA75A19227F25DB00B4B768 /* RightMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightMessageTableViewCell.m; sourceTree = "<group>"; };
+		FDA75A1A227F25DB00B4B768 /* ChatMessageTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatMessageTableViewController.h; sourceTree = "<group>"; };
+		FDA75A1B227F25DB00B4B768 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		FDEBADB12274106700EAE88F /* InfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoViewController.h; sourceTree = "<group>"; };
 		FDEBADB22274106700EAE88F /* InfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoViewController.m; sourceTree = "<group>"; };
-		FDEBADBA2275941800EAE88F /* ChatMessageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChatMessageTableViewController.h; sourceTree = "<group>"; };
-		FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChatMessageTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +189,23 @@
 			path = IMUITests;
 			sourceTree = "<group>";
 		};
+		FDA75A11227F25DB00B4B768 /* ChatPage */ = {
+			isa = PBXGroup;
+			children = (
+				FDA75A12227F25DB00B4B768 /* LeftMessageTableViewCell.m */,
+				FDA75A13227F25DB00B4B768 /* BubbleView.h */,
+				FDA75A14227F25DB00B4B768 /* ChatMessageTableViewController.m */,
+				FDA75A15227F25DB00B4B768 /* RightMessageTableViewCell.h */,
+				FDA75A16227F25DB00B4B768 /* ChatViewController.m */,
+				FDA75A17227F25DB00B4B768 /* BubbleView.m */,
+				FDA75A18227F25DB00B4B768 /* LeftMessageTableViewCell.h */,
+				FDA75A19227F25DB00B4B768 /* RightMessageTableViewCell.m */,
+				FDA75A1A227F25DB00B4B768 /* ChatMessageTableViewController.h */,
+				FDA75A1B227F25DB00B4B768 /* ChatViewController.h */,
+			);
+			path = ChatPage;
+			sourceTree = "<group>";
+		};
 		FDEBADBD22768EC500EAE88F /* Index */ = {
 			isa = PBXGroup;
 			children = (
@@ -204,9 +233,8 @@
 		FDEBADBF22768F7700EAE88F /* MessagePage */ = {
 			isa = PBXGroup;
 			children = (
+				FDA75A11227F25DB00B4B768 /* ChatPage */,
 				712782122274081B002729E3 /* MessagePage.storyboard */,
-				FDEBADBA2275941800EAE88F /* ChatMessageTableViewController.h */,
-				FDEBADBB2275941800EAE88F /* ChatMessageTableViewController.m */,
 				7127822922769C43002729E3 /* MessageTableViewController.h */,
 				7127822A22769C43002729E3 /* MessageTableViewController.m */,
 				7127822C22769C6A002729E3 /* MessageTableViewCell.h */,
@@ -375,14 +403,18 @@
 				7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */,
 				FD085DB6226D64A800968B28 /* main.m in Sources */,
 				712782382276A0D7002729E3 /* UserModel.m in Sources */,
+				FDA75A1C227F25DB00B4B768 /* LeftMessageTableViewCell.m in Sources */,
 				7127821022740806002729E3 /* ContactTableViewCell.m in Sources */,
 				FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */,
+				FDA75A1F227F25DB00B4B768 /* BubbleView.m in Sources */,
 				7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */,
 				7127821122740806002729E3 /* ContactTableViewController.m in Sources */,
 				FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */,
-				FDEBADBC2275941800EAE88F /* ChatMessageTableViewController.m in Sources */,
 				FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */,
+				FDA75A20227F25DB00B4B768 /* RightMessageTableViewCell.m in Sources */,
 				712782392276A0D7002729E3 /* MessageModel.m in Sources */,
+				FDA75A1E227F25DB00B4B768 /* ChatViewController.m in Sources */,
+				FDA75A1D227F25DB00B4B768 /* ChatMessageTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
