@@ -9,6 +9,7 @@
 #import "MessageTableViewController.h"
 #import "MessageTableViewCell.h"
 #import "../Model/MessageModel.h"
+#import "ChatPage/ChatViewController.h"
 
 @interface MessageTableViewController ()
 @property (nonatomic, strong) NSMutableArray<MessageModel*> *MessagesArray;
@@ -62,7 +63,11 @@
     return cell;
 }
 
-
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    ChatViewController *viewController = [[ChatViewController alloc] init];
+    viewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:viewController animated:YES];
+}
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

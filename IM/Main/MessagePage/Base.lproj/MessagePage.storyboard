@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -74,7 +73,6 @@
                                     <outlet property="ContactProfilePicture" destination="BYc-T4-osZ" id="22U-Hf-m03"/>
                                     <outlet property="MessageAbstract" destination="KGY-h0-Vwb" id="2UG-oW-dTz"/>
                                     <outlet property="TimeStamp" destination="8C0-J5-erw" id="2ng-vu-J6R"/>
-                                    <segue destination="PDX-AH-6Y7" kind="push" id="dRA-am-cuW"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -89,99 +87,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mAC-BZ-pcV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-199.19999999999999" y="58.920539730134934"/>
-        </scene>
-        <!--Chat View Controller-->
-        <scene sceneID="BD0-iC-GYt">
-            <objects>
-                <viewController id="PDX-AH-6Y7" customClass="ChatViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="dc7-T1-zTo">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RVJ-5l-gfu">
-                                <rect key="frame" x="0.0" y="64" width="375" height="601"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="601" id="oqQ-od-N79"/>
-                                </constraints>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="leftMessageTableViewCell" id="I25-xL-LSd" customClass="LeftMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="I25-xL-LSd" id="opL-hl-SVa">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OqG-ew-rkD">
-                                                    <rect key="frame" x="5" y="2" width="40" height="40"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </imageView>
-                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yqj-qw-WLR" customClass="BubbleView">
-                                                    <rect key="frame" x="59" y="2" width="40" height="40"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                </view>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <outlet property="iconImage" destination="OqG-ew-rkD" id="apf-u5-QW8"/>
-                                            <outlet property="messageBubble" destination="Yqj-qw-WLR" id="8jY-wO-JyT"/>
-                                        </connections>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="rightMessageTableViewCell" id="awR-vp-oA7" customClass="RightMessageTableViewCell">
-                                        <rect key="frame" x="0.0" y="72" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="awR-vp-oA7" id="WqL-Sm-aFN">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Za-h5-Rgh">
-                                <rect key="frame" x="0.0" y="665" width="375" height="3"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AuV-zi-AOl">
-                                        <rect key="frame" x="0.0" y="0.0" width="315" height="3"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WtK-j7-NXp">
-                                        <rect key="frame" x="315" y="0.0" width="60" height="3"/>
-                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="60" id="7Oo-Nq-08e"/>
-                                        </constraints>
-                                        <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
-                                        <state key="normal" title="send">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="0.95488356860281398" green="0.95488356860281398" blue="0.95488356860281398" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.86337420946575816" green="0.86337420946575816" blue="0.86337420946575816" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="RVJ-5l-gfu" firstAttribute="leading" secondItem="5Za-h5-Rgh" secondAttribute="leading" id="3Be-tO-gen"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="5Za-h5-Rgh" secondAttribute="bottom" constant="-1" id="5mm-Q0-Xsj"/>
-                            <constraint firstItem="RVJ-5l-gfu" firstAttribute="leading" secondItem="dc7-T1-zTo" secondAttribute="leading" id="I1E-Xg-d6A"/>
-                            <constraint firstItem="RVJ-5l-gfu" firstAttribute="trailing" secondItem="5Za-h5-Rgh" secondAttribute="trailing" id="RVB-xA-6QN"/>
-                            <constraint firstItem="5Za-h5-Rgh" firstAttribute="top" secondItem="RVJ-5l-gfu" secondAttribute="bottom" id="jxV-fH-8dE"/>
-                            <constraint firstAttribute="trailing" secondItem="RVJ-5l-gfu" secondAttribute="trailing" id="nYJ-7Z-Cr6"/>
-                            <constraint firstItem="RVJ-5l-gfu" firstAttribute="top" secondItem="Kkz-Cx-w5q" secondAttribute="top" id="r4A-xK-kmX"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Kkz-Cx-w5q"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="6ca-y5-lIi"/>
-                    <connections>
-                        <outlet property="tableView" destination="RVJ-5l-gfu" id="Q0b-WO-0DH"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nn5-RN-XqB" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="517.60000000000002" y="58.920539730134934"/>
         </scene>
     </scenes>
 </document>
