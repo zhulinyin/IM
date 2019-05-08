@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) UILabel *textLable;
 @property Boolean isLeft;
-- (instancetype)initWithPosition:(Boolean)isLeft;
 - (void)setContentText:(NSString *)text;
 @end
 

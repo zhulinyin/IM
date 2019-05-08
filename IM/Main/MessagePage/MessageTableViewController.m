@@ -7,21 +7,28 @@
 //
 
 #import "MessageTableViewController.h"
+#import "MessageTableViewCell.h"
+#import "../Model/MessageModel.h"
 
 @interface MessageTableViewController ()
-
+@property (nonatomic, strong) NSMutableArray<MessageModel*> *MessagesArray;
 @end
 
 @implementation MessageTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self initializeFakeData];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)initializeFakeData
+{
+    
 }
 
 #pragma mark - Table view data source
@@ -32,18 +39,29 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #warning Incomplete implementation, return the number of rows
-    return 0;
+    //return self.MessagesArray.count;
+    return 1;
 }
 
-/*
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageTableCell" forIndexPath:indexPath];
     
     // Configure the cell...
+    if (cell == nil)
+    {
+        cell = [[MessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MessageTableCell"];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     
+    
+    cell.ContactProfilePicture.image = [UIImage imageNamed:@"peppa"];
+    cell.ContactName.text = @"peppa";
+    cell.MessageAbstract.text = @"hhhh";
+    cell.TimeStamp.text = @"2019.05.05";
     return cell;
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.

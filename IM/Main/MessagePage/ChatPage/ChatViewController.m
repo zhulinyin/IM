@@ -7,8 +7,10 @@
 //
 
 #import "ChatViewController.h"
+#import "ChatMessageTableViewController.h"
 
 @interface ChatViewController ()
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
@@ -17,6 +19,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    ChatMessageTableViewController *tableViewController = [[ChatMessageTableViewController alloc] init];
+    self.tableView.dataSource = tableViewController;
+    self.tableView.delegate = tableViewController;
 }
 
 /*

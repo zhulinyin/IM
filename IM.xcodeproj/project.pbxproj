@@ -192,16 +192,16 @@
 		FDA75A11227F25DB00B4B768 /* ChatPage */ = {
 			isa = PBXGroup;
 			children = (
-				FDA75A12227F25DB00B4B768 /* LeftMessageTableViewCell.m */,
 				FDA75A13227F25DB00B4B768 /* BubbleView.h */,
-				FDA75A14227F25DB00B4B768 /* ChatMessageTableViewController.m */,
-				FDA75A15227F25DB00B4B768 /* RightMessageTableViewCell.h */,
-				FDA75A16227F25DB00B4B768 /* ChatViewController.m */,
 				FDA75A17227F25DB00B4B768 /* BubbleView.m */,
-				FDA75A18227F25DB00B4B768 /* LeftMessageTableViewCell.h */,
+				FDA75A15227F25DB00B4B768 /* RightMessageTableViewCell.h */,
 				FDA75A19227F25DB00B4B768 /* RightMessageTableViewCell.m */,
+				FDA75A18227F25DB00B4B768 /* LeftMessageTableViewCell.h */,
+				FDA75A12227F25DB00B4B768 /* LeftMessageTableViewCell.m */,
 				FDA75A1A227F25DB00B4B768 /* ChatMessageTableViewController.h */,
+				FDA75A14227F25DB00B4B768 /* ChatMessageTableViewController.m */,
 				FDA75A1B227F25DB00B4B768 /* ChatViewController.h */,
+				FDA75A16227F25DB00B4B768 /* ChatViewController.m */,
 			);
 			path = ChatPage;
 			sourceTree = "<group>";

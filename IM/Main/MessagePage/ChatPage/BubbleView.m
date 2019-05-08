@@ -18,20 +18,19 @@
 }
 */
 
-- (instancetype)initWithPosition:(Boolean)isLeft
+
+-(void)awakeFromNib
 {
-    if (self = [super init])
-    {
-        self.imageView = [[UIImageView alloc]initWithFrame:self.bounds];
-        [self addSubview:self.imageView];
-        self.textLable = [[UILabel alloc]init];
-        [self addSubview:self.textLable];
-        self.textLable.font = [UIFont systemFontOfSize:16];
-        self.textLable.numberOfLines = 0;
-        self.isLeft = isLeft;
-    }
-    return self;
+    [super awakeFromNib];
+    self.imageView = [[UIImageView alloc]initWithFrame:self.bounds];
+    [self addSubview:self.imageView];
+    self.textLable = [[UILabel alloc]init];
+    [self addSubview:self.textLable];
+    self.textLable.font = [UIFont systemFontOfSize:16];
+    self.textLable.numberOfLines = 0;
+    self.isLeft = YES;
 }
+
 - (void)setContentText:(NSString *)text
 {
     self.textLable.text = text;

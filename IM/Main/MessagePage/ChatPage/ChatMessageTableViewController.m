@@ -45,7 +45,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [LeftMessageTableViewCell cellWithTableView:tableView];
+    return [LeftMessageTableViewCell cellWithTableView:tableView withImage:@"peppa.jpg" withMessage:@"66666666666666666666666666666"];
     
     // Configure the cell...
     
