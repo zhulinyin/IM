@@ -12,6 +12,7 @@
 #import "ChatPage/ChatViewController.h"
 
 @interface MessageTableViewController ()
+@property (strong, nonatomic) IBOutlet UITableView *MessageTableView;
 @property (nonatomic, strong) NSMutableArray<MessageModel*> *MessagesArray;
 @end
 
@@ -20,6 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initializeFakeData];
+    self.MessageTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

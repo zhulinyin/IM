@@ -30,7 +30,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
+                                            <color key="highlightedColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBr-CA-cYZ">
                                             <rect key="frame" x="16" y="1" width="40" height="40"/>
@@ -53,6 +53,9 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="联系人" id="KPF-Vo-VfV"/>
                     <navigationItem key="navigationItem" id="H23-RK-SFW"/>
+                    <connections>
+                        <outlet property="ContactTableView" destination="C8q-HP-b1c" id="18O-mc-u3u"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oun-Xd-xLB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

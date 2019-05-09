@@ -12,6 +12,7 @@
 @interface ContactTableViewController ()
 
 @property (nonatomic, strong) NSMutableArray<UserModel*> *ContactsArray;
+@property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
 @end
 
@@ -21,7 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initializeFakeData];
-    NSLog(@"count:%lu", self.ContactsArray.count);
+    self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -117,6 +118,7 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
     if ([[segue identifier] isEqualToString:@"ShowUserInfo"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
         InfoViewController *InfoVC = [segue destinationViewController];
+        InfoVC.hidesBottomBarWhenPushed = YES;
         InfoVC.User = self.ContactsArray[indexPath.row];
     }
     // Pass the selected object to the new view controller.
