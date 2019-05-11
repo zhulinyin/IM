@@ -11,6 +11,8 @@
 @interface ChatViewController () <ChatViewDelegate>
 @property (nonatomic, strong) ChatView *chatView;
 @property (nonatomic, strong) NSMutableArray *chatMsg;
+@property (nonatomic, strong) UserModel *loginUser;
+@property (nonatomic, strong) UserModel *chatUser;
 @end
 
 @implementation ChatViewController
@@ -20,30 +22,72 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor lightGrayColor];
     self.chatMsg = [NSMutableArray array];
+    self.loginUser = [[UserManager getInstance] getLoginModel];
+    self.chatUser = [[UserModel alloc] initWithProperties:@"321" NickName:@"321" RemarkName:@"321" Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"teemo"];
     
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    //self.chatView.backgroundColor = [UIColor redColor];
     self.chatView.delegate = self;
     [self.view addSubview:self.chatView];
     
-    [self addMessage:@"text" form:@"0" text:@"今天你吃饭了吗"];
-    [self addMessage:@"text" form:@"1" text:@"吃了啊"];
-    [self addMessage:@"text" form:@"0" text:@"哈哈哈哈\n哈哈哈哈哈\n哈哈哈哈哈哈"];
-    [self addMessage:@"text" form:@"1" text:@"你笑啥"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
+    [self addMessage:@"text" from:@"0" text:@"今天你吃饭了吗"];
+    [self addMessage:@"text" from:self.loginUser.UserID text:@"吃了啊"];
+    [self addMessage:@"text" from:@"0" text:@"哈哈哈哈\n哈哈哈哈哈\n哈哈哈哈哈哈"];
+    [self addMessage:@"text" from:self.loginUser.UserID text:@"你笑啥"];
+}
+
+- (void)getNewMessages:(NSNotification *)notification{
+    NSArray *messages = [notification object];
+    NSLog(@"%@", messages);
 }
 
 //delegate
 - (void)sendMessage:(NSString *)type text:(NSString *)text {
-    [self addMessage:type form:@"1" text:text];
+    [self addMessage:type from:self.loginUser.UserID text:text];
+    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/content/%@/", type]];
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
+    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];
+    [urlRequest setHTTPMethod:@"post"];
+    [urlRequest setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if(error == nil) {
+            if(NSClassFromString(@"NSJSONSerialization")) {
+                NSError *e = nil;
+                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
+                if(e) {
+                    NSLog(@"error");
+                }
+                if([object isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *result = object;
+                    if([result[@"state"] isEqualToString:@"ok"]) {
+                        NSLog(@"send success");
+                    }
+                    else {
+                        NSLog(@"send fail");
+                    }
+                }
+                else {
+                    NSLog(@"Not dictionary");
+                }
+            }
+        }
+        else {
+            NSLog(@"网络异常");
+        }
+    }];
+    [task resume];
 }
 
 //新增消息
-- (void)addMessage:(NSString *)type form:(NSString *)form text:(NSString *)text {
+- (void)addMessage:(NSString *)type from:(NSString *)from text:(NSString *)text {
     
     MessageModel *msgModel = [[MessageModel alloc] init];
     msgModel.Type = type;
-    msgModel.SenderID = form;
+    msgModel.SenderID = from;
     msgModel.Content = text;
     [self.chatMsg addObject:msgModel];
     

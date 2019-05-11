@@ -139,11 +139,46 @@ dispatch_async(dispatch_get_main_queue(), block);\
             return;
         }
         
-        // To Do:
+        [self getMessage];
         
     }
 }
 
+- (void) getMessage{
+    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/message/%ld/", [UserManager getInstance].seq]];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if(error == nil) {
+            if(NSClassFromString(@"NSJSONSerialization")) {
+                NSError *e = nil;
+                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
+                if(e) {
+                    NSLog(@"error");
+                }
+                if([object isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *result = object;
+                    if([result[@"state"] isEqualToString:@"ok"]) {
+                        NSLog(@"get message success");
+                        NSArray *messages = result[@"data"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
+                    }
+                    else {
+                        NSLog(@"get message fail");
+                    }
+                }
+                else {
+                    NSLog(@"Not dictionary");
+                }
+            }
+        }
+        else {
+            NSLog(@"网络异常");
+        }
+    }];
+    [task resume];
+    
+}
 // 关闭连接
 -(void)SRWebSocketClose{
     if (self.socket){

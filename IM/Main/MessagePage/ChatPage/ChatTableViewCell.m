@@ -62,19 +62,20 @@
                                                    options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
                                                 attributes: @{NSFontAttributeName:self.contentLabel.font}
                                                    context: nil].size;
-    self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:@"0"] ? 20 : 10 , 5, labelSize.width, labelSize.height + 10);
+    UserModel *loginUser = [[UserManager getInstance] getLoginModel];
+    self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
     
     //计算气泡位置
-    CGFloat bubbleX = [model.SenderID isEqualToString:@"0"] ? (ICON_WH + 25) : (SCREEN_WIDTH - ICON_WH - 25 - labelSize.width - 30);
+    CGFloat bubbleX = [model.SenderID isEqualToString:loginUser.UserID] ? (SCREEN_WIDTH - ICON_WH - 25 - labelSize.width - 30) : (ICON_WH + 25);
     self.bubbleIV.frame = CGRectMake(bubbleX, 20, self.contentLabel.frame.size.width + 30, self.contentLabel.frame.size.height+10);
     
     //头像位置
-    CGFloat iconX = [model.SenderID isEqualToString:@"0"] ? 15 : (SCREEN_WIDTH - ICON_WH - 15);
+    CGFloat iconX = [model.SenderID isEqualToString:loginUser.UserID] ? (SCREEN_WIDTH - ICON_WH - 15) : 15;
     self.iconIV.frame = CGRectMake(iconX, 15, ICON_WH, ICON_WH);
-    self.iconIV.image = [UIImage imageNamed: [model.SenderID isEqualToString:@"1"] ? @"peppa" : @"peppa"];
+    self.iconIV.image = [UIImage imageNamed: [model.SenderID isEqualToString:loginUser.UserID] ? @"peppa" : @"teemo"];
     
     //拉伸气泡
-    UIImage *backImage = [UIImage imageNamed: [model.SenderID isEqualToString:@"0"] ? @"bubble_left" : @"bubble_right"];
+    UIImage *backImage = [UIImage imageNamed: [model.SenderID isEqualToString:loginUser.UserID] ?  @"bubble_right" : @"bubble_left"];
     backImage = [backImage resizableImageWithCapInsets:UIEdgeInsetsMake(30, 30, 10, 30) resizingMode:UIImageResizingModeStretch];
     self.bubbleIV.image = backImage;
 }

@@ -24,6 +24,7 @@ static UserManager *instance = nil;
     dispatch_once(&onceToken, ^{
         instance = [[super allocWithZone:NULL] init];
         instance.socket = [SocketRocketUtility instance];
+        instance.seq = 0;
     }) ;
     
     return instance;
