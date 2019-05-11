@@ -10,7 +10,7 @@
 
 @implementation MessageModel
 
-- (instancetype)initWithProperties:(NSInteger *)Seq
+- (instancetype)initWithProperties:(NSInteger)Seq
                           SenderID:(NSString *)SenderID
                         ReceiverID:(NSString *)ReceiverID
                          TimeStamp:(NSDate *)TimeStamp

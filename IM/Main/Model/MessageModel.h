@@ -12,14 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MessageModel : NSObject
 
-@property NSInteger* Seq;
+@property NSInteger Seq;
 @property (weak, nonatomic) NSString* SenderID;
 @property (weak, nonatomic) NSString* ReceiverID;
 @property (weak, nonatomic) NSDate* TimeStamp;
 @property (weak, nonatomic) NSString* Type;
 @property (weak, nonatomic) NSString* Content;
 
-- (instancetype)initWithProperties:(NSInteger *)Seq
+- (instancetype)initWithProperties:(NSInteger)Seq
                           SenderID:(NSString *)SenderID
                         ReceiverID:(NSString *)ReceiverID
                          TimeStamp:(NSDate *)TimeStamp
