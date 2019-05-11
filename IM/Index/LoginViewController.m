@@ -7,6 +7,7 @@
 //
 
 #import "LoginViewController.h"
+#import "../Utils/UserManager.h"
 
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameText; // 用户名输入文本框
@@ -26,43 +27,7 @@
  登录功能
  */
 - (IBAction)loginEvent:(id)sender {
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/login/"];
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", self.usernameText.text, self.passwordText.text];
-    [urlRequest setHTTPMethod:@"post"];
-    [urlRequest setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if(error == nil) {
-            if(NSClassFromString(@"NSJSONSerialization")) {
-                NSError *e = nil;
-                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
-                if(e) {
-                    NSLog(@"error");
-                }
-                if([object isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *result = object;
-                    if([result[@"state"] isEqualToString:@"ok"]) {
-                        NSLog(@"login success");
-                        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                        [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
-                    }
-                    else {
-                        NSLog(@"login fail");
-                    }
-                }
-                else {
-                    NSLog(@"Not dictionary");
-                }
-            }
-        }
-        else {
-            NSLog(@"网络异常");
-        }
-    }];
-    [task resume];
+    [[UserManager getInstance] login:self.usernameText.text withPassword:self.passwordText.text];
 }
 
 @end

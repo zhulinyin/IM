@@ -18,6 +18,7 @@
 		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
 		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
 		E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D610B913D1095E8624DF3B8 /* Pods_IM.framework */; };
+		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
 		FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */; };
 		FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DA7226D64A500968B28 /* AppDelegate.m */; };
 		FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DAA226D64A500968B28 /* LoginViewController.m */; };
@@ -71,6 +72,8 @@
 		712782352276A0D7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageModel.h; sourceTree = "<group>"; };
 		712782362276A0D7002729E3 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
+		FA9A78F5228667D800CC26CF /* UserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
+		FA9A78F6228667D800CC26CF /* UserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketRocketUtility.h; sourceTree = "<group>"; };
 		FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketRocketUtility.m; sourceTree = "<group>"; };
 		FD085DA3226D64A500968B28 /* IM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,7 +136,6 @@
 				6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */,
 				033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -161,6 +163,8 @@
 			children = (
 				FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */,
 				FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */,
+				FA9A78F5228667D800CC26CF /* UserManager.h */,
+				FA9A78F6228667D800CC26CF /* UserManager.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -478,6 +482,7 @@
 			files = (
 				FD23CB602282FD7000FEF250 /* ChatView.m in Sources */,
 				FD23CB632282FD9300FEF250 /* ChatTableViewCell.m in Sources */,
+				FA9A78F7228667D800CC26CF /* UserManager.m in Sources */,
 				FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */,
 				7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */,
 				FD085DB6226D64A800968B28 /* main.m in Sources */,

@@ -2,7 +2,7 @@
 //  SocketRocketUtility.m
 //  IM
 //
-//  Created by student13 on 2019/5/11.
+//  Created by zhulinyin on 2019/5/11.
 //  Copyright © 2019 zhulinyin. All rights reserved.
 //
 
@@ -54,7 +54,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     }
     
     self.socket = [[SRWebSocket alloc] initWithURLRequest:
-                   [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://172.18.32.97:6789"]]]];//这里填写你服务器的地址
+                   [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://118.89.65.154:6789"]]]];//这里填写你服务器的地址
     
     NSLog(@"请求的websocket地址：%@",self.socket.url.absoluteString);
     self.socket.delegate = self;   //实现这个 SRWebSocketDelegate 协议

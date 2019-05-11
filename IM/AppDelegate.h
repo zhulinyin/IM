@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Utils/UserManager.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
