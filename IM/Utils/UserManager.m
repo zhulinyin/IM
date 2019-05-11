@@ -10,6 +10,7 @@
 
 @interface UserManager()
 @property(strong, nonatomic) UserModel *loginUser;
+@property(strong, nonatomic) SocketRocketUtility *socket;
 @end
 
 @implementation UserManager
@@ -21,7 +22,8 @@ static UserManager *instance = nil;
 {
     static dispatch_once_t onceToken ;
     dispatch_once(&onceToken, ^{
-        instance = [[super allocWithZone:NULL] init] ;
+        instance = [[super allocWithZone:NULL] init];
+        instance.socket = [SocketRocketUtility instance];
     }) ;
     
     return instance;
@@ -69,9 +71,7 @@ static UserManager *instance = nil;
                     if([result[@"state"] isEqualToString:@"ok"]) {
                         NSLog(@"login success");
                         self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-                        SocketRocketUtility *socket = [SocketRocketUtility instance];
-                        [socket SRWebSocketOpen];
-                        [socket wsOperate:@"connect" data:username];
+                        [self.socket SRWebSocketOpen];
                         UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                         [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
                     }
@@ -94,9 +94,8 @@ static UserManager *instance = nil;
 
 -(void) logout
 {
-    SocketRocketUtility *socket = [SocketRocketUtility instance];
-    [socket SRWebSocketClose];
-    [socket wsOperate:@"close" data:self.loginUser.UserID];
+    [self.socket SRWebSocketClose];
+    [self.socket wsOperate:@"close" data:self.loginUser.UserID];
 }
 
 
@@ -123,9 +122,7 @@ static UserManager *instance = nil;
                     if([result[@"state"] isEqualToString:@"ok"]) {
                         NSLog(@"register success");
                         self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-                        SocketRocketUtility *socket = [SocketRocketUtility instance];
-                        [socket SRWebSocketOpen];
-                        [socket wsOperate:@"connect" data:username];
+                        [self.socket SRWebSocketOpen];
                         UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                         [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
                     }

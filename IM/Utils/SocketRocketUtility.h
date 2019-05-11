@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <SocketRocket.h>
+#import "UserManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

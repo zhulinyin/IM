@@ -65,10 +65,10 @@ dispatch_async(dispatch_get_main_queue(), block);\
 // 成功连接的操作
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket {
     //开启心跳
-    [self initHeartBeat];
+    //[self initHeartBeat];
     if (webSocket == self.socket) {
         NSLog(@"************************** socket 连接成功************************** ");
-        [self wsOperate:@"connect" data:@"user"];
+        [self wsOperate:@"connect" data:[[UserManager getInstance] getLoginModel].UserID];
     }
 }
 
