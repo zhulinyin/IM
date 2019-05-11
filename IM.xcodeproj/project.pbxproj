@@ -17,6 +17,8 @@
 		7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822D22769C6A002729E3 /* MessageTableViewCell.m */; };
 		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
 		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
+		E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D610B913D1095E8624DF3B8 /* Pods_IM.framework */; };
+		FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */; };
 		FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DA7226D64A500968B28 /* AppDelegate.m */; };
 		FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DAA226D64A500968B28 /* LoginViewController.m */; };
 		FD085DAE226D64A500968B28 /* Index.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD085DAC226D64A500968B28 /* Index.storyboard */; };
@@ -50,6 +52,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.release.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.release.xcconfig"; sourceTree = "<group>"; };
+		1D610B913D1095E8624DF3B8 /* Pods_IM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.debug.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.debug.xcconfig"; sourceTree = "<group>"; };
 		7127820C22740805002729E3 /* ContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
 		7127820D22740805002729E3 /* ContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
 		7127820E22740806002729E3 /* ContactTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewController.m; sourceTree = "<group>"; };
@@ -66,6 +71,8 @@
 		712782352276A0D7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageModel.h; sourceTree = "<group>"; };
 		712782362276A0D7002729E3 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
+		FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketRocketUtility.h; sourceTree = "<group>"; };
+		FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocketRocketUtility.m; sourceTree = "<group>"; };
 		FD085DA3226D64A500968B28 /* IM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD085DA6226D64A500968B28 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FD085DA7226D64A500968B28 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -99,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +127,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B4DE96B8C47E089FC825F72 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */,
+				033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		7127823A2276A0F8002729E3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +148,23 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		B099404EFA5C81A84530E3E2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1D610B913D1095E8624DF3B8 /* Pods_IM.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FAF4463222865EEE00B74A13 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */,
+				FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		FD085D9A226D64A500968B28 = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +172,8 @@
 				FD085DBE226D64A800968B28 /* IMTests */,
 				FD085DC9226D64A800968B28 /* IMUITests */,
 				FD085DA4226D64A500968B28 /* Products */,
+				5B4DE96B8C47E089FC825F72 /* Pods */,
+				B099404EFA5C81A84530E3E2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -153,6 +190,7 @@
 		FD085DA5226D64A500968B28 /* IM */ = {
 			isa = PBXGroup;
 			children = (
+				FAF4463222865EEE00B74A13 /* Utils */,
 				FDEBADBD22768EC500EAE88F /* Index */,
 				FDEBADBE22768F4300EAE88F /* Main */,
 				FD085DA6226D64A500968B28 /* AppDelegate.h */,
@@ -262,9 +300,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FD085DCF226D64A800968B28 /* Build configuration list for PBXNativeTarget "IM" */;
 			buildPhases = (
+				63B9741D8D1596035E137A31 /* [CP] Check Pods Manifest.lock */,
 				FD085D9F226D64A500968B28 /* Sources */,
 				FD085DA0226D64A500968B28 /* Frameworks */,
 				FD085DA1226D64A500968B28 /* Resources */,
+				65FDEB3B848BD6B6FC5C1169 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -384,6 +424,53 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		63B9741D8D1596035E137A31 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IM-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		65FDEB3B848BD6B6FC5C1169 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-IM/Pods-IM-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SocketRocket/SocketRocket.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketRocket.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-IM/Pods-IM-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		FD085D9F226D64A500968B28 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -402,6 +489,7 @@
 				FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */,
 				FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */,
 				FD23CB662282FDD300FEF250 /* ChatViewController.m in Sources */,
+				FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */,
 				712782392276A0D7002729E3 /* MessageModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -595,6 +683,7 @@
 		};
 		FD085DD0226D64A800968B28 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -611,6 +700,7 @@
 		};
 		FD085DD1226D64A800968B28 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
