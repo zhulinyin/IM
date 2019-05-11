@@ -25,7 +25,12 @@
     self.NickName.text = self.User.NickName;
     self.ID.text = self.User.UserID;
     self.Gender.text = self.User.Gender;
-    self.BIrthplace.text = self.User.Birthplace;
+    self.Birthplace.text = self.User.Birthplace;
+    /*[self.NickName sizeToFit];
+    [self.ID sizeToFit];
+    [self.Gender sizeToFit];
+    [self.Birthplace sizeToFit];*/
+    
 }
 
 /*
