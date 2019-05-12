@@ -27,8 +27,7 @@
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     self.chatView.delegate = self;
     [self.view addSubview:self.chatView];
-    
-    [self addMessage:@"text" from:self.loginUser.UserID text:@"Hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
 }
 
