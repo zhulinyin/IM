@@ -17,6 +17,7 @@
 		7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822D22769C6A002729E3 /* MessageTableViewCell.m */; };
 		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
 		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
+		717F058622848AA2006A34C1 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 717F058522848AA2006A34C1 /* SessionHelper.m */; };
 		E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D610B913D1095E8624DF3B8 /* Pods_IM.framework */; };
 		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
 		FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */; };
@@ -72,6 +73,8 @@
 		712782352276A0D7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageModel.h; sourceTree = "<group>"; };
 		712782362276A0D7002729E3 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
+		717F058422848AA2006A34C1 /* SessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionHelper.h; sourceTree = "<group>"; };
+		717F058522848AA2006A34C1 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
 		FA9A78F5228667D800CC26CF /* UserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		FA9A78F6228667D800CC26CF /* UserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketRocketUtility.h; sourceTree = "<group>"; };
@@ -165,6 +168,8 @@
 				FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */,
 				FA9A78F5228667D800CC26CF /* UserManager.h */,
 				FA9A78F6228667D800CC26CF /* UserManager.m */,
+				717F058422848AA2006A34C1 /* SessionHelper.h */,
+				717F058522848AA2006A34C1 /* SessionHelper.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -483,6 +488,7 @@
 				FD23CB602282FD7000FEF250 /* ChatView.m in Sources */,
 				FD23CB632282FD9300FEF250 /* ChatTableViewCell.m in Sources */,
 				FA9A78F7228667D800CC26CF /* UserManager.m in Sources */,
+				717F058622848AA2006A34C1 /* SessionHelper.m in Sources */,
 				FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */,
 				7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */,
 				FD085DB6226D64A800968B28 /* main.m in Sources */,
