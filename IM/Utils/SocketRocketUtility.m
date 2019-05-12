@@ -138,8 +138,27 @@ dispatch_async(dispatch_get_main_queue(), block);\
         if(!message){
             return;
         }
-        
-        [self getMessage];
+        NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *e = nil;
+        id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
+        if(e) {
+            NSLog(@"error");
+        }
+        if([object isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *result = object;
+            if([result[@"state"] isEqualToString:@"ok"]) {
+                if([result[@"msg"] isEqualToString:@"connected"] ||
+                   [result[@"msg"] isEqualToString:@"new"]) {
+                    [self getMessage];
+                }
+            }
+            else {
+                NSLog(@"login fail");
+            }
+        }
+        else {
+            NSLog(@"Not dictionary");
+        }
         
     }
 }
@@ -147,7 +166,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void) getMessage{
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/message/%ld/", [UserManager getInstance].seq]];
+    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/message/%ld", [UserManager getInstance].seq]];
+
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if(error == nil) {
             if(NSClassFromString(@"NSJSONSerialization")) {
@@ -161,6 +181,14 @@ dispatch_async(dispatch_get_main_queue(), block);\
                     if([result[@"state"] isEqualToString:@"ok"]) {
                         NSLog(@"get message success");
                         NSArray *messages = result[@"data"];
+                        NSLog(@"new messages num: %lu", messages.count);
+                        for (int i=0; i<messages.count; i++) {
+                            /*NSInteger seq = [messages[i][@"Seq"] integerValue];
+                            if(seq > [UserManager getInstance].seq) {
+                                [UserManager getInstance].seq = seq;
+                            }*/
+                            [UserManager getInstance].seq++;
+                        }
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
                     }
                     else {
@@ -186,7 +214,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         self.socket = nil;
         
         //断开连接时销毁心跳
-        [self destoryHeartBeat];
+        //[self destoryHeartBeat];
     }
 }
 

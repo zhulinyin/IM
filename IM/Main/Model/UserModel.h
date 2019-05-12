@@ -12,12 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UserModel : NSObject
 
-@property (weak, nonatomic) NSString* UserID;
-@property (weak, nonatomic) NSString* NickName;
-@property (weak, nonatomic) NSString* RemarkName;
-@property (weak, nonatomic) NSString* Gender;
-@property (weak, nonatomic) NSString* Birthplace;
-@property (weak, nonatomic) NSString* ProfilePicture;
+@property (strong, nonatomic) NSString* UserID;
+@property (strong, nonatomic) NSString* NickName;
+@property (strong, nonatomic) NSString* RemarkName;
+@property (strong, nonatomic) NSString* Gender;
+@property (strong, nonatomic) NSString* Birthplace;
+@property (strong, nonatomic) NSString* ProfilePicture;
 
 - (instancetype)initWithProperties:(NSString *)UserID
                           NickName:(NSString *)NickName

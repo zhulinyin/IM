@@ -32,6 +32,40 @@
     [self.Birthplace sizeToFit];*/
     
 }
+- (IBAction)logout:(id)sender {
+    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/logout/"];
+    NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if(error == nil) {
+            if(NSClassFromString(@"NSJSONSerialization")) {
+                NSError *e = nil;
+                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
+                if(e) {
+                    NSLog(@"error");
+                }
+                if([object isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *result = object;
+                    if([result[@"state"] isEqualToString:@"ok"]) {
+                        NSLog(@"logout success");
+                        UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+                        [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
+                    }
+                    else {
+                        NSLog(@"logout fail");
+                    }
+                }
+                else {
+                    NSLog(@"Not dictionary");
+                }
+            }
+        }
+        else {
+            NSLog(@"网络异常");
+        }
+    }];
+    [task resume];
+}
 
 /*
 #pragma mark - Navigation

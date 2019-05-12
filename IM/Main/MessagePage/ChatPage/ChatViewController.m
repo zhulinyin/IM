@@ -10,7 +10,6 @@
 #import "ChatView.h"
 @interface ChatViewController () <ChatViewDelegate>
 @property (nonatomic, strong) ChatView *chatView;
-@property (nonatomic, strong) NSMutableArray *chatMsg;
 @property (nonatomic, strong) UserModel *loginUser;
 @property (nonatomic, strong) UserModel *chatUser;
 @end
@@ -21,7 +20,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.chatMsg = [NSMutableArray array];
     self.loginUser = [[UserManager getInstance] getLoginModel];
     self.chatUser = [[UserModel alloc] initWithProperties:@"321" NickName:@"321" RemarkName:@"321" Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"teemo"];
     
@@ -30,16 +28,18 @@
     self.chatView.delegate = self;
     [self.view addSubview:self.chatView];
     
+    [self addMessage:@"text" from:self.loginUser.UserID text:@"Hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
-    [self addMessage:@"text" from:@"0" text:@"今天你吃饭了吗"];
-    [self addMessage:@"text" from:self.loginUser.UserID text:@"吃了啊"];
-    [self addMessage:@"text" from:@"0" text:@"哈哈哈哈\n哈哈哈哈哈\n哈哈哈哈哈哈"];
-    [self addMessage:@"text" from:self.loginUser.UserID text:@"你笑啥"];
 }
 
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
-    NSLog(@"%@", messages);
+    for (int i=0; i<messages.count; i++) {
+        if([messages[i][@"From"] isEqualToString:self.chatUser.UserID]) {
+            [self addMessage:messages[i][@"Type"] from:messages[i][@"From"] text:messages[i][@"content"]];
+        }
+    }
+    //NSLog(@"%@", messages);
 }
 
 //delegate
@@ -47,7 +47,7 @@
     [self addMessage:type from:self.loginUser.UserID text:text];
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/content/%@/", type]];
+    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/content/%@", type]];
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
     NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];
     [urlRequest setHTTPMethod:@"post"];
@@ -89,9 +89,7 @@
     msgModel.Type = type;
     msgModel.SenderID = from;
     msgModel.Content = text;
-    [self.chatMsg addObject:msgModel];
-    
-    self.chatView.chatMsg = self.chatMsg;
+    [self.chatView addMessage:msgModel];
 }
 
 @end

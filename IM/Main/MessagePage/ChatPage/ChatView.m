@@ -27,8 +27,8 @@
     return self;
 }
 
-- (void)setChatMsg:(NSMutableArray *)chatMsg {
-    _chatMsg = chatMsg;
+- (void)addMessage:(MessageModel *)message {
+    [self.chatMsg addObject:message];
     [self.chatTable reloadData];
     [self tableViewScrollToBottom];
 }
@@ -72,8 +72,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     //计算文字高度需和自定义cell内容尺寸同步
-    MessageModel *msgModel = [[MessageModel alloc] init];
-    msgModel = self.chatMsg[indexPath.row];
+    MessageModel *msgModel = self.chatMsg[indexPath.row];
     CGSize labelSize = [msgModel.Content boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
                                                       options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
                                                    attributes: @{NSFontAttributeName:[UIFont systemFontOfSize:15]}

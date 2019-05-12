@@ -53,7 +53,7 @@ static UserManager *instance = nil;
 {
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/login/"];
+    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/login"];
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
     NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
     [urlRequest setHTTPMethod:@"post"];
@@ -104,7 +104,7 @@ static UserManager *instance = nil;
 {
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/register/"];
+    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/register"];
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
     NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
     [urlRequest setHTTPMethod:@"post"];
