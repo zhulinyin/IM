@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "InfoViewController.h"
+#import "SessionHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

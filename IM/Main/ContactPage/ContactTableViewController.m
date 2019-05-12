@@ -21,13 +21,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initializeFakeData];
+    //[self initializeFakeData];
+    [self getContactsFromServer];
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+- (void)getContactsFromServer
+{
+    void (^showContacts)(id) = ^void (id object)
+    {
+        NSLog(@"%@", [NSString stringWithFormat:@"dictionary:%@", object ]);
+        [self initializeFakeData];
+    };
+    
+    [SessionHelper sendRequest:@"/contact/info/" method:@"get" parameters:@"" handler:showContacts];
 }
 
 - (void)initializeFakeData
