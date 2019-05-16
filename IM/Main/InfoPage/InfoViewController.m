@@ -20,12 +20,14 @@
 
 @implementation InfoViewController
 
-- (instancetype) init_self {
+- (instancetype) init {
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // [self.navigationController setNavigationBarHidden:NO animated:NO];
+    self.navigationController.navigationBarHidden = NO;
     // Do any additional setup after loading the view.
     if (self.User == nil)
     {
@@ -45,23 +47,32 @@
     
     
     self.navigationItem.title = @"个人信息";
+    // 获取屏幕的宽高
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    CGSize size = rect.size;
+    CGFloat width = size.width;
+    CGFloat height = size.height;
     
     self.tableView = ({
-        UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+        UITableView *tableView = [[UITableView alloc]
+                                  initWithFrame:CGRectMake(0, 50, width, height/2+70) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView;
     });
-    // [self.view addSubview:self.tableView];
+    // 取消多余的横线
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
+    [self.view addSubview:self.tableView];
     
     [self loadData];
 }
 
 - (void)loadData {
-    self.contentList = [NSMutableArray array];
-    [self.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"头像", @"昵称", @"账号", @"性别", @"地区",nil]];
     self.titleList = [NSMutableArray array];
-    [self.titleList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", @"Peppa", @"peppy", @"female", @"UK",nil]];
+    self.contentList = [NSMutableArray array];
+    [self.titleList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"头像", @"昵称", @"账号", @"性别", @"地区",nil]];
+    [self.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", @"Peppa", @"peppy", @"female", @"UK",nil]];
 }
 
 #pragma mark ------------ UITableViewDataSource ------------------
@@ -71,7 +82,11 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.contentList.count;
+    return self.titleList.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 80;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,15 +96,27 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
     
-    //        cell.imageView.image = [UIImage imageNamed:@"icon_directory.jpg"];
-    cell.textLabel.text = self.contentList[indexPath.row];
-    
-    UILabel *rightLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,70,45)];
-    rightLabel.text = self.titleList[indexPath.row];
-    cell.accessoryView = rightLabel;
-    cell.accessoryView.backgroundColor = [UIColor redColor];   //加上红色容易看清楚
-    
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    // cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = self.titleList[indexPath.row];
+    cell.textLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:18.f];
+    if (indexPath.row != 0){
+        UILabel *rightLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,70,55)];
+        rightLabel.text = self.contentList[indexPath.row];
+        rightLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:14.f];
+        rightLabel.textColor = [UIColor grayColor];
+        cell.accessoryView = rightLabel;
+        //cell.accessoryView.backgroundColor = [UIColor redColor];   //加上红色容易看清楚
+    }
+    else{
+        cell.accessoryView = ({
+            UIImageView *imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+            CGRect frame = imgV.frame;
+            frame = CGRectMake(0, 0, 100, 55);
+            imgV.frame = frame;
+            [imgV setContentMode:UIViewContentModeScaleAspectFit];
+            imgV;
+        });
+    }
     return cell;
 }
 
