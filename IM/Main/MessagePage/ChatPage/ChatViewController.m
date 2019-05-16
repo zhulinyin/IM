@@ -16,12 +16,22 @@
 
 @implementation ChatViewController
 
+- (instancetype)initWithContact:(UserModel *)chatUser
+{
+    self = [super init];
+    if (self)
+    {
+        self.loginUser = [[UserManager getInstance] getLoginModel];
+        self.chatUser = chatUser;
+    }
+    return self;
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.loginUser = [[UserManager getInstance] getLoginModel];
-    self.chatUser = [[UserModel alloc] initWithProperties:@"321" NickName:@"321" RemarkName:@"321" Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"teemo"];
     
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -44,41 +54,24 @@
 //delegate
 - (void)sendMessage:(NSString *)type text:(NSString *)text {
     [self addMessage:type from:self.loginUser.UserID text:text];
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/content/%@", type]];
-    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
-    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];
-    [urlRequest setHTTPMethod:@"post"];
-    [urlRequest setHTTPBody:[params dataUsingEncoding:NSUTF8StringEncoding]];
     
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if(error == nil) {
-            if(NSClassFromString(@"NSJSONSerialization")) {
-                NSError *e = nil;
-                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
-                if(e) {
-                    NSLog(@"error");
-                }
-                if([object isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *result = object;
-                    if([result[@"state"] isEqualToString:@"ok"]) {
-                        NSLog(@"send success");
-                    }
-                    else {
-                        NSLog(@"send fail");
-                    }
-                }
-                else {
-                    NSLog(@"Not dictionary");
-                }
-            }
+    void (^sendFeedBack)(id) = ^void (id object)
+    {
+        NSDictionary *result = object;
+        if([result[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"send success");
         }
-        else {
-            NSLog(@"网络异常");
+        else
+        {
+            NSLog(@"send fail");
         }
-    }];
-    [task resume];
+    };
+    
+    
+    NSString *path = [[NSString alloc] initWithFormat:@"/content/%@", type];
+    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];
+    [SessionHelper sendRequest:path method:@"post" parameters:params handler:sendFeedBack];
 }
 
 //新增消息

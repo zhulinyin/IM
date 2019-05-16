@@ -21,8 +21,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //[self initializeFakeData];
+    self.ContactsArray = [NSMutableArray array];
+    [self initializeTestData];
+    
+    [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    
     [self getContactsFromServer];
+    
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -36,19 +41,33 @@
     void (^showContacts)(id) = ^void (id object)
     {
         NSLog(@"%@", [NSString stringWithFormat:@"dictionary:%@", object ]);
-        [self initializeFakeData];
+        
+        for (id user in object[@"data"])
+        {
+             UserModel* ContactUser = [[UserModel alloc] initWithProperties:user[@"Friend"] NickName:user[@"Username"] RemarkName:user[@"Username"] Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
+            [self willChangeValueForKey:@"ContactsArray"];
+            [self.ContactsArray addObject:ContactUser];
+            [self didChangeValueForKey:@"ContactsArray"];
+            
+            
+        }
+        //[self initializeFakeData];
     };
     
-    [SessionHelper sendRequest:@"/contact/info/" method:@"get" parameters:@"" handler:showContacts];
+    [SessionHelper sendRequest:@"/contact/info" method:@"get" parameters:@"" handler:showContacts];
+    
+    
 }
 
-- (void)initializeFakeData
+- (void)initializeTestData
 {
-    UserModel* FakeUser1 = [[UserModel alloc] initWithProperties:@"teemo2333" NickName:@"teemo" RemarkName:@"teemo" Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
-    UserModel* FakeUser2 = [[UserModel alloc] initWithProperties:@"peppa666" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
-    self.ContactsArray = [NSMutableArray array];
-    [self.ContactsArray addObject:FakeUser1];
-    [self.ContactsArray addObject:FakeUser2];
+    
+    UserModel* TestUser1 = [[UserModel alloc] initWithProperties:@"123" NickName:@"teemo" RemarkName:@"teemo" Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
+    UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
+    [self willChangeValueForKey:@"ContactsArray"];
+    [self.ContactsArray addObject:TestUser1];
+    [self.ContactsArray addObject:TestUser2];
+    [self didChangeValueForKey:@"ContactsArray"];
 }
 
 #pragma mark - Table view data source
@@ -136,4 +155,13 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
     // Pass the selected object to the new view controller.
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"ContactsArray"])
+    {
+        //NSLog(@"contacts: %@", self.ContactsArray);
+        [self.tableView reloadData];
+        
+    }
+}
 @end

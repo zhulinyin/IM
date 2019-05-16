@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SessionHelper.h"
+#import "UserModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ChatViewController : UIViewController
+
+- (instancetype)initWithContact:(UserModel *)chatUser;
 
 @end
 

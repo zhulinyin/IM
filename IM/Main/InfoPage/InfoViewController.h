@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "UserModel.h"
+#import "UserManager.h"
+#import "ChatViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

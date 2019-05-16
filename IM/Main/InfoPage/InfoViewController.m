@@ -13,6 +13,8 @@
 @property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSMutableArray<NSString*> *titleList;
 @property(nonatomic, strong) NSMutableArray<NSString*> *contentList;
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
+@property (weak, nonatomic) IBOutlet UIButton *logoutButton;
 
 @end
 
@@ -27,17 +29,20 @@
     // Do any additional setup after loading the view.
     if (self.User == nil)
     {
-        self.User = [[UserModel alloc] initWithProperties:@"peppa ID" NickName:@"Peppa" RemarkName:@"peppy" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
+        self.User = [[UserManager getInstance] getLoginModel];
     }
     self.ProfilePicture.image = [UIImage imageNamed:self.User.ProfilePicture];
     self.NickName.text = self.User.NickName;
     self.ID.text = self.User.UserID;
     self.Gender.text = self.User.Gender;
     self.Birthplace.text = self.User.Birthplace;
-    /*[self.NickName sizeToFit];
-    [self.ID sizeToFit];
-    [self.Gender sizeToFit];
-    [self.Birthplace sizeToFit];*/
+    
+    if (self.User == [[UserManager getInstance] getLoginModel])
+        self.sendButton.hidden = YES;
+    else
+        self.logoutButton.hidden = YES;
+        
+    
     
     self.navigationItem.title = @"个人信息";
     
@@ -99,39 +104,15 @@
 }
 
 
-- (IBAction)logout:(id)sender {
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:@"http://118.89.65.154:8000/account/logout/"];
-    NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if(error == nil) {
-            if(NSClassFromString(@"NSJSONSerialization")) {
-                NSError *e = nil;
-                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
-                if(e) {
-                    NSLog(@"error");
-                }
-                if([object isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *result = object;
-                    if([result[@"state"] isEqualToString:@"ok"]) {
-                        NSLog(@"logout success");
-                        UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
-                        [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
-                    }
-                    else {
-                        NSLog(@"logout fail");
-                    }
-                }
-                else {
-                    NSLog(@"Not dictionary");
-                }
-            }
-        }
-        else {
-            NSLog(@"网络异常");
-        }
-    }];
-    [task resume];
+- (IBAction)logout:(id)sender
+{
+    [[UserManager getInstance] logout];
+}
+- (IBAction)sendMessage:(id)sender
+{
+    ChatViewController *viewController = [[ChatViewController alloc] initWithContact:self.User];
+    viewController.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 /*

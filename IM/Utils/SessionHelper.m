@@ -8,23 +8,18 @@
 
 #import "SessionHelper.h"
 
-@interface SessionHelper()
-
-//@property (weak, nonatomic) NSString* serverURL = @"http://118.89.65.154:8000/";
-
-@end
-
 
 @implementation SessionHelper
 
 + (void)sendRequest:(NSString*)path method:(NSString*)method parameters:(NSString*)parameters handler:(void(^)(id))handler
 {
-    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    
-    NSString* serverDomain = @"http://118.89.65.154:8000";
+    NSString* serverDomain = @"http://172.18.32.97:8000";
+    //NSString* serverDomain = @"http://118.89.65.154:8000";
     NSString* urlString = [serverDomain stringByAppendingString:path];
     NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
     
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url];
     
@@ -41,25 +36,25 @@
         {
             if(NSClassFromString(@"NSJSONSerialization"))
             {
-                NSError *e = nil;
-                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&e];
-                if(e)
+                NSError *parseError = nil;
+                id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+                if(parseError)
                 {
-                  NSLog(@"error");
+                    NSLog(@"parse error: %@", parseError);
                 }
                 if([object isKindOfClass:[NSDictionary class]])
                 {
-                  handler(object);
+                    handler(object);
                 }
                 else
                 {
-                  NSLog(@"Not dictionary");
+                    NSLog(@"Not dictionary");
                 }
             }
         }
         else
         {
-            NSLog(@"网络异常");
+            NSLog(@"Network error:%@", error);
         }
     }];
     
