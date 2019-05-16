@@ -9,8 +9,9 @@
 #import "InfoViewController.h"
 
 @interface InfoViewController ()<UITableViewDelegate, UITableViewDataSource>
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-@property(nonatomic, strong) UITableView *tableView;
+//@property(nonatomic, strong) UITableView *tableView;
 @property(nonatomic, strong) NSMutableArray<NSString*> *titleList;
 @property(nonatomic, strong) NSMutableArray<NSString*> *contentList;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
@@ -53,17 +54,21 @@
     CGFloat width = size.width;
     CGFloat height = size.height;
     
-    self.tableView = ({
+    /*self.tableView = ({
         UITableView *tableView = [[UITableView alloc]
                                   initWithFrame:CGRectMake(0, 50, width, height/2+70) style:UITableViewStylePlain];
         tableView.delegate = self;
         tableView.dataSource = self;
         tableView;
-    });
+    });*/
+    [self.tableView setFrame:CGRectMake(0, 50, width, height/2+70)];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    
     // 取消多余的横线
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
-    [self.view addSubview:self.tableView];
+    //[self.view addSubview:self.tableView];
     
     [self loadData];
 }
@@ -72,7 +77,7 @@
     self.titleList = [NSMutableArray array];
     self.contentList = [NSMutableArray array];
     [self.titleList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"头像", @"昵称", @"账号", @"性别", @"地区",nil]];
-    [self.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", @"Peppa", @"peppy", @"female", @"UK",nil]];
+    [self.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", self.User.NickName, self.User.UserID, self.User.Gender, self.User.Birthplace, nil]];
 }
 
 #pragma mark ------------ UITableViewDataSource ------------------
@@ -135,6 +140,7 @@
 {
     [[UserManager getInstance] logout];
 }
+
 - (IBAction)sendMessage:(id)sender
 {
     ChatViewController *viewController = [[ChatViewController alloc] initWithContact:self.User];
