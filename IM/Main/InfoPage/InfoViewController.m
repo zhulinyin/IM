@@ -7,6 +7,7 @@
 //
 
 #import "InfoViewController.h"
+#import "InfoModifiedViewController.h"
 
 @interface InfoViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -129,8 +130,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    InfoViewController *controller = [[InfoViewController alloc] init];
+    NSString* str = @"hello";
+    InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
     controller.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:controller animated:YES];
 }
