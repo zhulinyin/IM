@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "SessionHelper.h"
 #import "UserModel.h"
+#import "../../../Utils/DatabaseHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

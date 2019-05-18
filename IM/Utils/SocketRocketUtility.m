@@ -164,9 +164,10 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 - (void) getMessage{
+    UserManager* userManager = [UserManager getInstance];
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:defaultConfigObject delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/message/%ld", [UserManager getInstance].seq]];
+    NSURL *url = [NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/message/%ld", userManager.seq]];
 
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if(error == nil) {
@@ -179,16 +180,13 @@ dispatch_async(dispatch_get_main_queue(), block);\
                 if([object isKindOfClass:[NSDictionary class]]) {
                     NSDictionary *result = object;
                     if([result[@"state"] isEqualToString:@"ok"]) {
+                        
                         NSLog(@"get message success");
                         NSArray *messages = result[@"data"];
+                        messages = [self changeToMessageModel:messages];
                         NSLog(@"new messages num: %lu", messages.count);
-                        for (int i=0; i<messages.count; i++) {
-                            /*NSInteger seq = [messages[i][@"Seq"] integerValue];
-                            if(seq > [UserManager getInstance].seq) {
-                                [UserManager getInstance].seq = seq;
-                            }*/
-                            [UserManager getInstance].seq++;
-                        }
+                        userManager.seq += messages.count;
+                        [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
                     }
                     else {
@@ -206,6 +204,20 @@ dispatch_async(dispatch_get_main_queue(), block);\
     }];
     [task resume];
     
+}
+
+-(NSMutableArray* ) changeToMessageModel:(NSArray* )messages {
+    NSMutableArray* messageModels = [[NSMutableArray alloc] init];
+    for (int i = 0; i < messages.count; i++) {
+        MessageModel* message = [[MessageModel alloc] init];
+        message.SenderID = messages[i][@"From"];
+        message.ReceiverID = messages[i][@"Username"];
+        message.Type = messages[i][@"Type"];
+        message.Content = messages[i][@"content"][@"Cstr"];
+        message.TimeStamp = messages[i][@"content"][@"Timestamp"];
+        [messageModels addObject:message];
+    }
+    return messageModels;
 }
 // 关闭连接
 -(void)SRWebSocketClose{

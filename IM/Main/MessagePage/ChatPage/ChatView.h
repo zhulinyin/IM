@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableArray *chatMsg;
 @property (nonatomic, weak) id<ChatViewDelegate> delegate;
 - (void)addMessage:(MessageModel *)message;
+- (void)tableViewScrollToBottom;
 @end
 
 NS_ASSUME_NONNULL_END

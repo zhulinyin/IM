@@ -24,7 +24,6 @@ static UserManager *instance = nil;
     dispatch_once(&onceToken, ^{
         instance = [[super allocWithZone:NULL] init];
         instance.socket = [SocketRocketUtility instance];
-        instance.seq = 0;
     }) ;
     
     return instance;
@@ -58,6 +57,7 @@ static UserManager *instance = nil;
         {
             NSLog(@"login success");
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+            self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [self.socket SRWebSocketOpen];
             UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;

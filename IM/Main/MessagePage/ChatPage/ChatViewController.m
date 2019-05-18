@@ -12,6 +12,7 @@
 @property (nonatomic, strong) ChatView *chatView;
 @property (nonatomic, strong) UserModel *loginUser;
 @property (nonatomic, strong) UserModel *chatUser;
+@property (nonatomic, strong) DatabaseHelper *databaseHelper;
 @end
 
 @implementation ChatViewController
@@ -23,6 +24,7 @@
     {
         self.loginUser = [[UserManager getInstance] getLoginModel];
         self.chatUser = chatUser;
+        self.databaseHelper = [DatabaseHelper getInstance];
     }
     return self;
 }
@@ -36,8 +38,10 @@
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     self.chatView.delegate = self;
+    NSMutableArray* messages = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID];
+    self.chatView.chatMsg = messages;
     [self.view addSubview:self.chatView];
-
+    [self.chatView tableViewScrollToBottom];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
 }
 
@@ -45,7 +49,13 @@
     NSArray *messages = [notification object];
     for (int i=0; i<messages.count; i++) {
         if([messages[i][@"From"] isEqualToString:self.chatUser.UserID]) {
-            [self addMessage:messages[i][@"Type"] from:messages[i][@"From"] text:messages[i][@"content"]];
+            MessageModel* message = [[MessageModel alloc] init];
+            message.SenderID = messages[i][@"From"];
+            message.ReceiverID = messages[i][@"Username"];
+            message.Type = messages[i][@"Type"];
+            message.Content = messages[i][@"content"][@"Cstr"];
+            message.TimeStamp = messages[i][@"content"][@"Timestamp"];
+            [self addMessage:message];
         }
     }
     //NSLog(@"%@", messages);
@@ -53,8 +63,13 @@
 
 //delegate
 - (void)sendMessage:(NSString *)type text:(NSString *)text {
-    [self addMessage:type from:self.loginUser.UserID text:text];
-    
+    MessageModel* message = [[MessageModel alloc] init];
+    message.Type = type;
+    message.SenderID = self.loginUser.UserID;
+    message.ReceiverID = self.chatUser.UserID;
+    message.Content = text;
+    [self addMessage:message];
+    [self.databaseHelper insertMessage:message];
     void (^sendFeedBack)(id) = ^void (id object)
     {
         NSDictionary *result = object;
@@ -75,13 +90,8 @@
 }
 
 //新增消息
-- (void)addMessage:(NSString *)type from:(NSString *)from text:(NSString *)text {
-    
-    MessageModel *msgModel = [[MessageModel alloc] init];
-    msgModel.Type = type;
-    msgModel.SenderID = from;
-    msgModel.Content = text;
-    [self.chatView addMessage:msgModel];
+- (void)addMessage:(MessageModel* )message {
+    [self.chatView addMessage:message];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <SocketRocket.h>
 #import "UserManager.h"
+#import "DatabaseHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

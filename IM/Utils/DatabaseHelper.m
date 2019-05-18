@@ -7,8 +7,8 @@
 //
 
 #import "DatabaseHelper.h"
-#import "FMDatabaseQueue.h"
-#import "../Main/Model/MessageModel.h"
+#import "FMDB.h"
+
 @interface DatabaseHelper()
 @property(strong, nonatomic) FMDatabaseQueue* databaseQueue;
 @property(strong, nonatomic) FMDatabase* database;
@@ -45,28 +45,31 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 -(void) createTable {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
-        self.database = db;
-        BOOL res = [db executeStatements:[NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (id integer PRIMARY KEY AUTOINCREMENT, from text NOT NULL, to text NOT NULL, type text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", MESSAGE_TABLE_NAME]];
-        NSLog(@"%@", res ? @"create table successfully" : @"create table failed");
+        if([db open]) {
+            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (id INTEGER PRIMARY KEY AUTOINCREMENT, fromId text NOT NULL, toId text NOT NULL, type text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", MESSAGE_TABLE_NAME];
+            BOOL res = [db executeUpdate:sql];
+            NSLog(@"%@", res ? @"create table successfully" : @"create table failed");
+        }
+        [db close];
     }];
 }
 
 -(void) insertMessage:(MessageModel* ) message {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (from, to, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", MESSAGE_TABLE_NAME, message.SenderID, message.ReceiverID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (fromId, toId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", MESSAGE_TABLE_NAME, message.SenderID, message.ReceiverID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
             NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
         }
         [db close];
     }];
 }
 
--(NSMutableArray *) queryMessage:(NSString* ) userId {
+-(NSMutableArray *) queryAllMessagesWithUserId:(NSString* ) userId {
     NSMutableArray *messages = [[NSMutableArray alloc] init];
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE from = '%@' or to = '%@';", MESSAGE_TABLE_NAME, userId, userId]];
-            if([set next]) {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE fromId = '%@' or toId = '%@';", MESSAGE_TABLE_NAME, userId, userId]];
+            while([set next]) {
                 MessageModel* message = [[MessageModel alloc] init];
                 message.SenderID = [set stringForColumnIndex:1];
                 message.ReceiverID = [set stringForColumnIndex:2];
@@ -79,5 +82,28 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         [db close];
     }];
     return messages;
+}
+
+-(void) insertMessages:(NSArray* ) messages {
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            for (int i = 0; i < messages.count; i++) {
+                MessageModel* message = messages[i];
+                BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (fromId, toId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", MESSAGE_TABLE_NAME, message.SenderID, message.ReceiverID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
+                NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
+            }
+            
+        }
+        [db close];
+    }];
+}
+
+-(void) registerNewMessagesListener {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
+}
+
+- (void)getNewMessages:(NSNotification *)notification{
+    NSArray *messages = [notification object];
+    [self insertMessages:messages];
 }
 @end
