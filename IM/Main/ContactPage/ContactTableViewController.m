@@ -14,6 +14,10 @@
 @property (nonatomic, strong) NSMutableArray<UserModel*> *ContactsArray;
 @property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *AddFriendButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *AddComfirmButton;
+@property (weak, nonatomic) IBOutlet UITextField *FriendID;
+
 @end
 
 
@@ -97,6 +101,39 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
     cell.ContactProfilePicture.image = [UIImage imageNamed:self.ContactsArray[indexPath.row].ProfilePicture];
     cell.ContactName.text = self.ContactsArray[indexPath.row].NickName;
     return cell;
+}
+- (IBAction)AddFriend:(id)sender
+{
+    NSString* FriendID = self.FriendID.text;
+    
+    /*void (^registerEvent)(id) = ^void (id object)
+    {
+        NSDictionary *result = object;
+        if([result[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"Found User");
+            NSDictionary *friendJSON = result[@"data"];
+            UserModel* friendModel = [[UserModel alloc] initWithProperties:friendJSON[@"Username"] NickName:friendJSON[@"Nickname"] RemarkName:friendJSON[@"Nickname"] Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
+            UIStoryboard *infoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
+            InfoViewController *infoVC = [infoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
+            infoVC.User = friendModel;
+            [self.navigationController pushViewController:infoVC animated:YES];
+            
+        }
+        else
+        {
+            NSLog(@"User not exist");
+        }
+    };
+    
+    NSString *path = [[NSString alloc] initWithFormat:@"/account/info/user/%@", FriendID];
+    NSString *params = [[NSString alloc] initWithFormat:@"cid=0username=%@&password=%@", FriendID, @"Hello"];
+    [SessionHelper sendRequest:path method:@"get" parameters:params handler:registerEvent];*/
+    UIStoryboard *infoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
+    InfoViewController *infoVC = [infoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
+    UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];;
+    infoVC.User = TestUser2;
+    [self.navigationController pushViewController:infoVC animated:YES];
 }
 
 /*

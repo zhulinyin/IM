@@ -77,8 +77,29 @@ static UserManager *instance = nil;
 
 -(void) logout
 {
-    [self.socket SRWebSocketClose];
-    [self.socket wsOperate:@"close" data:self.loginUser.UserID];
+    void (^returnToLogin)(id) = ^void (id object)
+    {
+        NSDictionary *result = object;
+        if([result[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"%@", result[@"msg"]);
+            self.loginUser = nil;
+            [self.socket SRWebSocketClose];
+            UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+            [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
+        }
+        else
+        {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"登出失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alertView show];
+            NSLog(@"logout fail");
+        }
+    };
+    
+    NSString *params = @"";
+    [SessionHelper sendRequest:@"/account/logout" method:@"get" parameters:params handler:returnToLogin];
+    
+    
 }
 
 
@@ -92,8 +113,8 @@ static UserManager *instance = nil;
             NSLog(@"register success");
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             [self.socket SRWebSocketOpen];
-            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
+            //sign in automatically after successfully signing up
+            [self login:username withPassword:password];
         }
         else
         {

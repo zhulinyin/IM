@@ -52,9 +52,30 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="联系人" id="KPF-Vo-VfV"/>
-                    <navigationItem key="navigationItem" id="H23-RK-SFW"/>
+                    <navigationItem key="navigationItem" title="Title" id="1UO-mq-ehd">
+                        <rightBarButtonItems>
+                            <barButtonItem title="Add" id="zzm-6a-dF2">
+                                <connections>
+                                    <action selector="AddFriend:" destination="6X2-IJ-PmU" id="Y9c-WM-Hbk"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="add" id="JCB-3J-hPP"/>
+                            <barButtonItem style="plain" id="mZu-If-Lcb">
+                                <textField key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" id="1lv-E8-veI">
+                                    <rect key="frame" x="189.5" y="7" width="83" height="30"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <nil key="textColor"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
                     <connections>
+                        <outlet property="AddComfirmButton" destination="zzm-6a-dF2" id="PxR-10-juN"/>
+                        <outlet property="AddFriendButton" destination="JCB-3J-hPP" id="hPR-km-mOt"/>
                         <outlet property="ContactTableView" destination="C8q-HP-b1c" id="18O-mc-u3u"/>
+                        <outlet property="FriendID" destination="1lv-E8-veI" id="5Ya-EP-Vgw"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oun-Xd-xLB" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -77,10 +98,10 @@
             </objects>
             <point key="canvasLocation" x="-690" y="295"/>
         </scene>
-        <!--Info-->
+        <!--personal_info-->
         <scene sceneID="sqd-sh-jqu">
             <objects>
-                <viewControllerPlaceholder storyboardName="Info" id="0Hy-Vh-Jc8" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Info" referencedIdentifier="personal_info" id="0Hy-Vh-Jc8" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="jcx-96-Ifc"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gcX-0v-Tcm" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -26,10 +26,10 @@
             </objects>
             <point key="canvasLocation" x="-1690" y="45"/>
         </scene>
-        <!--个人信息-->
+        <!--个人详情-->
         <scene sceneID="cgJ-Ja-nS6">
             <objects>
-                <viewController title="个人信息" id="yo3-A1-LK8" customClass="InfoViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="personal_info" title="个人详情" id="yo3-A1-LK8" customClass="InfoViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KeJ-9S-5dr">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
