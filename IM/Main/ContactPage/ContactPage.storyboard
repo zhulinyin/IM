@@ -66,7 +66,6 @@
             <objects>
                 <navigationController title="联系人" id="Xvc-ge-Fog" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="iVB-ZM-Yy6">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -77,10 +76,10 @@
             </objects>
             <point key="canvasLocation" x="-690" y="295"/>
         </scene>
-        <!--Info-->
+        <!--personal_info-->
         <scene sceneID="sqd-sh-jqu">
             <objects>
-                <viewControllerPlaceholder storyboardName="Info" id="0Hy-Vh-Jc8" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Info" referencedIdentifier="personal_info" id="0Hy-Vh-Jc8" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="jcx-96-Ifc"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gcX-0v-Tcm" userLabel="First Responder" sceneMemberID="firstResponder"/>
