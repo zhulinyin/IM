@@ -130,12 +130,17 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSString* str = @"hello";
-    InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
-    controller.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:controller animated:YES];
+    // 处理跳转情况
+    if (self.User == [[UserManager getInstance] getLoginModel]){
+        NSString* str = self.titleList[indexPath.row];
+        InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
+        controller.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:controller animated:YES];
+    }
+    else{
+        NSLog(@"不能修改别的用户信息");
+    }
 }
-
 
 - (IBAction)logout:(id)sender
 {

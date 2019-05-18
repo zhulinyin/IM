@@ -23,6 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // 提示信息
+    NSMutableString* commonHint = @"请输入你要修改的";
     
     // 获取屏幕的宽高
     CGRect rect = [[UIScreen mainScreen] bounds];
@@ -31,13 +33,19 @@
     CGFloat height = size.height;
     // 设置背景颜色
     self.view.backgroundColor = [UIColor whiteColor];
-    NSLog(self.titleText);
-    self.editText.placeholder = @"这是一个提示";
+    
     self.editText = [[UITextField alloc]initWithFrame:CGRectMake(10, 30, width-30, 30)];
+    
+    self.editText.placeholder = [commonHint stringByAppendingString:self.titleText];
+    [self.editText setValue:[UIColor grayColor] forKeyPath:@"_placeholderLabel.textColor"];
+    [self.editText setValue:[UIFont boldSystemFontOfSize:12] forKeyPath:@"_placeholderLabel.font"];
+    
     // 下划线
     UIView * onLine = [[UIView alloc]initWithFrame:CGRectMake(0,self.editText.frame.size.height-2,self.editText.frame.size.width,2)];
     onLine.backgroundColor = [UIColor blackColor];
     
+    // 添加右侧按钮
+    [self addRightBtn];
     [self.editText addSubview:onLine];
     [self.view addSubview:self.editText];
 }
@@ -46,6 +54,15 @@
  */
 - (IBAction)loginEvent:(id)sender {
     
+}
+
+- (void)addRightBtn {
+    UIBarButtonItem *rightBarItem = [[UIBarButtonItem alloc] initWithTitle:@"确认" style:UIBarButtonItemStylePlain target:self action:@selector(onClickedOKbtn)];
+    self.navigationItem.rightBarButtonItem = rightBarItem;
+}
+
+- (void)onClickedOKbtn {
+    NSLog(@"onClickedOKbtn");
 }
 
 @end
