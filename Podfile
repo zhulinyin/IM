@@ -3,4 +3,5 @@ use_frameworks!
 
 target 'IM' do
     pod 'SocketRocket'
+    pod 'FMDB'
 end
