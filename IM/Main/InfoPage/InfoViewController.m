@@ -8,6 +8,7 @@
 
 #import "InfoViewController.h"
 #import "InfoModifiedViewController.h"
+#import<Photos/Photos.h>
 
 @interface InfoViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -133,6 +134,14 @@
     // 处理跳转情况
     if (self.User == [[UserManager getInstance] getLoginModel]){
         NSString* str = self.titleList[indexPath.row];
+        // 处理头像的情况
+        if([str isEqualToString:@"头像"]){
+            // 修改本地显示
+            [self alterHeadPortrait];
+            
+            // 上传到云端
+            
+        }
         InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
         controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
@@ -163,5 +172,65 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)alterHeadPortrait{
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    // 判断授权情况
+    if (status == PHAuthorizationStatusRestricted ||
+        status == PHAuthorizationStatusDenied) {
+        //无权限  这个时候最好给个提示，用户点击是就跳转到应用的权限设置内 用户动动小手即可允许权限
+        NSLog(@"no auth");
+    }
+    else{
+        NSLog(@"has auth!!!!!");
+    }
+    
+    //初始化提示框
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    //按钮：从相册选择，类型：UIAlertActionStyleDefault
+    [alert addAction:[UIAlertAction actionWithTitle:@"从相册选择" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //初始化UIImagePickerController
+        UIImagePickerController *PickerImage = [[UIImagePickerController alloc]init];
+        //获取方式1：通过相册（呈现全部相册），UIImagePickerControllerSourceTypePhotoLibrary
+        //获取方式2，通过相机，UIImagePickerControllerSourceTypeCamera
+        //获取方法3，通过相册（呈现全部图片），UIImagePickerControllerSourceTypeSavedPhotosAlbum
+        PickerImage.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        //允许编辑，即放大裁剪
+        PickerImage.allowsEditing = YES;
+        //自代理
+        PickerImage.delegate = self;
+        //页面跳转
+        [self presentViewController:PickerImage animated:YES completion:nil];
+    }]];
+//    //按钮：拍照，类型：UIAlertActionStyleDefault
+//    [alert addAction:[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
+//        /**
+//         其实和从相册选择一样，只是获取方式不同，前面是通过相册，而现在，我们要通过相机的方式
+//         */
+//        UIImagePickerController *PickerImage = [[UIImagePickerController alloc]init];
+//        //获取方式:通过相机
+//        PickerImage.sourceType = UIImagePickerControllerSourceTypeCamera;
+//        PickerImage.allowsEditing = YES;
+//        PickerImage.delegate = self;
+//        [self presentViewController:PickerImage animated:YES completion:nil];
+//    }]];
+    //按钮：取消，类型：UIAlertActionStyleCancel
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *) info{
+    //定义一个newPhoto，用来存放我们选择的图片。
+    UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    NSLog(@"success pick");
+    [self dismissViewControllerAnimated:YES completion:nil];
+    self.ProfilePicture.image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    [self.tableView reloadData];
+    // 测试，成功读取图片
+//    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+//    [imageView setFrame:CGRectMake(0, 0, newPhoto.size.width, newPhoto.size.height)];
+//    [self.view addSubview:imageView];
+}
 
 @end
