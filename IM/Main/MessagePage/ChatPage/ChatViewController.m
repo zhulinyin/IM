@@ -13,6 +13,7 @@
 @property (nonatomic, strong) UserModel *loginUser;
 @property (nonatomic, strong) UserModel *chatUser;
 @property (nonatomic, strong) DatabaseHelper *databaseHelper;
+@property (nonatomic, strong) NSMutableArray *chatMsg;
 @end
 
 @implementation ChatViewController
@@ -25,6 +26,7 @@
         self.loginUser = [[UserManager getInstance] getLoginModel];
         self.chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
+        self.chatMsg = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID];
     }
     return self;
 }
@@ -38,9 +40,10 @@
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     self.chatView.delegate = self;
-    NSMutableArray* messages = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID];
-    self.chatView.chatMsg = messages;
+
+    self.chatView.chatMsg = self.chatMsg;
     [self.view addSubview:self.chatView];
+    
     [self.chatView tableViewScrollToBottom];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
 }
@@ -91,7 +94,8 @@
 
 //新增消息
 - (void)addMessage:(MessageModel* )message {
-    [self.chatView addMessage:message];
+    [self.chatMsg addObject:message];
+    self.chatView.chatMsg = self.chatMsg;
 }
 
 @end

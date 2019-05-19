@@ -33,6 +33,12 @@
     [self tableViewScrollToBottom];
 }
 
+- (void)setChatMsg:(NSMutableArray *)chatMsg {
+    _chatMsg = chatMsg;
+    [self.chatTable reloadData];
+    [self tableViewScrollToBottom];
+}
+
 - (void)setupSubViews {
     self.chatTable = [[UITableView alloc] init];
     self.chatTable.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50);
@@ -82,9 +88,21 @@
 
 - (void)tableViewScrollToBottom {
     
-    if (self.chatMsg.count > 0) {
+    /*if (self.chatMsg.count > 0) {
         [self.chatTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:self.chatMsg.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-    }
+    }*/
+    double delayInSeconds = 0.1;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        if ([self.chatMsg count] > 1){
+            // 动画之前先滚动到倒数第二个消息
+            [self.chatTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatMsg count] - 2 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        }
+        //self.chatTableView.hidden = NO;
+        NSIndexPath* path = [NSIndexPath indexPathForRow:[self.chatMsg count] - 1 inSection:0];
+        [self.chatTable scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    });
 }
 
 - (void)keyboardWillShow:(NSNotification *)notice {
