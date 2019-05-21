@@ -7,6 +7,7 @@
 //
 
 #import "InfoModifiedViewController.h"
+#import "InfoViewController.h"
 
 @interface InfoModifiedViewController ()
 @property (weak, nonatomic) UITextField *editText; // 修改的输入文本框
@@ -73,12 +74,36 @@
 
 - (void)onClickedOKbtn {
     NSLog(@"onClickedOKbtn");
+    if ([self.titleText isEqualToString:@"性别"]) {
+        //[self goBackToPersonInfoVCWithNickName:self.selectedBtn.titleLabel.text];
+        self.change_user = [[UserManager getInstance] getLoginModel];
+        self.change_user.Gender = self.selectedBtn.titleLabel.text;
+        _data(self.change_user);
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else {
+        // Block传值
+        self.change_user = [[UserManager getInstance] getLoginModel];
+        if ([self.titleText isEqualToString:@"昵称"]){
+            self.change_user.NickName = self.editText.text;
+        }
+        else if ([self.titleText isEqualToString:@"账号"]){
+            self.change_user.UserID = self.editText.text;
+        }
+        else if ([self.titleText isEqualToString:@"地区"]){
+            self.change_user.Birthplace = self.editText.text;
+        }
+        _data(self.change_user);
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    }
 }
+
 
 - (NSArray *)markArray {
     if (!_markArray) {
         NSArray *array = [NSArray array];
-        array = @[@"男", @"女",@"unknown"];
+        array = @[@"male", @"female",@"unknown"];
         _markArray = array;
     }
     return _markArray;

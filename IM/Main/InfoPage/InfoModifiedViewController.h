@@ -10,8 +10,15 @@
 #define infoModifiedViewController_h
 
 #import <UIKit/UIKit.h>
+#import "UserModel.h"
+
+typedef void(^SubToMainBlock)(UserModel* user);
 
 @interface InfoModifiedViewController : UIViewController
+
+@property (strong, nonatomic) UserModel* change_user;
+// 添加一个Block属性
+@property (copy,nonatomic) SubToMainBlock data;
 
 - (instancetype) initWithString:(NSString*)str;
 

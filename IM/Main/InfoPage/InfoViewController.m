@@ -143,6 +143,17 @@
             
         }
         InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
+        
+        __weak typeof(self) mainPtr = self;
+        // Block回调接收数据
+        [controller setData:^(UserModel* user){
+            mainPtr.User = user;
+            // 回调处理事件
+            mainPtr.contentList = [NSMutableArray array];
+            [mainPtr.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", self.User.NickName, self.User.UserID, self.User.Gender, self.User.Birthplace, nil]];
+            NSLog(user.Birthplace);
+            [mainPtr.tableView reloadData];
+        }];
         controller.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:controller animated:YES];
     }
@@ -202,18 +213,6 @@
         //页面跳转
         [self presentViewController:PickerImage animated:YES completion:nil];
     }]];
-//    //按钮：拍照，类型：UIAlertActionStyleDefault
-//    [alert addAction:[UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action){
-//        /**
-//         其实和从相册选择一样，只是获取方式不同，前面是通过相册，而现在，我们要通过相机的方式
-//         */
-//        UIImagePickerController *PickerImage = [[UIImagePickerController alloc]init];
-//        //获取方式:通过相机
-//        PickerImage.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        PickerImage.allowsEditing = YES;
-//        PickerImage.delegate = self;
-//        [self presentViewController:PickerImage animated:YES completion:nil];
-//    }]];
     //按钮：取消，类型：UIAlertActionStyleCancel
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
@@ -225,7 +224,7 @@
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     NSLog(@"success pick");
     [self dismissViewControllerAnimated:YES completion:nil];
-    self.ProfilePicture.image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    // self.User.ProfilePicture = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     [self.tableView reloadData];
     // 测试，成功读取图片
 //    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
