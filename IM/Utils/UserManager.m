@@ -68,8 +68,8 @@ static UserManager *instance = nil;
         }
     };
     
-    
     NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
+//    NSLog(params);
     [SessionHelper sendRequest:@"/account/login" method:@"post" parameters:params handler:loginEvent];
     
 }
@@ -127,4 +127,27 @@ static UserManager *instance = nil;
     NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
     [SessionHelper sendRequest:@"/account/register" method:@"post" parameters:params handler:registerEvent];
 }
+
+-(void) modifyInfo:(NSString *)attr withValue:(NSString *)value
+{
+    void (^modifyInfoEvent)(id) = ^void (id object)
+    {
+        NSDictionary *result = object;
+        if([result[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"modifyInfo success");
+        }
+        else
+        {
+            NSLog(result[@"msg"]);
+            NSLog(@"modifyInfo fail");
+        }
+    };
+    NSString *params = [[NSString alloc] initWithFormat:@"value=%@", value];
+    NSString *api = [[NSString alloc] initWithFormat:@"/account/info/%@", attr];
+    NSLog(api);
+    NSLog(params);
+    [SessionHelper sendRequest:api method:@"put" parameters:params handler:modifyInfoEvent];
+}
+
 @end

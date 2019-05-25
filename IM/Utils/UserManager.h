@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(instancetype) getInstance;
 -(void) login:(NSString *)username withPassword:(NSString *)password;
 -(void) register:(NSString *)username withPassword:(NSString *)password;
+-(void) modifyInfo:(NSString *)attr withValue:(NSString *)value;
 -(UserModel*) getLoginModel;
 -(void) logout;
 @end

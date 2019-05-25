@@ -13,8 +13,8 @@
 
 + (void)sendRequest:(NSString*)path method:(NSString*)method parameters:(NSString*)parameters handler:(void(^)(id))handler
 {
-    //NSString* serverDomain = @"http://172.18.32.97:8000";
-    NSString* serverDomain = @"http://118.89.65.154:8000";
+    NSString* serverDomain = @"http://172.18.32.97:8000";
+//    NSString* serverDomain = @"http://118.89.65.154:8000";
     NSString* urlString = [serverDomain stringByAppendingString:path];
     NSURL *url = [NSURL URLWithString:urlString];
     
