@@ -17,10 +17,25 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tryLogin:) name:@"tryLogin" object:nil];
     [[DatabaseHelper getInstance] registerNewMessagesListener];
+    [[UserManager getInstance] tryLogin];
     return YES;
 }
 
+- (void)tryLogin:(NSNotification *)notification{
+    NSString *result = [notification object];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    UIStoryboard *storyboard;
+    if ([result isEqualToString:@"success"]) {
+        storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    }
+    else {
+        storyboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+    }
+    self.window.rootViewController=[storyboard instantiateInitialViewController];
+    [self.window makeKeyAndVisible];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

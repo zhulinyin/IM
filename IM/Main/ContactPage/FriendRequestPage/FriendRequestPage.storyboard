@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8Bw-43-HeJ">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Friend Request Table View Controller-->
+        <scene sceneID="Zom-JV-xJD">
+            <objects>
+                <tableViewController id="8Bw-43-HeJ" customClass="FriendRequestTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="i7K-q8-Ugl">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="FriendRequestTableCell" rowHeight="55" id="fLi-7L-p9a" customClass="FriendRequestTableViewCell">
+                                <rect key="frame" x="0.0" y="28" width="375" height="55"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fLi-7L-p9a" id="ISh-x8-1EL">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="54.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="760" verticalCompressionResistancePriority="760" translatesAutoresizingMaskIntoConstraints="NO" id="bRr-hF-crw">
+                                            <rect key="frame" x="16" y="7.5" width="40" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="40" id="8xv-bC-WRP"/>
+                                                <constraint firstAttribute="height" constant="40" id="eGa-UI-shj"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mgo-nY-zFf">
+                                            <rect key="frame" x="66" y="16" width="80" height="23"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="23" id="PI1-Gt-a8m"/>
+                                                <constraint firstAttribute="width" constant="80" id="W6K-yH-LHy"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mBY-Fq-IQN">
+                                            <rect key="frame" x="229" y="12.5" width="60" height="30"/>
+                                            <color key="backgroundColor" red="0.17449978128984375" green="0.75564685880829019" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="30" id="Hle-Hk-n3E"/>
+                                                <constraint firstAttribute="width" constant="60" id="Hmm-cv-td0"/>
+                                            </constraints>
+                                            <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                            <state key="normal" title="Accept">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="AcceptRequest:" destination="8Bw-43-HeJ" eventType="touchUpInside" id="guh-H8-NNG"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cIB-kG-PQe">
+                                            <rect key="frame" x="299" y="12.5" width="60" height="30"/>
+                                            <color key="backgroundColor" red="0.91798898963730569" green="0.075586298248186759" blue="0.0089425041902566858" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="30" id="Jkw-tI-0C8"/>
+                                                <constraint firstAttribute="width" constant="60" id="tYM-rG-zF9"/>
+                                            </constraints>
+                                            <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                            <state key="normal" title="Reject">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="RejectFriend:" destination="8Bw-43-HeJ" eventType="touchUpInside" id="BhB-RO-8Dv"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="bRr-hF-crw" firstAttribute="centerY" secondItem="ISh-x8-1EL" secondAttribute="centerY" id="22O-1m-3Id"/>
+                                        <constraint firstAttribute="trailing" secondItem="cIB-kG-PQe" secondAttribute="trailing" constant="16" id="3Fq-8z-dSK"/>
+                                        <constraint firstItem="cIB-kG-PQe" firstAttribute="leading" secondItem="mBY-Fq-IQN" secondAttribute="trailing" constant="10" id="8xj-lU-kAp"/>
+                                        <constraint firstItem="mBY-Fq-IQN" firstAttribute="centerY" secondItem="ISh-x8-1EL" secondAttribute="centerY" id="A54-3H-kzc"/>
+                                        <constraint firstItem="bRr-hF-crw" firstAttribute="centerX" secondItem="ISh-x8-1EL" secondAttribute="centerX" constant="-151.5" id="NOa-G4-K7j"/>
+                                        <constraint firstItem="mgo-nY-zFf" firstAttribute="leading" secondItem="bRr-hF-crw" secondAttribute="trailing" constant="10" id="R0T-re-QHi"/>
+                                        <constraint firstItem="cIB-kG-PQe" firstAttribute="centerY" secondItem="ISh-x8-1EL" secondAttribute="centerY" id="VfD-Tw-9e8"/>
+                                        <constraint firstItem="mgo-nY-zFf" firstAttribute="centerY" secondItem="ISh-x8-1EL" secondAttribute="centerY" id="rfg-WF-Tht"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="AcceptButton" destination="mBY-Fq-IQN" id="8ru-AA-AhV"/>
+                                    <outlet property="Nickname" destination="mgo-nY-zFf" id="dFs-or-Iu3"/>
+                                    <outlet property="ProfilePicture" destination="bRr-hF-crw" id="cEQ-Zb-EO8"/>
+                                    <outlet property="RejectButton" destination="cIB-kG-PQe" id="n8t-G9-Dqp"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="8Bw-43-HeJ" id="lSZ-8R-0qa"/>
+                            <outlet property="delegate" destination="8Bw-43-HeJ" id="9Mw-Vb-M2W"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="FriendRequestTableView" destination="i7K-q8-Ugl" id="XN6-Zq-ghp"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3a9-U4-tpg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-570.39999999999998" y="12.143928035982009"/>
+        </scene>
+    </scenes>
+</document>

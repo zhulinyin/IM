@@ -51,13 +51,8 @@
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
     for (int i=0; i<messages.count; i++) {
-        if([messages[i][@"From"] isEqualToString:self.chatUser.UserID]) {
-            MessageModel* message = [[MessageModel alloc] init];
-            message.SenderID = messages[i][@"From"];
-            message.ReceiverID = messages[i][@"Username"];
-            message.Type = messages[i][@"Type"];
-            message.Content = messages[i][@"content"][@"Cstr"];
-            message.TimeStamp = messages[i][@"content"][@"Timestamp"];
+        MessageModel *message = messages[i];
+        if([message.SenderID isEqualToString:self.chatUser.UserID]) {
             [self addMessage:message];
         }
     }
@@ -72,13 +67,14 @@
     message.ReceiverID = self.chatUser.UserID;
     message.Content = text;
     [self addMessage:message];
-    [self.databaseHelper insertMessage:message];
     void (^sendFeedBack)(id) = ^void (id object)
     {
         NSDictionary *result = object;
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"send success");
+            
+            [self.databaseHelper insertMessage:message];
         }
         else
         {

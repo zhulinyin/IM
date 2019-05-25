@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) modifyInfo:(NSString *)attr withValue:(NSString *)value;
 -(UserModel*) getLoginModel;
 -(void) logout;
+-(void) tryLogin;
 @end
 
 NS_ASSUME_NONNULL_END
