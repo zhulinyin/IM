@@ -36,17 +36,17 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     self.databaseQueue = [FMDatabaseQueue databaseQueueWithPath:queuePath];
     if(self.databaseQueue) {
         NSLog(@"Database create successfully");
-        [self createTable];
+        
     }
     else {
         NSLog(@"Database create failed");
     }
 }
 
--(void) createTable {
+-(void) createMessageTable:(NSString *) tableName {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (id INTEGER PRIMARY KEY AUTOINCREMENT, fromId text NOT NULL, toId text NOT NULL, type text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", MESSAGE_TABLE_NAME];
+            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@] (id INTEGER PRIMARY KEY AUTOINCREMENT, sendId text NOT NULL, type text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", tableName];
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create table successfully" : @"create table failed");
         }
@@ -54,28 +54,73 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) insertMessage:(MessageModel* ) message {
+-(void) createSessionListTable:(NSString *) tableName {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (fromId, toId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", MESSAGE_TABLE_NAME, message.SenderID, message.ReceiverID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
+            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@] (chatId text PRIMARY KEY, chatName text NOT NULL, profilePicture text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", tableName];
+            BOOL res = [db executeUpdate:sql];
+            NSLog(@"%@", res ? @"create table successfully" : @"create table failed");
+        }
+        [db close];
+    }];
+}
+
+-(NSMutableArray *) queryMessageListWithTableName:(NSString *) tableName {
+    NSMutableArray *sessions = [[NSMutableArray alloc] init];
+    
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@] order by timestamp;", tableName]];
+            while([set next]) {
+                SessionModel* session = [[SessionModel alloc] init];
+                session.chatId = [set stringForColumnIndex:0];
+                session.chatName = [set stringForColumnIndex:1];
+                session.profilePicture = [set stringForColumnIndex:2];
+                session.latestMessageContent = [set stringForColumnIndex:3];
+                session.latestMessageTimeStamp = [set stringForColumnIndex:4];
+                [sessions addObject:session];
+            }
+        }
+        [db close];
+    }];
+    return sessions;
+}
+
+-(void) insertSessionWithTableName:(NSString *)tableName withSession:(SessionModel *)session {
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res1 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@] WHERE chatId = '%@';", tableName, session.chatId]];
+            NSLog(@"%@", res1 ? @"delete session successfully" : @"delete session failed");
+            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@] (chatId, chatName, profilePicture, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", tableName, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, session.latestMessageTimeStamp]];
+            NSLog(@"%@", res2 ? @"insert session successfully" : @"insert session failed");
+        }
+        [db close];
+    }];
+}
+
+-(void) insertMessageWithTableName:(NSString *) tableName withMessage:(MessageModel *) message {
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@] (sendId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@');", tableName, message.SenderID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
             NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
         }
         [db close];
     }];
 }
 
--(NSMutableArray *) queryAllMessagesWithUserId:(NSString* ) userId {
+-(NSMutableArray *) queryAllMessagesWithUserId:(NSString* ) userId withChatId:(NSString *) chatId{
     NSMutableArray *messages = [[NSMutableArray alloc] init];
+    NSString *tableName = [userId intValue] < [chatId intValue] ? [[userId stringByAppendingString:@"-"] stringByAppendingString:chatId] : [[chatId stringByAppendingString:@"-"] stringByAppendingString:userId];
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE fromId = '%@' or toId = '%@';", MESSAGE_TABLE_NAME, userId, userId]];
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@];", tableName]];
             while([set next]) {
                 MessageModel* message = [[MessageModel alloc] init];
                 message.SenderID = [set stringForColumnIndex:1];
-                message.ReceiverID = [set stringForColumnIndex:2];
-                message.Type = [set stringForColumnIndex:3];
-                message.Content = [set stringForColumnIndex:4];
-                message.TimeStamp = [self.dateFormatter dateFromString:[set stringForColumnIndex:5]];
+                message.ReceiverID = [message.SenderID isEqualToString:userId] ? chatId : userId;
+                message.Type = [set stringForColumnIndex:2];
+                message.Content = [set stringForColumnIndex:3];
+                message.TimeStamp = [self.dateFormatter dateFromString:[set stringForColumnIndex:4]];
                 [messages addObject:message];
             }
         }
@@ -84,12 +129,13 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return messages;
 }
 
--(void) insertMessages:(NSArray* ) messages {
+
+-(void) insertMessagesWithTableName:(NSString *)tableName withMessages:(NSArray* ) messages {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             for (int i = 0; i < messages.count; i++) {
                 MessageModel* message = messages[i];
-                BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (fromId, toId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", MESSAGE_TABLE_NAME, message.SenderID, message.ReceiverID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
+                BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@] (sendId, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@');", tableName, message.SenderID, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
                 NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
             }
             
@@ -104,6 +150,14 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
-    [self insertMessages:messages];
+    for(int i = 0; i < messages.count; i++) {
+        MessageModel *message = messages[i];
+        NSString *sendId = [message SenderID];
+        NSString *chatId = [message ReceiverID];
+        NSString *tableName = [sendId intValue] < [chatId intValue] ? [[sendId stringByAppendingString:@"-"] stringByAppendingString:chatId] : [[chatId stringByAppendingString:@"-"] stringByAppendingString:sendId];
+        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:[message Content] withLatestMessageTimeStamp:[self.dateFormatter stringFromDate:message.TimeStamp]];
+        [self insertSessionWithTableName:chatId withSession:session];
+        [self insertMessageWithTableName:tableName withMessage:message];
+    }
 }
 @end

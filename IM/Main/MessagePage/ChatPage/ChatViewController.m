@@ -26,7 +26,7 @@
         self.loginUser = [[UserManager getInstance] getLoginModel];
         self.chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
-        self.chatMsg = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID];
+        self.chatMsg = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID withChatId:self.chatUser.UserID];
     }
     return self;
 }
@@ -73,15 +73,16 @@
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"send success");
-            
-            [self.databaseHelper insertMessage:message];
+            NSString *sendId = self.loginUser.UserID;
+            NSString *chatId = self.chatUser.UserID;
+            NSString *tableName = [sendId intValue] < [chatId intValue] ? [[sendId stringByAppendingString:@"-"] stringByAppendingString:chatId] : [[chatId stringByAppendingString:@"-"] stringByAppendingString:sendId];
+            [self.databaseHelper insertMessageWithTableName:tableName withMessage:message];
         }
         else
         {
             NSLog(@"send fail");
         }
     };
-    
     
     NSString *path = [[NSString alloc] initWithFormat:@"/content/%@", type];
     NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];

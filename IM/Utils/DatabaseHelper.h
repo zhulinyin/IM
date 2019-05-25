@@ -8,15 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "../Main/Model/MessageModel.h"
-
+#import "SessionModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DatabaseHelper : NSObject
 +(instancetype) getInstance;
--(void) insertMessage:(MessageModel* ) message;
--(NSMutableArray *) queryAllMessagesWithUserId:(NSString* ) userId;
--(void) insertMessages:(NSArray* ) messages;
+-(void) insertMessageWithTableName:(NSString *) tableName withMessage:(MessageModel* ) message;
+-(NSMutableArray *) queryAllMessagesWithUserId:(NSString* ) userId withChatId:(NSString *) chatId;
+-(void) insertMessagesWithTableName:(NSString *)tableName withMessages:(NSArray* ) messages;
 -(void) registerNewMessagesListener;
+-(void) createMessageTable:(NSString *) tableName;
+-(void) createSessionListTable:(NSString *) tableName;
+-(NSMutableArray *) queryMessageListWithTableName:(NSString *) tableName;
+-(void) insertSessionWithTableName:(NSString *)tableName withSession:(SessionModel *)session
 @end
 
 NS_ASSUME_NONNULL_END

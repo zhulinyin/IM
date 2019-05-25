@@ -20,6 +20,7 @@
 		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
 		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
 		717F058622848AA2006A34C1 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 717F058522848AA2006A34C1 /* SessionHelper.m */; };
+		D775CAA1229934530081CDD6 /* SessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D775CAA0229934530081CDD6 /* SessionModel.m */; };
 		DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */; };
 		E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D610B913D1095E8624DF3B8 /* Pods_IM.framework */; };
 		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
@@ -81,6 +82,8 @@
 		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
 		717F058422848AA2006A34C1 /* SessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionHelper.h; sourceTree = "<group>"; };
 		717F058522848AA2006A34C1 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
+		D775CA9F229934530081CDD6 /* SessionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionModel.h; sourceTree = "<group>"; };
+		D775CAA0229934530081CDD6 /* SessionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionModel.m; sourceTree = "<group>"; };
 		DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoModifiedViewController.m; sourceTree = "<group>"; };
 		DFDD795E228FAEDC008AAA7F /* InfoModifiedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoModifiedViewController.h; sourceTree = "<group>"; };
 		FA9A78F5228667D800CC26CF /* UserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
@@ -158,6 +161,8 @@
 				712782372276A0D7002729E3 /* MessageModel.m */,
 				712782362276A0D7002729E3 /* UserModel.h */,
 				712782342276A0D6002729E3 /* UserModel.m */,
+				D775CA9F229934530081CDD6 /* SessionModel.h */,
+				D775CAA0229934530081CDD6 /* SessionModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -503,6 +508,7 @@
 			files = (
 				FD23CB602282FD7000FEF250 /* ChatView.m in Sources */,
 				FD23CB632282FD9300FEF250 /* ChatTableViewCell.m in Sources */,
+				D775CAA1229934530081CDD6 /* SessionModel.m in Sources */,
 				FA9A78F7228667D800CC26CF /* UserManager.m in Sources */,
 				717F058622848AA2006A34C1 /* SessionHelper.m in Sources */,
 				FD085DAB226D64A500968B28 /* LoginViewController.m in Sources */,

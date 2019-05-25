@@ -169,6 +169,10 @@
 
 - (IBAction)sendMessage:(id)sender
 {
+    NSString *sendId = [[UserManager getInstance] getLoginModel].UserID;
+    NSString *chatId = self.User.UserID;
+    NSString *tableName = [sendId intValue] < [chatId intValue] ? [[sendId stringByAppendingString:@"-"] stringByAppendingString:chatId] : [[chatId stringByAppendingString:@"-"] stringByAppendingString:sendId];
+    [[DatabaseHelper getInstance] createMessageTable:tableName];
     ChatViewController *viewController = [[ChatViewController alloc] initWithContact:self.User];
     viewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewController animated:YES];

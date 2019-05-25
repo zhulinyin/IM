@@ -59,6 +59,7 @@ static UserManager *instance = nil;
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
+            [[DatabaseHelper getInstance] createSessionListTable:username];
             [self.socket SRWebSocketOpen];
             UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
@@ -86,6 +87,7 @@ static UserManager *instance = nil;
             NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
+            [[DatabaseHelper getInstance] createSessionListTable:username];
             [self.socket SRWebSocketOpen];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
             
