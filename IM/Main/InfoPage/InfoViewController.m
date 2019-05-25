@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 //@property(nonatomic, strong) UITableView *tableView;
+@property(nonatomic, strong) UIImageView *head;
 @property(nonatomic, strong) NSMutableArray<NSString*> *titleList;
 @property(nonatomic, strong) NSMutableArray<NSString*> *contentList;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
@@ -116,7 +117,13 @@
     }
     else{
         cell.accessoryView = ({
-            UIImageView *imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+            UIImageView *imgV;
+            if ([self.User.ProfilePicture isEqualToString:@"image"]){
+                imgV = self.head;
+            }
+            else{
+                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+            }
             CGRect frame = imgV.frame;
             frame = CGRectMake(0, 0, 100, 55);
             imgV.frame = frame;
@@ -138,24 +145,34 @@
         if([str isEqualToString:@"头像"]){
             // 修改本地显示
             [self alterHeadPortrait];
-            
-            // 上传到云端
-            
         }
-        InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
-        
-        __weak typeof(self) mainPtr = self;
-        // Block回调接收数据
-        [controller setData:^(UserModel* user){
-            mainPtr.User = user;
-            // 回调处理事件
-            mainPtr.contentList = [NSMutableArray array];
-            [mainPtr.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", self.User.NickName, self.User.UserID, self.User.Gender, self.User.Birthplace, nil]];
-            NSLog(user.Birthplace);
-            [mainPtr.tableView reloadData];
-        }];
-        controller.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:controller animated:YES];
+        else if ([str isEqualToString:@"账号"]){
+            // do nothing 不允许修改
+        }
+        else {
+            InfoModifiedViewController *controller = [[InfoModifiedViewController alloc] initWithString:str];
+            
+            __weak typeof(self) mainPtr = self;
+            // Block回调接收数据
+            [controller setData:^(UserModel* user){
+                mainPtr.User = user;
+                // 回调处理事件
+                mainPtr.contentList = [NSMutableArray array];
+                [mainPtr.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", self.User.NickName, self.User.UserID, self.User.Gender, self.User.Birthplace, nil]];
+                NSLog(user.Birthplace);
+                [mainPtr.tableView reloadData];
+                
+                // 上传到云端
+                if ([str isEqualToString:@"昵称"])
+                    [[UserManager getInstance] modifyInfo:@"Nickname" withValue:self.User.NickName];
+                else if ([str isEqualToString:@"性别"])
+                    [[UserManager getInstance] modifyInfo:@"Gender" withValue:self.User.Gender];
+                else if ([str isEqualToString:@"地区"])
+                    [[UserManager getInstance] modifyInfo:@"Region" withValue:self.User.Birthplace];
+            }];
+            controller.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:controller animated:YES];
+        }
     }
     else{
         NSLog(@"不能修改别的用户信息");
@@ -220,20 +237,29 @@
     //按钮：取消，类型：UIAlertActionStyleCancel
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-    
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *) info{
     //定义一个newPhoto，用来存放我们选择的图片。
+    // UIImagePickerControllerMediaURL 获取媒体的url
+//    NSString *urlStr = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
-    NSLog(@"success pick");
+//    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
-    // self.User.ProfilePicture = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    self.User.ProfilePicture = @"image";
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+    self.head = imageView;
     [self.tableView reloadData];
+    
+    // 上传到云端
+    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto];
+    
     // 测试，成功读取图片
-//    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
-//    [imageView setFrame:CGRectMake(0, 0, newPhoto.size.width, newPhoto.size.height)];
+//    NSData *data = [NSData  dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+//    UIImage *image =  [UIImage imageWithData:data];
+//    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
 //    [self.view addSubview:imageView];
 }
+
 
 @end
