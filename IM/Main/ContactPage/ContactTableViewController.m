@@ -17,6 +17,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *AddFriendButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *AddComfirmButton;
 @property (weak, nonatomic) IBOutlet UITextField *FriendID;
+@property (weak, nonatomic) IBOutlet UISearchBar *SearchBar;
+@property (strong, nonatomic) IBOutlet UISearchDisplayController *SearchBarController;
 
 @end
 
@@ -31,7 +33,7 @@
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     
     [self getContactsFromServer];
-    
+    self.SearchBarController.displaysSearchBarInNavigationBar = YES;
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -134,6 +136,11 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
     UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];;
     infoVC.User = TestUser2;
     [self.navigationController pushViewController:infoVC animated:YES];
+}
+
+- (IBAction)showSearchBar:(id)sender
+{
+    self.SearchBarController.displaysSearchBarInNavigationBar = YES;
 }
 
 /*
