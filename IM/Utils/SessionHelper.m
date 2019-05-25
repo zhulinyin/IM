@@ -9,13 +9,17 @@
 #import "SessionHelper.h"
 
 
+//NSString* const SERVER_DOMAIN = @"http://172.18.32.97:8000";
+NSString* const SERVER_DOMAIN = @"http://118.89.65.154:8000";
+
+
 @implementation SessionHelper
 
 + (void)sendRequest:(NSString*)path method:(NSString*)method parameters:(NSString*)parameters handler:(void(^)(id))handler
 {
-    NSString* serverDomain = @"http://172.18.32.97:8000";
+    //NSString* serverDomain = @"http://172.18.32.97:8000";
     //NSString* serverDomain = @"http://118.89.65.154:8000";
-    NSString* urlString = [serverDomain stringByAppendingString:path];
+    NSString* urlString = [SERVER_DOMAIN stringByAppendingString:path];
     NSURL *url = [NSURL URLWithString:urlString];
     
     NSURLSessionConfiguration *defaultConfigObject = [NSURLSessionConfiguration defaultSessionConfiguration];

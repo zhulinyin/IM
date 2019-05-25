@@ -9,9 +9,10 @@
 #import "ContactTableViewController.h"
 #import "ContactTableViewCell.h"
 
-@interface ContactTableViewController ()
+@interface ContactTableViewController () <UISearchDisplayDelegate, UISearchBarDelegate>
 
 @property (nonatomic, strong) NSMutableArray<UserModel*> *ContactsArray;
+@property (nonatomic, strong) NSArray *searchResults;
 @property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *AddFriendButton;
@@ -19,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *FriendID;
 @property (weak, nonatomic) IBOutlet UISearchBar *SearchBar;
 @property (strong, nonatomic) IBOutlet UISearchDisplayController *SearchBarController;
+@property (strong, nonatomic) UISearchController *searchController;
 
 @end
 
@@ -33,14 +35,33 @@
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     
     [self getContactsFromServer];
-    self.SearchBarController.displaysSearchBarInNavigationBar = YES;
+    
+    //self.SearchBarController.displaysSearchBarInNavigationBar = YES;
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    //self.ContactTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.searchBar.delegate = self;
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    self.definesPresentationContext = YES;
+    [self.searchController.searchBar sizeToFit];
 }
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *searchString = searchController.searchBar.text;
+    [self searchDisplayController:self.searchController shouldReloadTableForSearchString:searchString];
+    [self.tableView reloadData];
+}
+
 
 - (void)getContactsFromServer
 {
@@ -65,6 +86,24 @@
     
 }
 
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"UserID contains[c] %@", searchText];
+    self.searchResults = [self.ContactsArray filteredArrayUsingPredicate:resultPredicate];
+    
+    [self.SearchBarController.searchResultsTableView reloadData];
+}
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString
+                               scope:[[self.SearchBarController.searchBar scopeButtonTitles]
+                                      objectAtIndex:[self.SearchBarController.searchBar
+                                                     selectedScopeButtonIndex]]];
+    
+    return YES;
+}
+
 - (void)initializeTestData
 {
     
@@ -82,8 +121,12 @@
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.ContactsArray.count;
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView == self.SearchBarController.searchResultsTableView)
+        return self.searchResults.count;
+    else
+        return self.ContactsArray.count;
 }
 
 
@@ -98,12 +141,18 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
         cell = [[ContactTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseID];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    
+    UserModel* friend;
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+        friend = self.searchResults[indexPath.row];
+    else
+        friend = self.ContactsArray[indexPath.row];
 
-
-    cell.ContactProfilePicture.image = [UIImage imageNamed:self.ContactsArray[indexPath.row].ProfilePicture];
-    cell.ContactName.text = self.ContactsArray[indexPath.row].NickName;
+    cell.ContactProfilePicture.image = [UIImage imageNamed:friend.ProfilePicture];
+    cell.ContactName.text = friend.NickName;
     return cell;
 }
+
 - (IBAction)AddFriend:(id)sender
 {
     NSString* FriendID = self.FriendID.text;
@@ -140,7 +189,10 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
 
 - (IBAction)showSearchBar:(id)sender
 {
-    self.SearchBarController.displaysSearchBarInNavigationBar = YES;
+    //self.SearchBarController.displaysSearchBarInNavigationBar = YES;
+    //self.ContactTableView.tableHeaderView = self.SearchBar;
+    //self.SearchBarController.active = YES;
+    
 }
 
 /*
