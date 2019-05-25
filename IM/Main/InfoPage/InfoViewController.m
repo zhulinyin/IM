@@ -165,10 +165,10 @@
                 // 上传到云端
                 if ([str isEqualToString:@"昵称"])
                     [[UserManager getInstance] modifyInfo:@"Nickname" withValue:self.User.NickName];
-//                else if ([str isEqualToString:@"性别"])
-//                    [[UserManager getInstance] modifyInfo:@"hello" withValue:self.User.Gender];
-//                else if ([str isEqualToString:@"地区"])
-//                    [[UserManager getInstance] modifyInfo:@"hello" withValue:self.User.Birthplace];
+                else if ([str isEqualToString:@"性别"])
+                    [[UserManager getInstance] modifyInfo:@"Gender" withValue:self.User.Gender];
+                else if ([str isEqualToString:@"地区"])
+                    [[UserManager getInstance] modifyInfo:@"Region" withValue:self.User.Birthplace];
             }];
             controller.hidesBottomBarWhenPushed = YES;
             [self.navigationController pushViewController:controller animated:YES];

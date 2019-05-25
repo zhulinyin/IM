@@ -48,6 +48,27 @@ static UserManager *instance = nil;
 }
 
 
+// 获取用户的信息
+-(void) getInfo{
+    AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
+    NSString *url = @"http://172.18.32.97:8000/account/info";
+    [manger GET:url parameters:nil progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSLog(@"getInfo success");
+            self.loginUser = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                                          NickName:responseObject[@"data"][@"Nickname"]
+                                                        RemarkName:responseObject[@"data"][@"Username"]
+                                                            Gender:responseObject[@"data"][@"Gender"]
+                                                         Birthplace:responseObject[@"data"][@"Region"]
+                                                    ProfilePicture:@"peppa"];
+    }
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"getInfo fail");
+            NSLog(error.localizedDescription);
+    }];
+}
+
+
 -(void) login:(NSString *)username withPassword:(NSString *)password
 {
     void (^loginEvent)(id) = ^void (id object)
@@ -56,7 +77,10 @@ static UserManager *instance = nil;
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"login success");
-            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+            // 登陆成功后，获取用户的个人信息
+            [self getInfo];
+            
+//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
             [self.socket SRWebSocketOpen];
@@ -70,7 +94,6 @@ static UserManager *instance = nil;
     };
     
     NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
-//    NSLog(params);
     [SessionHelper sendRequest:@"/account/login" method:@"post" parameters:params handler:loginEvent];
     
 }
@@ -83,8 +106,11 @@ static UserManager *instance = nil;
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"login success");
+            // 登陆成功后，获取用户的个人信息
+            [self getInfo];
+            
             NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
-            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [self.socket SRWebSocketOpen];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
@@ -140,7 +166,8 @@ static UserManager *instance = nil;
         {
             NSLog(@"register success");
             // 登陆成功后，获取用户的个人信息
-            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+            [self getInfo];
+//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             [self.socket SRWebSocketOpen];
             //sign in automatically after successfully signing up
             [self login:username withPassword:password];
@@ -179,7 +206,7 @@ static UserManager *instance = nil;
     [SessionHelper sendRequest:api method:@"put" parameters:params handler:modifyInfoEvent];
 }
 
-
+// 上传图片到服务器
 -(void) uploadImage:(NSString* )path withImage:(UIImage* )image
 {
     AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
@@ -203,5 +230,6 @@ static UserManager *instance = nil;
         NSLog(error.localizedDescription);
     }];
 }
+
 
 @end

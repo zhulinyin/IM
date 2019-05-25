@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) register:(NSString *)username withPassword:(NSString *)password;
 -(void) modifyInfo:(NSString *)attr withValue:(NSString *)value;
 -(void) uploadImage:(NSString* )path withImage:(UIImage* )image;
+-(void) getInfo;
 -(UserModel*) getLoginModel;
 -(void) logout;
 -(void) tryLogin;
