@@ -52,33 +52,39 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="联系人" id="KPF-Vo-VfV"/>
-                    <navigationItem key="navigationItem" title="Title" id="1UO-mq-ehd">
-                        <rightBarButtonItems>
-                            <barButtonItem title="Add" id="zzm-6a-dF2">
-                                <connections>
-                                    <action selector="AddFriend:" destination="6X2-IJ-PmU" id="Y9c-WM-Hbk"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem systemItem="add" id="JCB-3J-hPP"/>
-                            <barButtonItem style="plain" id="mZu-If-Lcb">
-                                <textField key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" id="1lv-E8-veI">
-                                    <rect key="frame" x="189.5" y="7" width="83" height="30"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <nil key="textColor"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <textInputTraits key="textInputTraits"/>
-                                </textField>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                    <navigationItem key="navigationItem" id="1UO-mq-ehd">
+                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="JCB-3J-hPP">
+                            <connections>
+                                <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="78S-zu-NzZ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="AddComfirmButton" destination="zzm-6a-dF2" id="PxR-10-juN"/>
                         <outlet property="AddFriendButton" destination="JCB-3J-hPP" id="hPR-km-mOt"/>
                         <outlet property="ContactTableView" destination="C8q-HP-b1c" id="18O-mc-u3u"/>
-                        <outlet property="FriendID" destination="1lv-E8-veI" id="5Ya-EP-Vgw"/>
+                        <outlet property="SearchBar" destination="5U2-X9-rqx" id="wRU-o2-klq"/>
+                        <outlet property="SearchBarController" destination="p8m-sX-7lg" id="pTY-VZ-zW9"/>
+                        <outlet property="searchDisplayController" destination="p8m-sX-7lg" id="m5d-Cn-4Xs"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Oun-Xd-xLB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchBar hidden="YES" contentMode="redraw" id="5U2-X9-rqx">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outlet property="delegate" destination="6X2-IJ-PmU" id="SMh-ti-QGR"/>
+                    </connections>
+                </searchBar>
+                <searchDisplayController id="p8m-sX-7lg">
+                    <connections>
+                        <outlet property="delegate" destination="6X2-IJ-PmU" id="021-yY-Yz2"/>
+                        <outlet property="searchBar" destination="5U2-X9-rqx" id="rM6-6u-BZF"/>
+                        <outlet property="searchContentsController" destination="6X2-IJ-PmU" id="rtN-tQ-qdB"/>
+                        <outlet property="searchResultsDataSource" destination="6X2-IJ-PmU" id="o2L-lR-CBS"/>
+                        <outlet property="searchResultsDelegate" destination="6X2-IJ-PmU" id="6qa-H3-Arf"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="111" y="295"/>
         </scene>
