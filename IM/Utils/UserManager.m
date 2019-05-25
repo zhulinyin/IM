@@ -139,6 +139,7 @@ static UserManager *instance = nil;
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"register success");
+            // 登陆成功后，获取用户的个人信息
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             [self.socket SRWebSocketOpen];
             //sign in automatically after successfully signing up
@@ -176,6 +177,31 @@ static UserManager *instance = nil;
     NSLog(api);
     NSLog(params);
     [SessionHelper sendRequest:api method:@"put" parameters:params handler:modifyInfoEvent];
+}
+
+
+-(void) uploadImage:(NSString* )path withImage:(UIImage* )image
+{
+    AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
+    [session.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    
+    // 处理url
+    NSString* serverDomain = @"http://172.18.32.97:8000";
+//    NSString* serverDomain = @"http://118.89.65.154:8000";
+    NSString* urlString = [serverDomain stringByAppendingString:path];
+    NSLog(urlString);
+    [session POST:urlString parameters:nil constructingBodyWithBlock:
+     ^(id<AFMultipartFormData> _Nonnull formData){
+        // 图片转data
+        NSData *data = UIImagePNGRepresentation(image);
+        [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
+                                 mimeType:@"multipart/form-data"];
+    } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
+        NSLog(@"uploadImage success");
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
+        NSLog(@"uploadImage fail");
+        NSLog(error.localizedDescription);
+    }];
 }
 
 @end

@@ -145,9 +145,6 @@
         if([str isEqualToString:@"头像"]){
             // 修改本地显示
             [self alterHeadPortrait];
-            
-            // 上传到云端
-            
         }
         else if ([str isEqualToString:@"账号"]){
             // do nothing 不允许修改
@@ -164,6 +161,7 @@
                 [mainPtr.contentList addObjectsFromArray:[[NSArray alloc] initWithObjects:@"小猪佩奇", self.User.NickName, self.User.UserID, self.User.Gender, self.User.Birthplace, nil]];
                 NSLog(user.Birthplace);
                 [mainPtr.tableView reloadData];
+                
                 // 上传到云端
                 if ([str isEqualToString:@"昵称"])
                     [[UserManager getInstance] modifyInfo:@"Nickname" withValue:self.User.NickName];
@@ -235,7 +233,6 @@
     //按钮：取消，类型：UIAlertActionStyleCancel
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-    
 }
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *) info{
@@ -249,6 +246,10 @@
     UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
     self.head = imageView;
     [self.tableView reloadData];
+    
+    // 上传到云端
+    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto];
+    
     // 测试，成功读取图片
 //    NSData *data = [NSData  dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
 //    UIImage *image =  [UIImage imageWithData:data];

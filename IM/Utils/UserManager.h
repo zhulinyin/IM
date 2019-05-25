@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "SocketRocketUtility.h"
 #import "SessionHelper.h"
+#import <AFNetworking/AFNetworking.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) login:(NSString *)username withPassword:(NSString *)password;
 -(void) register:(NSString *)username withPassword:(NSString *)password;
 -(void) modifyInfo:(NSString *)attr withValue:(NSString *)value;
+-(void) uploadImage:(NSString* )path withImage:(UIImage* )image;
 -(UserModel*) getLoginModel;
 -(void) logout;
 -(void) tryLogin;
