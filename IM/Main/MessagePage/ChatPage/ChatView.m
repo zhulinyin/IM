@@ -100,8 +100,10 @@
             [self.chatTable scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self.chatMsg count] - 2 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         }
         //self.chatTableView.hidden = NO;
-        NSIndexPath* path = [NSIndexPath indexPathForRow:[self.chatMsg count] - 1 inSection:0];
-        [self.chatTable scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if ([self.chatMsg count] > 0){
+            NSIndexPath* path = [NSIndexPath indexPathForRow:[self.chatMsg count] - 1 inSection:0];
+            [self.chatTable scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     });
 }
 

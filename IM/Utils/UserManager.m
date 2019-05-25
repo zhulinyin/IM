@@ -58,6 +58,7 @@ static UserManager *instance = nil;
             NSLog(@"login success");
             self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
+            [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
             [self.socket SRWebSocketOpen];
             UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
@@ -74,6 +75,33 @@ static UserManager *instance = nil;
     
 }
 
+-(void) tryLogin
+{
+    void (^tryLoginEvent)(id) = ^void (id object)
+    {
+        NSDictionary *result = object;
+        if([result[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"login success");
+            NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
+            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+            self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
+            [self.socket SRWebSocketOpen];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
+            
+        }
+        else
+        {
+            NSLog(@"login fail");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"fail"];
+            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+            [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
+        }
+    };
+    
+    
+    [SessionHelper sendRequest:@"/account/login" method:@"get" parameters:@"" handler:tryLoginEvent];
+}
 
 -(void) logout
 {
