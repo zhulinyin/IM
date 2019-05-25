@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) register:(NSString *)username withPassword:(NSString *)password;
 -(UserModel*) getLoginModel;
 -(void) logout;
+-(void) tryLogin;
 @end
 
 NS_ASSUME_NONNULL_END
