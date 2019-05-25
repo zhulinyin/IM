@@ -125,7 +125,7 @@ static UserManager *instance = nil;
     };
     
     NSString *params = @"";
-    [SessionHelper sendRequest:@"/account/logout" method:@"get" parameters:params handler:returnToLogin];
+    [SessionHelper sendRequest:@"/account/logout" method:@"delete" parameters:params handler:returnToLogin];
     
     
 }

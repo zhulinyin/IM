@@ -17,26 +17,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tryLogin) name:@"tryLogin" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tryLogin:) name:@"tryLogin" object:nil];
     [[DatabaseHelper getInstance] registerNewMessagesListener];
-    //[[UserManager getInstance] tryLogin];
+    [[UserManager getInstance] tryLogin];
     return YES;
 }
 
 - (void)tryLogin:(NSNotification *)notification{
     NSString *result = [notification object];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    UIStoryboard *storyboard;
     if ([result isEqualToString:@"success"]) {
-        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        self.window.rootViewController=[mainStoryboard instantiateInitialViewController];
-        [self.window makeKeyAndVisible];
-        
+        storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     }
     else {
-        UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
-        self.window.rootViewController=[mainStoryboard instantiateInitialViewController];
-        [self.window makeKeyAndVisible];
+        storyboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
     }
+    self.window.rootViewController=[storyboard instantiateInitialViewController];
+    [self.window makeKeyAndVisible];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
