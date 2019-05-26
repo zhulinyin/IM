@@ -67,7 +67,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     //开启心跳
     //[self initHeartBeat];
     if (webSocket == self.socket) {
-        NSLog(@"************************** socket 连接成功************************** ");
+        NSLog(@"socket 连接成功");
         [self wsOperate:@"connect" data:[[UserManager getInstance] getLoginModel].UserID];
     }
 }
@@ -76,7 +76,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
     
     if (webSocket == self.socket) {
-        NSLog(@"************************** socket 连接失败************************** ");
+        NSLog(@"socket 连接失败");
         _socket = nil;
         //连接失败就重连
         [self reConnect];
@@ -222,8 +222,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void) initHeartBeat{
     dispatch_main_async_safe(^{
         [self destoryHeartBeat];
-        heartBeat = [NSTimer timerWithTimeInterval:10 target:self selector:@selector(ping) userInfo:nil repeats:YES];
-        [[NSRunLoop currentRunLoop]addTimer:heartBeat forMode:NSRunLoopCommonModes];
+        self->heartBeat = [NSTimer timerWithTimeInterval:10 target:self selector:@selector(ping) userInfo:nil repeats:YES];
+        [[NSRunLoop currentRunLoop]addTimer:self->heartBeat forMode:NSRunLoopCommonModes];
     })
 }
 
@@ -231,11 +231,11 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void)destoryHeartBeat
 {
     dispatch_main_async_safe(^{
-        if (heartBeat) {
-            if ([heartBeat respondsToSelector:@selector(isValid)]){
-                if ([heartBeat isValid]){
-                    [heartBeat invalidate];
-                    heartBeat = nil;
+        if (self->heartBeat) {
+            if ([self->heartBeat respondsToSelector:@selector(isValid)]){
+                if ([self->heartBeat isValid]){
+                    [self->heartBeat invalidate];
+                    self->heartBeat = nil;
                 }
             }
         }

@@ -84,6 +84,7 @@ static UserManager *instance = nil;
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
             [[DatabaseHelper getInstance] createSessionListTable:username];
+            [self createMessageTable];
             [self.socket SRWebSocketOpen];
             UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
@@ -114,6 +115,7 @@ static UserManager *instance = nil;
 //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [[DatabaseHelper getInstance] createSessionListTable:username];
+            [self createMessageTable];
             [self.socket SRWebSocketOpen];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
             
@@ -129,6 +131,23 @@ static UserManager *instance = nil;
     
     
     [SessionHelper sendRequest:@"/account/login" method:@"get" parameters:@"" handler:tryLoginEvent];
+}
+
+-(void) createMessageTable
+{
+    void (^showContacts)(id) = ^void (id object)
+    {
+        
+        for (id user in object[@"data"])
+        {
+            NSString *friendId = user[@"Friend"];
+            NSString *userId = self.loginUser.UserID;
+            NSString *tableName = [userId intValue] < [friendId intValue] ? [[userId stringByAppendingString:@"-"] stringByAppendingString:friendId] : [[friendId stringByAppendingString:@"-"] stringByAppendingString:userId];
+            [[DatabaseHelper getInstance] createMessageTable:tableName];
+        }
+    };
+    
+    [SessionHelper sendRequest:@"/contact/info" method:@"get" parameters:@"" handler:showContacts];
 }
 
 -(void) logout
