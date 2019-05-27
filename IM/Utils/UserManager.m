@@ -51,7 +51,7 @@ static UserManager *instance = nil;
 // 获取用户的信息
 -(void) getInfo{
     AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSString *url = @"http://172.18.32.97:8000/account/info";
+    NSString *url = @"http://118.89.65.154:8000/account/info";
     [manger GET:url parameters:nil progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"getInfo success");
@@ -61,10 +61,12 @@ static UserManager *instance = nil;
                                                             Gender:responseObject[@"data"][@"Gender"]
                                                          Birthplace:responseObject[@"data"][@"Region"]
                                                     ProfilePicture:@"peppa"];
+            [[DatabaseHelper getInstance] registerNewMessagesListener];
+            [self.socket SRWebSocketOpen];
     }
         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"getInfo fail");
-            NSLog(error.localizedDescription);
+            NSLog(@"%@", error.localizedDescription);
     }];
 }
 
@@ -83,9 +85,7 @@ static UserManager *instance = nil;
 //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
-            [[DatabaseHelper getInstance] createSessionListTable:username];
-            [self createMessageTable];
-            [self.socket SRWebSocketOpen];
+            
             UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
         }
@@ -114,9 +114,7 @@ static UserManager *instance = nil;
             NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
 //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
             self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
-            [[DatabaseHelper getInstance] createSessionListTable:username];
-            [self createMessageTable];
-            [self.socket SRWebSocketOpen];
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
             
         }
@@ -124,30 +122,11 @@ static UserManager *instance = nil;
         {
             NSLog(@"login fail");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"fail"];
-            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
-            [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
         }
     };
     
     
     [SessionHelper sendRequest:@"/account/login" method:@"get" parameters:@"" handler:tryLoginEvent];
-}
-
--(void) createMessageTable
-{
-    void (^showContacts)(id) = ^void (id object)
-    {
-        
-        for (id user in object[@"data"])
-        {
-            NSString *friendId = user[@"Friend"];
-            NSString *userId = self.loginUser.UserID;
-            NSString *tableName = [userId intValue] < [friendId intValue] ? [[userId stringByAppendingString:@"-"] stringByAppendingString:friendId] : [[friendId stringByAppendingString:@"-"] stringByAppendingString:userId];
-            [[DatabaseHelper getInstance] createMessageTable:tableName];
-        }
-    };
-    
-    [SessionHelper sendRequest:@"/contact/info" method:@"get" parameters:@"" handler:showContacts];
 }
 
 -(void) logout
@@ -160,6 +139,7 @@ static UserManager *instance = nil;
             NSLog(@"%@", result[@"msg"]);
             self.loginUser = nil;
             [self.socket SRWebSocketClose];
+            [[DatabaseHelper getInstance] unregisterNewMessageListener];
             UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
             [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
         }

@@ -18,7 +18,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tryLogin:) name:@"tryLogin" object:nil];
-    [[DatabaseHelper getInstance] registerNewMessagesListener];
+
     [[UserManager getInstance] tryLogin];
     return YES;
 }
@@ -33,7 +33,7 @@
     else {
         storyboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
     }
-    self.window.rootViewController=[storyboard instantiateInitialViewController];
+    self.window.rootViewController = [storyboard instantiateInitialViewController];
     [self.window makeKeyAndVisible];
 }
 

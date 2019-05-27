@@ -26,7 +26,7 @@
         self.loginUser = [[UserManager getInstance] getLoginModel];
         self.chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
-        self.chatMsg = [self.databaseHelper queryAllMessagesWithUserId:self.loginUser.UserID withChatId:self.chatUser.UserID];
+        self.chatMsg = [self.databaseHelper queryAllMessagesWithChatId:chatUser.UserID];
     }
     return self;
 }
@@ -46,6 +46,15 @@
     
     [self.chatView tableViewScrollToBottom];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if(self.chatMsg.count > 0) {
+        SessionModel *session = [[SessionModel alloc] initWithChatId:self.chatUser.UserID withChatName:self.chatUser.NickName withProfilePicture:self.chatUser.ProfilePicture withLatestMessageContent:[self.chatMsg[self.chatMsg.count-1] Content] withLatestMessageTimeStamp:[self.chatMsg[self.chatMsg.count-1] TimeStamp]];
+        [self.databaseHelper insertSessionWithSession:session];
+    }
+    
 }
 
 - (void)getNewMessages:(NSNotification *)notification{
@@ -73,10 +82,7 @@
         if([result[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"send success");
-            NSString *sendId = self.loginUser.UserID;
-            NSString *chatId = self.chatUser.UserID;
-            NSString *tableName = [sendId intValue] < [chatId intValue] ? [[sendId stringByAppendingString:@"-"] stringByAppendingString:chatId] : [[chatId stringByAppendingString:@"-"] stringByAppendingString:sendId];
-            [self.databaseHelper insertMessageWithTableName:tableName withMessage:message];
+            [self.databaseHelper insertMessageWithMessage:message];
         }
         else
         {

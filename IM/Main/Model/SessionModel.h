@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property(strong, nonatomic) NSString *chatName;
 @property(strong, nonatomic) NSString *profilePicture;
 @property(strong, nonatomic) NSString *latestMessageContent;
-@property(strong, nonatomic) NSString *latestMessageTimeStamp;
+@property(strong, nonatomic) NSDate *latestMessageTimeStamp;
 
--(instancetype) initWithChatId:(NSString *)chatId withChatName:(NSString *)chatName withProfilePicture:(NSString *)profilePicture withLatestMessageContent:(NSString *)latestMessageContent withLatestMessageTimeStamp:(NSString *)latestMessageTimeStamp;
+-(instancetype) initWithChatId:(NSString *)chatId withChatName:(NSString *)chatName withProfilePicture:(NSString *)profilePicture withLatestMessageContent:(NSString *)latestMessageContent withLatestMessageTimeStamp:(NSDate *)latestMessageTimeStamp;
 @end
 
 NS_ASSUME_NONNULL_END

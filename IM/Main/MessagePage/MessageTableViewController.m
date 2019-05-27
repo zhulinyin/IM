@@ -13,15 +13,17 @@
 
 @interface MessageTableViewController ()
 @property (strong, nonatomic) IBOutlet UITableView *MessageTableView;
-@property (nonatomic, strong) NSMutableArray<MessageModel*> *MessagesArray;
+@property (nonatomic, strong) NSMutableArray<SessionModel*> *sessionsArray;
+@property(strong, nonatomic) NSDateFormatter* dateFormatter;
 @end
 
 @implementation MessageTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initializeFakeData];
+
     self.MessageTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -29,11 +31,10 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-- (void)initializeFakeData
-{
-    
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.sessionsArray = [[DatabaseHelper getInstance] querySessions];
 }
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -43,11 +44,12 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #warning Incomplete implementation, return the number of rows
     //return self.MessagesArray.count;
-    return 1;
+    return self.sessionsArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    SessionModel *session = self.sessionsArray[indexPath.row];
     MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageTableCell" forIndexPath:indexPath];
     
     // Configure the cell...
@@ -59,14 +61,16 @@
     
     
     cell.ContactProfilePicture.image = [UIImage imageNamed:@"peppa"];
-    cell.ContactName.text = @"peppa";
-    cell.MessageAbstract.text = @"hhhh";
-    cell.TimeStamp.text = @"2019.05.05";
+    cell.ContactName.text = session.chatName;
+    cell.MessageAbstract.text = session.latestMessageContent;
+    cell.TimeStamp.text = [self.dateFormatter stringFromDate:session.latestMessageTimeStamp];
     return cell;
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    ChatViewController *viewController = [[ChatViewController alloc] init];
+    SessionModel *session = self.sessionsArray[indexPath.row];
+    UserModel *chatUser = [[UserModel alloc] initWithProperties:session.chatId NickName:session.chatName RemarkName:session.chatName Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"teemo"];
+    ChatViewController *viewController = [[ChatViewController alloc] initWithContact:chatUser];
     viewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewController animated:YES];
 }

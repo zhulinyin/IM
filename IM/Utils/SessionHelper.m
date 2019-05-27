@@ -9,8 +9,8 @@
 #import "SessionHelper.h"
 
 
-NSString* const SERVER_DOMAIN = @"http://172.18.32.97:8000";
-//NSString* const SERVER_DOMAIN = @"http://118.89.65.154:8000";
+//NSString* const SERVER_DOMAIN = @"http://172.18.32.97:8000";
+NSString* const SERVER_DOMAIN = @"http://118.89.65.154:8000";
 
 
 @implementation SessionHelper
