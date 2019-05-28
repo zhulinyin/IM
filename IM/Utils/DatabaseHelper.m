@@ -104,9 +104,9 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) insertMessageWithMessage:(MessageModel *) message {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            NSString *isMe = [message.SenderID isEqualToString:self.userManager.loginUserId] ? @"TRUE" : @"FLASE";
+            int isMe = [message.SenderID isEqualToString:self.userManager.loginUserId] ? 1 : 0;
             NSString *chatId = [message.SenderID isEqualToString:self.userManager.loginUserId] ? message.ReceiverID : message.SenderID;
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@message] (chatId, isMe, type, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, chatId, isMe, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@message] (chatId, isMe, type, content, timestamp) VALUES ('%@', %d, '%@', '%@', '%@');", self.userManager.loginUserId, chatId, isMe, message.Type, message.Content, [self.dateFormatter stringFromDate:message.TimeStamp]]];
             NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
         }
         [db close];
@@ -166,5 +166,6 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         [self insertSessionWithSession:session];
         [self insertMessageWithMessage:message];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
 }
 @end

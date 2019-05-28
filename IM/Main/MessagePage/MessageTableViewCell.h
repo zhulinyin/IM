@@ -7,15 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SessionModel.h"
 NS_ASSUME_NONNULL_BEGIN
+#define SCREEN_WIDTH    [[UIScreen mainScreen] bounds].size.width
+#define SCREEN_HEIGHT   [[UIScreen mainScreen] bounds].size.height
+#define ICON_WH 50
 
 @interface MessageTableViewCell : UITableViewCell
-@property (weak, nonatomic) IBOutlet UIImageView *ContactProfilePicture;
-@property (weak, nonatomic) IBOutlet UILabel *ContactName;
-@property (weak, nonatomic) IBOutlet UILabel *MessageAbstract;
-@property (weak, nonatomic) IBOutlet UILabel *TimeStamp;
-
+@property(strong, nonatomic) SessionModel *session;
 @end
 
 NS_ASSUME_NONNULL_END

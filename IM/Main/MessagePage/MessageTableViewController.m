@@ -14,7 +14,7 @@
 @interface MessageTableViewController ()
 @property (strong, nonatomic) IBOutlet UITableView *MessageTableView;
 @property (nonatomic, strong) NSMutableArray<SessionModel*> *sessionsArray;
-@property(strong, nonatomic) NSDateFormatter* dateFormatter;
+
 @end
 
 @implementation MessageTableViewController
@@ -23,7 +23,7 @@
     [super viewDidLoad];
 
     self.MessageTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
+    self.MessageTableView.separatorInset = UIEdgeInsetsZero;
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -35,7 +35,19 @@
     [super viewWillAppear:animated];
     self.sessionsArray = [[DatabaseHelper getInstance] querySessions];
     [self.MessageTableView reloadData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSession:) name:@"sessionChange" object:nil];
 }
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)updateSession:(NSNotification *)notification{
+    self.sessionsArray = [[DatabaseHelper getInstance] querySessions];
+    [self.MessageTableView reloadData];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -51,20 +63,15 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SessionModel *session = self.sessionsArray[indexPath.row];
-    MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageTableCell" forIndexPath:indexPath];
+    MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell2"];
     
     // Configure the cell...
     if (cell == nil)
     {
-        cell = [[MessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MessageTableCell"];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell = [[MessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell2"];
+        //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    
-    
-    cell.ContactProfilePicture.image = [UIImage imageNamed:@"peppa"];
-    cell.ContactName.text = session.chatId;
-    cell.MessageAbstract.text = session.latestMessageContent;
-    cell.TimeStamp.text = [self.dateFormatter stringFromDate:session.latestMessageTimeStamp];
+    cell.session = session;
     return cell;
 }
 
@@ -75,6 +82,12 @@
     viewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewController animated:YES];
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //计算文字高度需和自定义cell内容尺寸同步
+    return 70;
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
