@@ -73,7 +73,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@session];", self.userManager.loginUserId]];
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@session] order by timestamp;", self.userManager.loginUserId]];
             while([set next]) {
                 SessionModel* session = [[SessionModel alloc] init];
                 session.chatId = [set stringForColumnIndex:0];
