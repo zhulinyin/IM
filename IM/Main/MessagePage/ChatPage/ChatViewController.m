@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UserModel *chatUser;
 @property (nonatomic, strong) DatabaseHelper *databaseHelper;
 @property (nonatomic, strong) NSMutableArray *chatMsg;
+@property(strong, nonatomic) NSDateFormatter* dateFormatter;
 @end
 
 @implementation ChatViewController
@@ -27,6 +28,7 @@
         self.chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
         self.chatMsg = [self.databaseHelper queryAllMessagesWithChatId:chatUser.UserID];
+        self.dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
     }
     return self;
 }
@@ -75,6 +77,7 @@
     message.SenderID = self.loginUser.UserID;
     message.ReceiverID = self.chatUser.UserID;
     message.Content = text;
+    message.TimeStamp = [NSDate date];
     [self addMessage:message];
     void (^sendFeedBack)(id) = ^void (id object)
     {
@@ -91,7 +94,7 @@
     };
     
     NSString *path = [[NSString alloc] initWithFormat:@"/content/%@", type];
-    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@", self.chatUser.UserID, text];
+    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@&timestamp=%@", self.chatUser.UserID, text, message.TimeStamp];
     [SessionHelper sendRequest:path method:@"post" parameters:params handler:sendFeedBack];
 }
 

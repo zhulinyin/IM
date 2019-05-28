@@ -34,6 +34,7 @@
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.sessionsArray = [[DatabaseHelper getInstance] querySessions];
+    [self.MessageTableView reloadData];
 }
 #pragma mark - Table view data source
 
@@ -61,7 +62,7 @@
     
     
     cell.ContactProfilePicture.image = [UIImage imageNamed:@"peppa"];
-    cell.ContactName.text = session.chatName;
+    cell.ContactName.text = session.chatId;
     cell.MessageAbstract.text = session.latestMessageContent;
     cell.TimeStamp.text = [self.dateFormatter stringFromDate:session.latestMessageTimeStamp];
     return cell;
