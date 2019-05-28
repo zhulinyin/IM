@@ -25,24 +25,23 @@
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBr-CA-cYZ">
+                                            <rect key="frame" x="16" y="1" width="40" height="40"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8Z-cg-CAB">
-                                            <rect key="frame" x="74" y="1" width="254" height="40"/>
+                                            <rect key="frame" x="79" y="0.0" width="254" height="40"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <color key="highlightedColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBr-CA-cYZ">
-                                            <rect key="frame" x="16" y="1" width="40" height="40"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
                                     </subviews>
                                 </tableViewCellContentView>
                                 <accessibility key="accessibilityConfiguration" identifier="ContactTableCell"/>
                                 <connections>
                                     <outlet property="ContactName" destination="q8Z-cg-CAB" id="7SG-Sd-4iK"/>
                                     <outlet property="ContactProfilePicture" destination="gBr-CA-cYZ" id="4cH-Tp-3Gg"/>
-                                    <segue destination="0Hy-Vh-Jc8" kind="push" identifier="ShowUserInfo" id="tRo-kf-7Lh"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -55,12 +54,11 @@
                     <navigationItem key="navigationItem" id="1UO-mq-ehd">
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="JCB-3J-hPP">
                             <connections>
-                                <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="78S-zu-NzZ"/>
+                                <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="2yQ-a0-B3U"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="AddFriendButton" destination="JCB-3J-hPP" id="hPR-km-mOt"/>
                         <outlet property="ContactTableView" destination="C8q-HP-b1c" id="18O-mc-u3u"/>
                     </connections>
                 </tableViewController>
@@ -83,16 +81,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cwp-0W-Ijg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-690" y="295"/>
-        </scene>
-        <!--personal_info-->
-        <scene sceneID="sqd-sh-jqu">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Info" referencedIdentifier="personal_info" id="0Hy-Vh-Jc8" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="jcx-96-Ifc"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gcX-0v-Tcm" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="723" y="294"/>
         </scene>
     </scenes>
 </document>

@@ -19,16 +19,19 @@
 @property(nonatomic, strong) NSMutableArray<NSString*> *contentList;
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
 @property (weak, nonatomic) IBOutlet UIButton *logoutButton;
+@property (weak, nonatomic) IBOutlet UIButton *addButton;
 
 @end
 
 @implementation InfoViewController
 
-- (instancetype) init {
+- (instancetype) init
+{
     return self;
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
     // [self.navigationController setNavigationBarHidden:NO animated:NO];
     self.navigationController.navigationBarHidden = NO;
@@ -44,9 +47,12 @@
     self.Birthplace.text = self.User.Birthplace;
     
     if (self.User == [[UserManager getInstance] getLoginModel])
-        self.sendButton.hidden = YES;
+        self.logoutButton.hidden = NO;
+    else if (self.isFriend)
+        self.sendButton.hidden = NO;
     else
-        self.logoutButton.hidden = YES;
+        self.addButton.hidden = NO;
+        
         
     
     
@@ -189,6 +195,28 @@
     ChatViewController *viewController = [[ChatViewController alloc] initWithContact:self.User];
     viewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (IBAction)addFriend:(id)sender
+{
+    AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
+    NSDictionary* parameters = @{@"cid":@0, @"to":self.User.UserID, @"info":@"hello"};
+    
+    NSString *url = @"http://118.89.65.154:8000//content/add";
+    [manger POST:url parameters:parameters progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
+        {
+            if ([responseObject[@"state"]  isEqualToString:@"ok"])
+                NSLog(@"add message send success");
+            else
+                NSLog(@"add message send fail");
+        }
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+        {
+            NSLog(@"add message send fail");
+            NSLog(@"%@", error.localizedDescription);
+        }
+     ];
 }
 
 /*

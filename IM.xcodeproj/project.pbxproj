@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CAFC1C20C879BAF16134B5A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DC355560AC0C863BBC50F1 /* Pods_IM.framework */; };
 		3FD78A8C228FA0EE00B89353 /* DatabaseHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FD78A8B228FA0EE00B89353 /* DatabaseHelper.m */; };
 		3FD78A8E228FF2E900B89353 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FD78A8D228FF2E900B89353 /* libsqlite3.0.tbd */; };
 		7127821022740806002729E3 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127820D22740805002729E3 /* ContactTableViewCell.m */; };
@@ -19,10 +20,12 @@
 		7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822D22769C6A002729E3 /* MessageTableViewCell.m */; };
 		712782382276A0D7002729E3 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782342276A0D6002729E3 /* UserModel.m */; };
 		712782392276A0D7002729E3 /* MessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 712782372276A0D7002729E3 /* MessageModel.m */; };
+		7156844C229C2F58006A1530 /* FriendRequestTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71568448229C2F58006A1530 /* FriendRequestTableViewCell.m */; };
+		7156844D229C2F58006A1530 /* FriendRequestPage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71568449229C2F58006A1530 /* FriendRequestPage.storyboard */; };
+		7156844E229C2F58006A1530 /* FriendRequestTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */; };
 		717F058622848AA2006A34C1 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 717F058522848AA2006A34C1 /* SessionHelper.m */; };
 		D775CAA1229934530081CDD6 /* SessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D775CAA0229934530081CDD6 /* SessionModel.m */; };
 		DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */; };
-		E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D610B913D1095E8624DF3B8 /* Pods_IM.framework */; };
 		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
 		FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */; };
 		FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DA7226D64A500968B28 /* AppDelegate.m */; };
@@ -58,12 +61,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.release.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.release.xcconfig"; sourceTree = "<group>"; };
-		1D610B913D1095E8624DF3B8 /* Pods_IM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D1F481DA66633D578265CE2 /* Pods-IM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.debug.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.debug.xcconfig"; sourceTree = "<group>"; };
 		3FD78A8A228FA0EE00B89353 /* DatabaseHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseHelper.h; sourceTree = "<group>"; };
 		3FD78A8B228FA0EE00B89353 /* DatabaseHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseHelper.m; sourceTree = "<group>"; };
 		3FD78A8D228FF2E900B89353 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
-		6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.debug.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.debug.xcconfig"; sourceTree = "<group>"; };
 		7127820C22740805002729E3 /* ContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactTableViewCell.h; sourceTree = "<group>"; };
 		7127820D22740805002729E3 /* ContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewCell.m; sourceTree = "<group>"; };
 		7127820E22740806002729E3 /* ContactTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewController.m; sourceTree = "<group>"; };
@@ -80,12 +81,19 @@
 		712782352276A0D7002729E3 /* MessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageModel.h; sourceTree = "<group>"; };
 		712782362276A0D7002729E3 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		712782372276A0D7002729E3 /* MessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageModel.m; sourceTree = "<group>"; };
+		71568447229C2F58006A1530 /* FriendRequestTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendRequestTableViewCell.h; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestTableViewCell.h; sourceTree = SOURCE_ROOT; };
+		71568448229C2F58006A1530 /* FriendRequestTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendRequestTableViewCell.m; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestTableViewCell.m; sourceTree = SOURCE_ROOT; };
+		71568449229C2F58006A1530 /* FriendRequestPage.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = FriendRequestPage.storyboard; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestPage.storyboard; sourceTree = SOURCE_ROOT; };
+		7156844A229C2F58006A1530 /* FriendRequestTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FriendRequestTableViewController.h; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestTableViewController.h; sourceTree = SOURCE_ROOT; };
+		7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendRequestTableViewController.m; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestTableViewController.m; sourceTree = SOURCE_ROOT; };
 		717F058422848AA2006A34C1 /* SessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionHelper.h; sourceTree = "<group>"; };
 		717F058522848AA2006A34C1 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
 		D775CA9F229934530081CDD6 /* SessionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionModel.h; sourceTree = "<group>"; };
 		D775CAA0229934530081CDD6 /* SessionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionModel.m; sourceTree = "<group>"; };
 		DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoModifiedViewController.m; sourceTree = "<group>"; };
 		DFDD795E228FAEDC008AAA7F /* InfoModifiedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoModifiedViewController.h; sourceTree = "<group>"; };
+		EA2F166862D806281915123F /* Pods-IM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.release.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.release.xcconfig"; sourceTree = "<group>"; };
+		F5DC355560AC0C863BBC50F1 /* Pods_IM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA9A78F5228667D800CC26CF /* UserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		FA9A78F6228667D800CC26CF /* UserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketRocketUtility.h; sourceTree = "<group>"; };
@@ -124,7 +132,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3FD78A8E228FF2E900B89353 /* libsqlite3.0.tbd in Frameworks */,
-				E9E63FA5885A19B5CAEDC42A /* Pods_IM.framework in Frameworks */,
+				1CAFC1C20C879BAF16134B5A /* Pods_IM.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,8 +156,8 @@
 		5B4DE96B8C47E089FC825F72 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */,
-				033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */,
+				1D1F481DA66633D578265CE2 /* Pods-IM.debug.xcconfig */,
+				EA2F166862D806281915123F /* Pods-IM.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -167,11 +175,24 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		7156843E229C2EF2006A1530 /* FriendRequestPage */ = {
+			isa = PBXGroup;
+			children = (
+				71568449229C2F58006A1530 /* FriendRequestPage.storyboard */,
+				71568447229C2F58006A1530 /* FriendRequestTableViewCell.h */,
+				71568448229C2F58006A1530 /* FriendRequestTableViewCell.m */,
+				7156844A229C2F58006A1530 /* FriendRequestTableViewController.h */,
+				7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */,
+			);
+			name = FriendRequestPage;
+			path = "New Group";
+			sourceTree = "<group>";
+		};
 		B099404EFA5C81A84530E3E2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				3FD78A8D228FF2E900B89353 /* libsqlite3.0.tbd */,
-				1D610B913D1095E8624DF3B8 /* Pods_IM.framework */,
+				F5DC355560AC0C863BBC50F1 /* Pods_IM.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -300,6 +321,7 @@
 		FDEBADC022768F8B00EAE88F /* ContactPage */ = {
 			isa = PBXGroup;
 			children = (
+				7156843E229C2EF2006A1530 /* FriendRequestPage */,
 				7127821E22740918002729E3 /* ContactPage.storyboard */,
 				7127820C22740805002729E3 /* ContactTableViewCell.h */,
 				7127820D22740805002729E3 /* ContactTableViewCell.m */,
@@ -328,11 +350,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FD085DCF226D64A800968B28 /* Build configuration list for PBXNativeTarget "IM" */;
 			buildPhases = (
-				63B9741D8D1596035E137A31 /* [CP] Check Pods Manifest.lock */,
+				09CCD7C7F0F26544440562FD /* [CP] Check Pods Manifest.lock */,
 				FD085D9F226D64A500968B28 /* Sources */,
 				FD085DA0226D64A500968B28 /* Frameworks */,
 				FD085DA1226D64A500968B28 /* Resources */,
-				65FDEB3B848BD6B6FC5C1169 /* [CP] Embed Pods Frameworks */,
+				FF58E7B8CDD3D12BFDDF58AA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -427,6 +449,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7127821C2274081B002729E3 /* Info.storyboard in Resources */,
+				7156844D229C2F58006A1530 /* FriendRequestPage.storyboard in Resources */,
 				FD085DB3226D64A800968B28 /* LaunchScreen.storyboard in Resources */,
 				7127821B2274081B002729E3 /* Main.storyboard in Resources */,
 				FD085DB0226D64A800968B28 /* Assets.xcassets in Resources */,
@@ -453,7 +476,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		63B9741D8D1596035E137A31 /* [CP] Check Pods Manifest.lock */ = {
+		09CCD7C7F0F26544440562FD /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -475,7 +498,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		65FDEB3B848BD6B6FC5C1169 /* [CP] Embed Pods Frameworks */ = {
+		FF58E7B8CDD3D12BFDDF58AA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,10 +538,12 @@
 				7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */,
 				7127821122740806002729E3 /* ContactTableViewController.m in Sources */,
 				FDEBADB32274106700EAE88F /* InfoViewController.m in Sources */,
+				7156844C229C2F58006A1530 /* FriendRequestTableViewCell.m in Sources */,
 				FD28F6DB226E1CE1008FB1F1 /* RegisterViewController.m in Sources */,
 				FD23CB662282FDD300FEF250 /* ChatViewController.m in Sources */,
 				FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */,
 				712782392276A0D7002729E3 /* MessageModel.m in Sources */,
+				7156844E229C2F58006A1530 /* FriendRequestTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,7 +736,7 @@
 		};
 		FD085DD0226D64A800968B28 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6F7021EE9026148C86FACE09 /* Pods-IM.debug.xcconfig */;
+			baseConfigurationReference = 1D1F481DA66633D578265CE2 /* Pods-IM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -728,7 +753,7 @@
 		};
 		FD085DD1226D64A800968B28 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 033844C78CD042BFC0EA00B1 /* Pods-IM.release.xcconfig */;
+			baseConfigurationReference = EA2F166862D806281915123F /* Pods-IM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

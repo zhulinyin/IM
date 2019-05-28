@@ -15,12 +15,8 @@
 @property (nonatomic, strong) NSArray *searchResults;
 @property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *AddFriendButton;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *AddComfirmButton;
-@property (weak, nonatomic) IBOutlet UITextField *FriendID;
-@property (weak, nonatomic) IBOutlet UISearchBar *SearchBar;
-@property (strong, nonatomic) IBOutlet UISearchDisplayController *SearchBarController;
 @property (strong, nonatomic) UISearchController *searchController;
+@property BOOL isSearching;
 
 @end
 
@@ -36,7 +32,6 @@
     
     [self getContactsFromServer];
     
-    //self.SearchBarController.displaysSearchBarInNavigationBar = YES;
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     //self.ContactTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
     
@@ -50,16 +45,14 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.searchController.searchBar.delegate = self;
-    self.tableView.tableHeaderView = self.searchController.searchBar;
+    //self.tableView.tableHeaderView = self.searchController.searchBar;
     self.definesPresentationContext = YES;
-    [self.searchController.searchBar sizeToFit];
+    //[self.searchController.searchBar sizeToFit];
 }
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    NSString *searchString = searchController.searchBar.text;
-    [self searchDisplayController:self.searchController shouldReloadTableForSearchString:searchString];
-    [self.tableView reloadData];
+    // do nothing, search happens in textDidChanged
 }
 
 
@@ -86,27 +79,28 @@
     
 }
 
-- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"UserID contains[c] %@", searchText];
-    self.searchResults = [self.ContactsArray filteredArrayUsingPredicate:resultPredicate];
+    if (searchText.length == 0)
+    {
+        self.isSearching = false;
+        [self.searchController.searchBar endEditing:YES];
+        
+    }
+    else
+    {
+        
+        self.isSearching = true;
+        NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"UserID contains[c] %@", searchText];
+        self.searchResults = [self.ContactsArray filteredArrayUsingPredicate:resultPredicate];
+    }
     
-    [self.SearchBarController.searchResultsTableView reloadData];
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
-{
-    [self filterContentForSearchText:searchString
-                               scope:[[self.SearchBarController.searchBar scopeButtonTitles]
-                                      objectAtIndex:[self.SearchBarController.searchBar
-                                                     selectedScopeButtonIndex]]];
+    [self.tableView reloadData];
     
-    return YES;
 }
 
 - (void)initializeTestData
 {
-    
     UserModel* TestUser1 = [[UserModel alloc] initWithProperties:@"123" NickName:@"teemo" RemarkName:@"teemo" Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
     UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
     [self willChangeValueForKey:@"ContactsArray"];
@@ -117,24 +111,33 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.SearchBarController.searchResultsTableView)
+    if (section == 0)
+        return 1;
+    
+    if (self.isSearching)
         return self.searchResults.count;
     else
         return self.ContactsArray.count;
 }
 
+- (NSString* )tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (!self.isSearching && section == 1)
+        return @"我的好友";
+    return @"";
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
 cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString *reuseID = @"ContactTableCell";
-ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseID];
-
+    ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseID];
 
     if (cell == nil)
     {
@@ -142,65 +145,141 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    UserModel* friend;
-    if (tableView == self.searchDisplayController.searchResultsTableView)
-        friend = self.searchResults[indexPath.row];
-    else
-        friend = self.ContactsArray[indexPath.row];
-
-    cell.ContactProfilePicture.image = [UIImage imageNamed:friend.ProfilePicture];
-    cell.ContactName.text = friend.NickName;
+    if (indexPath.section == 0)
+    {
+        if (self.isSearching)
+            cell.ContactName.text = [[NSString alloc] initWithFormat:@"查找用户：%@", self.searchController.searchBar.text];
+        else
+            cell.ContactName.text = @"新的好友";
+    }
+    else if (indexPath.section == 1)
+    {
+        UserModel* friend;
+        if (self.isSearching)
+            friend = self.searchResults[indexPath.row];
+        else
+            friend = self.ContactsArray[indexPath.row];
+        cell.ContactProfilePicture.image = [UIImage imageNamed:friend.ProfilePicture];
+        cell.ContactName.text = friend.NickName;
+    }
+    
     return cell;
 }
 
-- (IBAction)AddFriend:(id)sender
-{
-    NSString* FriendID = self.FriendID.text;
-    
-    /*void (^registerEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"Found User");
-            NSDictionary *friendJSON = result[@"data"];
-            UserModel* friendModel = [[UserModel alloc] initWithProperties:friendJSON[@"Username"] NickName:friendJSON[@"Nickname"] RemarkName:friendJSON[@"Nickname"] Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
-            UIStoryboard *infoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
-            InfoViewController *infoVC = [infoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
-            infoVC.User = friendModel;
-            [self.navigationController pushViewController:infoVC animated:YES];
-            
-        }
-        else
-        {
-            NSLog(@"User not exist");
-        }
-    };
-    
-    NSString *path = [[NSString alloc] initWithFormat:@"/account/info/user/%@", FriendID];
-    NSString *params = [[NSString alloc] initWithFormat:@"cid=0username=%@&password=%@", FriendID, @"Hello"];
-    [SessionHelper sendRequest:path method:@"get" parameters:params handler:registerEvent];*/
-    UIStoryboard *infoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
-    InfoViewController *infoVC = [infoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
-    UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];;
-    infoVC.User = TestUser2;
-    [self.navigationController pushViewController:infoVC animated:YES];
-}
 
 - (IBAction)showSearchBar:(id)sender
 {
-    //self.SearchBarController.displaysSearchBarInNavigationBar = YES;
-    //self.ContactTableView.tableHeaderView = self.SearchBar;
-    //self.SearchBarController.active = YES;
-    
+    self.ContactTableView.tableHeaderView = self.searchController.searchBar;
+    self.searchController.active = YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    self.ContactTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 /*
+- (BOOL) shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
+{
+    if ( [identifier isEqualToString:@"ShowUserInfo"])
+    {
+        NSIndexPath *indexPath = [self.ContactTableView indexPathForCell:sender];
+        if (indexPath.section == 0)
+            return NO;
+        return YES;
+    }
+    return YES;
+}*/
+
+/*
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    if ([[segue identifier] isEqualToString:@"ShowUserInfo"]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+        InfoViewController *InfoVC = [segue destinationViewController];
+        InfoVC.hidesBottomBarWhenPushed = YES;
+        InfoVC.isFriend = YES;
+        InfoVC.User = self.ContactsArray[indexPath.row];
+    }
+    // Pass the selected object to the new view controller.
+ }
+ */
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"ContactsArray"])
+    {
+        //NSLog(@"contacts: %@", self.ContactsArray);
+        [self.tableView reloadData];
+        
+    }
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.SelectiveUser = self.ContactsArray[indexPath.row];
+    if (indexPath.section == 0 && self.isSearching == NO)
+    {
+        UIStoryboard *FriendRequestStoryboard = [UIStoryboard storyboardWithName:@"FriendRequestPage" bundle:nil];
+        [self.navigationController pushViewController:FriendRequestStoryboard.instantiateInitialViewController animated:YES];
+    }
+    else if (indexPath.section == 0 && self.isSearching == YES)
+    {
+        AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
+        NSString *url = [[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/account/info/user/%@", self.searchController.searchBar.text];
+        [manger GET:url parameters:nil progress:nil
+            success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                if ([responseObject[@"msg"] isEqualToString:@"ok"])
+                {
+                    NSLog(@"here");
+                    UserModel* searchedUser = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                                                  NickName:responseObject[@"data"][@"Nickname"]
+                                                                RemarkName:responseObject[@"data"][@"Username"]
+                                                                    Gender:responseObject[@"data"][@"Gender"]
+                                                                Birthplace:responseObject[@"data"][@"Region"]
+                                                                     ProfilePicture:@"peppa"];
+                    UIStoryboard *searchUserInfoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
+                    
+                    InfoViewController *InfoVC = [searchUserInfoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
+                    InfoVC.User = searchedUser;
+                    InfoVC.isFriend = NO;
+                    InfoVC.hidesBottomBarWhenPushed = YES;
+                    [self.navigationController pushViewController:InfoVC animated:YES];
+                }
+                else
+                {
+                    NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
+                    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alertView show];
+                }
+                
+                [[DatabaseHelper getInstance] registerNewMessagesListener];
+            }
+            failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"search User fail");
+                NSLog(@"%@", error.localizedDescription);
+                NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                [alertView show];
+            }];
+    }
+    else if (indexPath.section == 1)
+    {
+        UIStoryboard *searchUserInfoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
+        
+        InfoViewController *InfoVC = [searchUserInfoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
+        InfoVC.hidesBottomBarWhenPushed = YES;
+        InfoVC.isFriend = YES;
+        if (self.isSearching)
+            InfoVC.User = self.searchResults[indexPath.row];
+        else
+            InfoVC.User = self.ContactsArray[indexPath.row];
+        [self.navigationController pushViewController:InfoVC animated:YES];
+    }
+    
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.
@@ -236,28 +315,4 @@ ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseI
 }
 */
 
-
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    if ([[segue identifier] isEqualToString:@"ShowUserInfo"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
-        InfoViewController *InfoVC = [segue destinationViewController];
-        InfoVC.hidesBottomBarWhenPushed = YES;
-        InfoVC.User = self.ContactsArray[indexPath.row];
-    }
-    // Pass the selected object to the new view controller.
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-    if ([keyPath isEqualToString:@"ContactsArray"])
-    {
-        //NSLog(@"contacts: %@", self.ContactsArray);
-        [self.tableView reloadData];
-        
-    }
-}
 @end

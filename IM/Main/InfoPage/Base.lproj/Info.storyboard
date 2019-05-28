@@ -42,25 +42,37 @@
                                 </constraints>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="aRD-bL-r6S">
-                                <rect key="frame" x="127" y="537" width="121" height="86"/>
+                                <rect key="frame" x="187.5" y="637" width="0.0" height="0.0"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pDT-zQ-d62">
-                                        <rect key="frame" x="0.0" y="0.0" width="121" height="38"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pDT-zQ-d62">
+                                        <rect key="frame" x="-41" y="0.0" width="82" height="0.0"/>
                                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                        <state key="normal" title="Send Messgae">
+                                        <state key="normal" title="发送消息">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
                                             <action selector="sendMessage:" destination="yo3-A1-LK8" eventType="touchUpInside" id="zfX-mk-uJx"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VBL-SU-a2B">
-                                        <rect key="frame" x="28.5" y="48" width="64" height="38"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wHd-Lt-he4">
+                                        <rect key="frame" x="-41" y="0.0" width="82" height="0.0"/>
                                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
-                                        <state key="normal" title="logout">
+                                        <state key="normal" title="添加好友">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="addFriend:" destination="yo3-A1-LK8" eventType="touchUpInside" id="szK-z5-7hL"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VBL-SU-a2B">
+                                        <rect key="frame" x="-41" y="0.0" width="82" height="0.0"/>
+                                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                        <state key="normal" title="退出登录">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
@@ -77,14 +89,15 @@
                         <constraints>
                             <constraint firstItem="aRD-bL-r6S" firstAttribute="centerX" secondItem="KeJ-9S-5dr" secondAttribute="centerX" id="7Ce-dF-qZI"/>
                             <constraint firstItem="Id6-C0-ssj" firstAttribute="leading" secondItem="KeJ-9S-5dr" secondAttribute="leadingMargin" id="B1N-AL-y4k"/>
+                            <constraint firstItem="xBc-hV-qHl" firstAttribute="bottom" secondItem="aRD-bL-r6S" secondAttribute="bottom" constant="30" id="ExD-RU-yk2"/>
                             <constraint firstItem="aRD-bL-r6S" firstAttribute="centerX" secondItem="Id6-C0-ssj" secondAttribute="centerX" id="HWg-N4-EfN"/>
                             <constraint firstItem="Id6-C0-ssj" firstAttribute="top" secondItem="xBc-hV-qHl" secondAttribute="top" constant="14" id="INw-Nf-KQU"/>
-                            <constraint firstItem="xBc-hV-qHl" firstAttribute="bottom" secondItem="aRD-bL-r6S" secondAttribute="bottom" constant="44" id="koI-pd-1WS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="xBc-hV-qHl"/>
                     </view>
                     <navigationItem key="navigationItem" id="vuk-Dm-13S"/>
                     <connections>
+                        <outlet property="addButton" destination="wHd-Lt-he4" id="xao-3I-8Nm"/>
                         <outlet property="logoutButton" destination="VBL-SU-a2B" id="fDF-EL-sTz"/>
                         <outlet property="sendButton" destination="pDT-zQ-d62" id="owe-fj-cMg"/>
                         <outlet property="tableView" destination="Id6-C0-ssj" id="2gs-75-Q2I"/>

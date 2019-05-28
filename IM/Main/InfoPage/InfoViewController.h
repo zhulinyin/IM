@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *ID;
 @property (weak, nonatomic) IBOutlet UILabel *Gender;
 @property (strong, nonatomic) UserModel* User;
+@property BOOL isFriend;
 @property (weak, nonatomic) IBOutlet UIImageView *ProfilePicture;
 
 @end
