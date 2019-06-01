@@ -21,8 +21,9 @@
     
     self.RequestList = [NSMutableArray array];
     
-    [self initializeTestData];
+    //[self initializeTestData];
     self.FriendRequestTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewFriendRequest:) name:@"newFriends" object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -68,6 +69,42 @@
     return cell;
 }
 
+- (void)getNewFriendRequest:(NSNotification *)notification
+{
+    NSArray *messages = [notification object];
+    for (int i=0; i<messages.count; i++)
+    {
+        MessageModel *message = messages[i];
+        
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", message.SenderID]];
+        
+        [manager GET:url parameters:nil progress:nil
+             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                 if ([responseObject[@"msg"] isEqualToString:@"ok"])
+                 {
+                     UserModel* friend = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                                                            NickName:responseObject[@"data"][@"Nickname"]
+                                                                          RemarkName:responseObject[@"data"][@"Username"]
+                                                                              Gender:responseObject[@"data"][@"Gender"]
+                                                                          Birthplace:responseObject[@"data"][@"Region"]
+                                                                      ProfilePicture:@"peppa"];
+                     [self.RequestList addObject:friend];
+                 }
+                 else
+                 {
+                     NSLog(@"%@", responseObject[@"msg"]);
+                 }
+             }
+             failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                
+                 NSLog(@"%@", error.localizedDescription);
+             }];
+
+            [self.FriendRequestTableView reloadData];
+    }
+}
+
 - (IBAction)AcceptRequest:(id)sender
 {
     
@@ -78,28 +115,28 @@
     cell.AcceptButton.enabled = NO;
     cell.RejectButton.enabled = NO;
     NSString* FriendID = self.RequestList[indexPath.row].UserID;
+    NSDictionary* params = @{@"cid":@0, @"to":FriendID, @"info":@"hello"};
     
-    void (^accpetRequest)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"%@", result[@"msg"]);
-            cell.RejectButton.backgroundColor = [UIColor grayColor];
-        }
-        else
-        {
-            NSLog(@"%@", result);
-            cell.AcceptButton.enabled = YES;
-            cell.RejectButton.enabled = YES;
-        }
-    };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/content/add"];
     
-    NSString *params = [[NSString alloc] initWithFormat:@"cid=0&to=%@&info=%@", @"123", @"Hello"];
-    [SessionHelper sendRequest:@"/content/add" method:@"post" parameters:params handler:accpetRequest];
-    
-    
-    
+    [manager GET:url parameters:params progress:nil
+     success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+         if([responseObject[@"state"] isEqualToString:@"ok"])
+         {
+             NSLog(@"%@", responseObject[@"msg"]);
+             cell.RejectButton.backgroundColor = [UIColor grayColor];
+         }
+         else
+         {
+             NSLog(@"%@", responseObject[@"msg"]);
+             cell.AcceptButton.enabled = YES;
+             cell.RejectButton.enabled = YES;
+         }
+     }
+     failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+         NSLog(@"%@", error.localizedDescription);
+     }];
     
 }
 

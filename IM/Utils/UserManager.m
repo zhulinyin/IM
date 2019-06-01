@@ -50,9 +50,9 @@ static UserManager *instance = nil;
 
 // 获取用户的信息
 -(void) getInfo{
-    AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSString *url = @"http://172.18.32.97:8000/account/info";
-    [manger GET:url parameters:nil progress:nil
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/account/info"];
+    [manager GET:url parameters:nil progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"getInfo success");
             self.loginUser = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
@@ -60,7 +60,8 @@ static UserManager *instance = nil;
                                                         RemarkName:responseObject[@"data"][@"Username"]
                                                             Gender:responseObject[@"data"][@"Gender"]
                                                          Birthplace:responseObject[@"data"][@"Region"]
-                                                    ProfilePicture:@"peppa"];
+                                                    ProfilePicture:responseObject[@"data"][@"Avatar"]];
+            NSLog(responseObject[@"data"][@"Avatar"]);
             [[DatabaseHelper getInstance] registerNewMessagesListener];
             [self.socket SRWebSocketOpen];
     }
@@ -73,153 +74,169 @@ static UserManager *instance = nil;
 
 -(void) login:(NSString *)username withPassword:(NSString *)password
 {
-    void (^loginEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"login success");
-            self.loginUserId = username;
-            // 登陆成功后，获取用户的个人信息
-            [self getInfo];
-            
-//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-            self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
-            [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
-            
-            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/account/login"];
+    NSDictionary *params = @{@"username":username, @"password":password};
+    
+    [manager POST:url parameters:params progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if([responseObject[@"state"] isEqualToString:@"ok"])
+            {
+                NSLog(@"login success");
+                self.loginUserId = username;
+                // 登陆成功后，获取用户的个人信息
+                [self getInfo];
+                
+                //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+                self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
+                [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
+                
+                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
+            }
+            else
+            {
+                NSLog(@"login fail");
+            }
         }
-        else
-        {
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"login fail");
-        }
-    };
-    
-    NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
-    [SessionHelper sendRequest:@"/account/login" method:@"post" parameters:params handler:loginEvent];
-    
+            NSLog(@"%@", error.localizedDescription);
+        }];
 }
 
 -(void) tryLogin
 {
-    void (^tryLoginEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"login success");
-            NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
-            self.loginUserId = username;
-            // 登陆成功后，获取用户的个人信息
-            [self getInfo];
-            
-//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-            self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
-            
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/account/login"];
+    
+    [manager GET:url parameters:nil progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if([responseObject[@"state"] isEqualToString:@"ok"])
+            {
+                NSLog(@"login success");
+                NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
+                self.loginUserId = username;
+                // 登陆成功后，获取用户的个人信息
+                [self getInfo];
+                
+                //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+                self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"success"];
+                
+            }
+            else
+            {
+                NSLog(@"login fail");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"fail"];
+            }
         }
-        else
-        {
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"login fail");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"tryLogin" object:@"fail"];
-        }
-    };
-    
-    
-    [SessionHelper sendRequest:@"/account/login" method:@"get" parameters:@"" handler:tryLoginEvent];
+            NSLog(@"%@", error.localizedDescription);
+        }];
 }
 
 -(void) logout
 {
-    void (^returnToLogin)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"%@", result[@"msg"]);
-            self.loginUser = nil;
-            self.loginUserId = nil;
-            [self.socket SRWebSocketClose];
-            [[DatabaseHelper getInstance] unregisterNewMessageListener];
-            UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
-            [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
-        }
-        else
-        {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"登出失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
-            NSLog(@"logout fail");
-        }
-    };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/account/logout"];
     
-    NSString *params = @"";
-    [SessionHelper sendRequest:@"/account/logout" method:@"delete" parameters:params handler:returnToLogin];
     
+    [manager DELETE:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
+     {
+         if([responseObject[@"state"] isEqualToString:@"ok"])
+         {
+             NSLog(@"%@", responseObject[@"msg"]);
+             self.loginUser = nil;
+             self.loginUserId = nil;
+             [self.socket SRWebSocketClose];
+             [[DatabaseHelper getInstance] unregisterNewMessageListener];
+             UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+             [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
+         }
+         else
+         {
+             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"登出失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+             [alertView show];
+             NSLog(@"logout fail");
+         }
+     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
+     {
+         NSLog(@"logout fail");
+         NSLog(@"%@", error.localizedDescription);
+     }];
     
 }
 
 
 -(void) register:(NSString *)username withPassword:(NSString *)password
 {
-    void (^registerEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"register success");
-            // 登陆成功后，获取用户的个人信息
-//            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-            //sign in automatically after successfully signing up
-            [self login:username withPassword:password];
-        }
-        else
-        {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"注册失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alertView show];
-            NSLog(@"register fail");
-        }
-    };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/account/register"];
+    NSDictionary *params = @{@"username":username, @"password":password};
     
-    NSString *params = [[NSString alloc] initWithFormat:@"username=%@&password=%@", username, password];
-    [SessionHelper sendRequest:@"/account/register" method:@"post" parameters:params handler:registerEvent];
+    [manager POST:url parameters:params progress:nil
+       success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+           if([responseObject[@"state"] isEqualToString:@"ok"])
+           {
+               NSLog(@"register success");
+               // 登陆成功后，获取用户的个人信息
+               [self getInfo];
+               //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
+               [self.socket SRWebSocketOpen];
+               //sign in automatically after successfully signing up
+               [self login:username withPassword:password];
+           }
+           else
+           {
+               UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"注册失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+               [alertView show];
+               NSLog(@"register fail");
+           }
+       }
+       failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"注册失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+           [alertView show];
+           NSLog(@"register fail");
+           NSLog(@"%@", error.localizedDescription);
+       }];
+                    
 }
 
 -(void) modifyInfo:(NSString *)attr withValue:(NSString *)value
 {
-    void (^modifyInfoEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/%@", attr]];
+    NSDictionary *params = @{@"value":value};
+
+    [manager PUT:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if([responseObject[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"modifyInfo success");
         }
         else
         {
-            NSLog(result[@"msg"]);
+            NSLog(@"%@", responseObject[@"msg"]);
             NSLog(@"modifyInfo fail");
         }
-    };
-    NSString *params = [[NSString alloc] initWithFormat:@"value=%@", value];
-    NSString *api = [[NSString alloc] initWithFormat:@"/account/info/%@", attr];
-    NSLog(api);
-    NSLog(params);
-    [SessionHelper sendRequest:api method:@"put" parameters:params handler:modifyInfoEvent];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"modifyInfo fail");
+        NSLog(@"%@", error.localizedDescription);
+    }];
 }
 
 // 上传图片到服务器
 -(void) uploadImage:(NSString* )path withImage:(UIImage* )image
 {
-    AFHTTPSessionManager *session = [AFHTTPSessionManager manager];
-    [session.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
     
     // 处理url
-    NSString* serverDomain = @"http://172.18.32.97:8000";
-//    NSString* serverDomain = @"http://118.89.65.154:8000";
-    NSString* urlString = [serverDomain stringByAppendingString:path];
-    NSLog(urlString);
-    [session POST:urlString parameters:nil constructingBodyWithBlock:
+    NSString* urlString = [URLHelper getURLwithPath:path];
+    NSLog(@"%@", urlString);
+    [manager POST:urlString parameters:nil constructingBodyWithBlock:
      ^(id<AFMultipartFormData> _Nonnull formData){
         // 图片转data
         NSData *data = UIImagePNGRepresentation(image);
@@ -229,7 +246,7 @@ static UserManager *instance = nil;
         NSLog(@"uploadImage success");
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
         NSLog(@"uploadImage fail");
-        NSLog(error.localizedDescription);
+        NSLog(@"%@", error.localizedDescription);
     }];
 }
 

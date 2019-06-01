@@ -80,23 +80,28 @@
     message.Content = text;
     message.TimeStamp = [NSDate date];
     [self addMessage:message];
-    void (^sendFeedBack)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"send success");
-            [self.databaseHelper insertMessageWithMessage:message];
-        }
-        else
-        {
-            NSLog(@"send fail");
-        }
-    };
     
-    NSString *path = [[NSString alloc] initWithFormat:@"/content/%@", type];
-    NSString *params = [[NSString alloc] initWithFormat:@"to=%@&data=%@&timestamp=%@", self.chatUser.UserID, text, message.TimeStamp];
-    [SessionHelper sendRequest:path method:@"post" parameters:params handler:sendFeedBack];
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/content/%@", type]];
+    NSDictionary* params = @{@"to":self.chatUser.UserID, @"data":text, @"timestamp":message.TimeStamp};
+    
+    [manager POST:url parameters:params progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             if([responseObject[@"state"] isEqualToString:@"ok"])
+             {
+                 NSLog(@"send success");
+                 [self.databaseHelper insertMessageWithMessage:message];
+             }
+             else
+             {
+                 NSLog(@"send fail");
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"send fail");
+             NSLog(@"%@", error.localizedDescription);
+         }];
 }
 
 //新增消息

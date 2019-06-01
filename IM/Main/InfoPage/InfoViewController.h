@@ -12,6 +12,7 @@
 #import "ChatViewController.h"
 #import "DatabaseHelper.h"
 #import "../../Utils/UserManager.h"
+#import "UIImageView+WebCache.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

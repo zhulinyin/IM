@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SessionHelper.h"
 #import "UserModel.h"
 #import "../../../Utils/DatabaseHelper.h"
 

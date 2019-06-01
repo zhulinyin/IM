@@ -21,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) unregisterNewMessageListener;
 -(NSMutableArray *) querySessions;
 -(void) insertSessionWithSession:(SessionModel *)session;
+-(void) insertFriendWithFriend:(UserModel *) Friend;
+-(void) selectFriendByID:(NSString*) UserID;
+
 @end
 
 NS_ASSUME_NONNULL_END

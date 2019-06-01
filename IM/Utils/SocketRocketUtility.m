@@ -53,8 +53,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
         return;
     }
     
-    self.socket = [[SRWebSocket alloc] initWithURLRequest:
-                   [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://118.89.65.154:6789"]]]];//这里填写你服务器的地址
+    NSURLRequest* urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[URLHelper getSocketDomain]]];
+    self.socket = [[SRWebSocket alloc] initWithURLRequest:urlRequest];
     
     NSLog(@"请求的websocket地址：%@",self.socket.url.absoluteString);
     self.socket.delegate = self;   //实现这个 SRWebSocketDelegate 协议
@@ -164,16 +164,17 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 - (void) getMessage{
-    UserManager* userManager = [UserManager getInstance];
-    NSMutableArray *textMessages = [[NSMutableArray alloc] init];
-    NSMutableArray *addRequests = [[NSMutableArray alloc] init];
-    void (^getMessageEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
+        UserManager* userManager = [UserManager getInstance];
+        NSMutableArray *textMessages = [[NSMutableArray alloc] init];
+        NSMutableArray *addRequests = [[NSMutableArray alloc] init];
+    
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq]];
+    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if([responseObject[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"get message success");
-            NSArray *messages = result[@"data"];
+            NSArray *messages = responseObject[@"data"];
             NSLog(@"new messages num: %lu", messages.count);
             for (int i = 0; i < messages.count; i++) {
                 MessageModel *message = [self changeToMessageModel:messages[i]];
@@ -184,7 +185,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
                     [addRequests addObject:message];
                 }
             }
-
+            
             userManager.seq += messages.count;
             [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
             if (textMessages.count > 0)
@@ -196,12 +197,10 @@ dispatch_async(dispatch_get_main_queue(), block);\
         {
             NSLog(@"get message fail");
         }
-    };
-    
-    [SessionHelper sendRequest:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq] method:@"get" parameters:@"" handler:getMessageEvent];
-    
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"get message fail");
+    }];
 }
-
 -(MessageModel *) changeToMessageModel:(NSDictionary *)data {
     MessageModel* message = [[MessageModel alloc] init];
     message.SenderID = data[@"From"];

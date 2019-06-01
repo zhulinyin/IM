@@ -123,12 +123,22 @@
     }
     else{
         cell.accessoryView = ({
-            UIImageView *imgV;
+            UIImageView *imgV = [[UIImageView alloc]init];
             if ([self.User.ProfilePicture isEqualToString:@"image"]){
                 imgV = self.head;
             }
             else{
-                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+//                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+                
+                // 使用SDWebImage第三方库加载网络图片,先设置默认头像等待网络请求
+                
+                NSString *imagePath = [URLHelper getURLwithPath:self.User.ProfilePicture];
+                NSLog(imagePath);
+                [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                        placeholderImage:[UIImage imageNamed:@"peppa"]
+                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                   NSLog(@"error== %@",error);
+                }];
             }
             CGRect frame = imgV.frame;
             frame = CGRectMake(0, 0, 100, 55);
@@ -199,17 +209,21 @@
 
 - (IBAction)addFriend:(id)sender
 {
-    AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSDictionary* parameters = @{@"cid":@0, @"to":self.User.UserID, @"info":@"hello"};
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary* params = @{@"cid":@0, @"to":self.User.UserID, @"info":@"hello"};
     
-    NSString *url = @"http://118.89.65.154:8000//content/add";
-    [manger POST:url parameters:parameters progress:nil
+    NSString *url = [URLHelper getURLwithPath:@"/content/add"];
+    
+    [manager POST:url parameters:params progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
         {
             if ([responseObject[@"state"]  isEqualToString:@"ok"])
                 NSLog(@"add message send success");
             else
+            {
                 NSLog(@"add message send fail");
+                NSLog(@"error: %@", responseObject[@"msg"]);
+            }
         }
         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
         {

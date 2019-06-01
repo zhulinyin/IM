@@ -10,6 +10,7 @@
 #import <SocketRocket.h>
 #import "UserManager.h"
 #import "DatabaseHelper.h"
+#import "URLHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
