@@ -199,17 +199,21 @@
 
 - (IBAction)addFriend:(id)sender
 {
-    AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSDictionary* parameters = @{@"cid":@0, @"to":self.User.UserID, @"info":@"hello"};
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSDictionary* params = @{@"cid":@0, @"to":self.User.UserID, @"info":@"hello"};
     
-    NSString *url = @"http://118.89.65.154:8000//content/add";
-    [manger POST:url parameters:parameters progress:nil
+    NSString *url = [URLHelper getURLwithPath:@"/content/add"];
+    
+    [manager POST:url parameters:params progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject)
         {
             if ([responseObject[@"state"]  isEqualToString:@"ok"])
                 NSLog(@"add message send success");
             else
+            {
                 NSLog(@"add message send fail");
+                NSLog(@"error: %@", responseObject[@"msg"]);
+            }
         }
         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
         {

@@ -53,8 +53,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
         return;
     }
     
-    self.socket = [[SRWebSocket alloc] initWithURLRequest:
-                   [NSURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"ws://118.89.65.154:6789"]]]];//这里填写你服务器的地址
+    NSURLRequest* urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:[URLHelper getSocketDomain]]];
+    self.socket = [[SRWebSocket alloc] initWithURLRequest:urlRequest];
     
     NSLog(@"请求的websocket地址：%@",self.socket.url.absoluteString);
     self.socket.delegate = self;   //实现这个 SRWebSocketDelegate 协议
@@ -164,28 +164,33 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 - (void) getMessage{
+    
     UserManager* userManager = [UserManager getInstance];
-    void (^getMessageEvent)(id) = ^void (id object)
-    {
-        NSDictionary *result = object;
-        if([result[@"state"] isEqualToString:@"ok"])
-        {
-            NSLog(@"get message success");
-            NSArray *messages = result[@"data"];
-            messages = [self changeToMessageModel:messages];
-            NSLog(@"new messages num: %lu", messages.count);
-            userManager.seq += messages.count;
-            [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq]];
+    
+    [manager GET:url parameters:nil progress:nil
+        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            
+            if([responseObject[@"state"] isEqualToString:@"ok"])
+            {
+                NSLog(@"get message success");
+                NSArray *messages = responseObject[@"data"];
+                messages = [self changeToMessageModel:messages];
+                NSLog(@"new messages num: %lu", messages.count);
+                userManager.seq += messages.count;
+                [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
+            }
+            else
+            {
+                NSLog(@"get message fail");
+            }
         }
-        else
-        {
+        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"get message fail");
-        }
-    };
-    
-    [SessionHelper sendRequest:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq] method:@"get" parameters:@"" handler:getMessageEvent];
-    
+            NSLog(@"%@", error.localizedDescription);
+        }];
 }
 
 -(NSMutableArray* ) changeToMessageModel:(NSArray* )messages {

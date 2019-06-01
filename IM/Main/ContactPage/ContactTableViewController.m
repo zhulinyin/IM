@@ -58,25 +58,31 @@
 
 - (void)getContactsFromServer
 {
-    void (^showContacts)(id) = ^void (id object)
-    {
-        NSLog(@"%@", [NSString stringWithFormat:@"dictionary:%@", object ]);
-        
-        for (id user in object[@"data"])
-        {
-             UserModel* ContactUser = [[UserModel alloc] initWithProperties:user[@"Friend"] NickName:user[@"Username"] RemarkName:user[@"Username"] Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
-            [self willChangeValueForKey:@"ContactsArray"];
-            [self.ContactsArray addObject:ContactUser];
-            [self didChangeValueForKey:@"ContactsArray"];
-            
-            
-        }
-        //[self initializeFakeData];
-    };
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/contact/info"];
     
-    [SessionHelper sendRequest:@"/contact/info" method:@"get" parameters:@"" handler:showContacts];
-    
-    
+    [manager GET:url parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             if([responseObject[@"state"] isEqualToString:@"ok"])
+             {
+                 for (id user in responseObject[@"data"])
+                 {
+                     UserModel* ContactUser = [[UserModel alloc] initWithProperties:user[@"Friend"] NickName:user[@"Username"] RemarkName:user[@"Username"] Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
+                     [self willChangeValueForKey:@"ContactsArray"];
+                     [self.ContactsArray addObject:ContactUser];
+                     [self didChangeValueForKey:@"ContactsArray"];
+                     
+                     
+                 }
+             }
+             else
+             {
+                 NSLog(@"%@", responseObject[@"msg"]);
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"%@", error.localizedDescription);
+         }];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -226,9 +232,10 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     }
     else if (indexPath.section == 0 && self.isSearching == YES)
     {
-        AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-        NSString *url = [[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/account/info/user/%@", self.searchController.searchBar.text];
-        [manger GET:url parameters:nil progress:nil
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", self.searchController.searchBar.text]];
+
+        [manager GET:url parameters:nil progress:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if ([responseObject[@"msg"] isEqualToString:@"ok"])
                 {
@@ -253,8 +260,6 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
                     [alertView show];
                 }
-                
-                [[DatabaseHelper getInstance] registerNewMessagesListener];
             }
             failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"search User fail");

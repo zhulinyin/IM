@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "UserModel.h"
 #import "FriendRequestTableViewCell.h"
-#import "SessionHelper.h"
+#import "MessageModel.h"
+#import "URLHelper.h"
+#import <AFNetworking/AFNetworking.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

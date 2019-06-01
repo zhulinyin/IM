@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "InfoViewController.h"
-#import "SessionHelper.h"
+#import <AFNetworking/AFNetworking.h>
+#import "URLHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
