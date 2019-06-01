@@ -165,6 +165,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
 
 - (void) getMessage{
     UserManager* userManager = [UserManager getInstance];
+    NSMutableArray *textMessages = [[NSMutableArray alloc] init];
+    NSMutableArray *addRequests = [[NSMutableArray alloc] init];
     void (^getMessageEvent)(id) = ^void (id object)
     {
         NSDictionary *result = object;
@@ -172,11 +174,23 @@ dispatch_async(dispatch_get_main_queue(), block);\
         {
             NSLog(@"get message success");
             NSArray *messages = result[@"data"];
-            messages = [self changeToMessageModel:messages];
             NSLog(@"new messages num: %lu", messages.count);
+            for (int i = 0; i < messages.count; i++) {
+                MessageModel *message = [self changeToMessageModel:messages[i]];
+                if ([message.Type isEqualToString:@"text"]) {
+                    [textMessages addObject:message];
+                }
+                else if ([message.Type isEqualToString:@"addRequest"]) {
+                    [addRequests addObject:message];
+                }
+            }
+
             userManager.seq += messages.count;
             [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:messages];
+            if (textMessages.count > 0)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:textMessages];
+            if (addRequests.count > 0)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
         }
         else
         {
@@ -188,18 +202,14 @@ dispatch_async(dispatch_get_main_queue(), block);\
     
 }
 
--(NSMutableArray* ) changeToMessageModel:(NSArray* )messages {
-    NSMutableArray* messageModels = [[NSMutableArray alloc] init];
-    for (int i = 0; i < messages.count; i++) {
-        MessageModel* message = [[MessageModel alloc] init];
-        message.SenderID = messages[i][@"From"];
-        message.ReceiverID = messages[i][@"Username"];
-        message.Type = messages[i][@"Type"];
-        message.Content = messages[i][@"content"][@"Cstr"];
-        message.TimeStamp = messages[i][@"content"][@"Timestamp"];
-        [messageModels addObject:message];
-    }
-    return messageModels;
+-(MessageModel *) changeToMessageModel:(NSDictionary *)data {
+    MessageModel* message = [[MessageModel alloc] init];
+    message.SenderID = data[@"From"];
+    message.ReceiverID = data[@"Username"];
+    message.Type = data[@"Type"];
+    message.Content = data[@"content"][@"Cstr"];
+    message.TimeStamp = data[@"content"][@"Timestamp"];
+    return message;
 }
 // 关闭连接
 -(void)SRWebSocketClose{
