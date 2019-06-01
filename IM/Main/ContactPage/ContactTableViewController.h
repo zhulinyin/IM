@@ -10,6 +10,7 @@
 #import "InfoViewController.h"
 #import <AFNetworking/AFNetworking.h>
 #import "URLHelper.h"
+#import "DatabaseHelper.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

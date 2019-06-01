@@ -52,11 +52,18 @@
                     </tableView>
                     <tabBarItem key="tabBarItem" title="联系人" id="KPF-Vo-VfV"/>
                     <navigationItem key="navigationItem" id="1UO-mq-ehd">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="JCB-3J-hPP">
-                            <connections>
-                                <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="2yQ-a0-B3U"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="search" id="JCB-3J-hPP">
+                                <connections>
+                                    <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="2yQ-a0-B3U"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="refresh" id="zF1-rq-Mye">
+                                <connections>
+                                    <action selector="freshContactList:" destination="6X2-IJ-PmU" id="GuZ-tD-7nn"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="ContactTableView" destination="C8q-HP-b1c" id="18O-mc-u3u"/>

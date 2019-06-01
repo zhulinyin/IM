@@ -73,7 +73,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
-                             @"CREATE TABLE IF NOT EXISTS %@ (          \
+                             @"CREATE TABLE IF NOT EXISTS [%@friendList] (          \
                              UserID INTEGER PRIMARY KEY AUTOINCREMENT,  \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
@@ -87,6 +87,19 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         }
         [db close];
     }];
+}
+
+-(void)rebuildFriendListTable
+{
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            NSString* sql = [NSString stringWithFormat: @"DROP TABLE [%@friendList]);", self.userManager.loginUserId];
+            BOOL res = [db executeUpdate:sql];
+            NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
+        }
+        [db close];
+    }];
+    [self createFriendListTable];
 }
 
 -(NSMutableArray *) querySessions {
@@ -142,7 +155,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
             
             NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
         }
@@ -153,6 +166,31 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) selectFriendByID:(NSString*) UserID
 {
     
+}
+
+-(NSMutableArray *) getAllFriends
+{
+    NSMutableArray *friendList = [[NSMutableArray alloc] init];
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db)
+    {
+        if([db open])
+        {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@friendList]", self.userManager.loginUserId]];
+            while([set next])
+            {
+                UserModel* friend = [[UserModel alloc] initWithProperties:[set stringForColumnIndex:0]
+                                                                 NickName:[set stringForColumnIndex:1]
+                                                               RemarkName:[set stringForColumnIndex:2]
+                                                                   Gender:[set stringForColumnIndex:3]
+                                                               Birthplace:[set stringForColumnIndex:4]
+                                                           ProfilePicture:[set stringForColumnIndex:5]];
+            
+                [friendList addObject:friend];
+            }
+        }
+        [db close];
+    }];
+    return friendList;
 }
 
 -(NSMutableArray *) queryAllMessagesWithChatId:(NSString *) chatId{

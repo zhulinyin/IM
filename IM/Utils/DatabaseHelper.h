@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) insertSessionWithSession:(SessionModel *)session;
 -(void) insertFriendWithFriend:(UserModel *) Friend;
 -(void) selectFriendByID:(NSString*) UserID;
+-(void) rebuildFriendListTable;
+-(NSMutableArray *) getAllFriends;
 
 @end
 
