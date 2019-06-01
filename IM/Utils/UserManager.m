@@ -170,9 +170,7 @@ static UserManager *instance = nil;
         {
             NSLog(@"register success");
             // 登陆成功后，获取用户的个人信息
-            [self getInfo];
 //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-            [self.socket SRWebSocketOpen];
             //sign in automatically after successfully signing up
             [self login:username withPassword:password];
         }
