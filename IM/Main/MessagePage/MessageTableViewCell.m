@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UILabel *ContactName;
 @property (strong, nonatomic) UILabel *MessageAbstract;
 @property (strong, nonatomic) UILabel *TimeStamp;
+@property (strong, nonatomic) UIView *Circle;
 
 @end
 

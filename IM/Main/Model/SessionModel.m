@@ -10,7 +10,12 @@
 
 @implementation SessionModel
 
--(instancetype) initWithChatId:(NSString *)chatId withChatName:(NSString *)chatName withProfilePicture:(NSString *)profilePicture withLatestMessageContent:(NSString *)latestMessageContent withLatestMessageTimeStamp:(NSDate *)latestMessageTimeStamp {
+-(instancetype) initWithChatId:(NSString *)chatId
+                  withChatName:(NSString *)chatName
+            withProfilePicture:(NSString *)profilePicture
+      withLatestMessageContent:(NSString *)latestMessageContent
+    withLatestMessageTimeStamp:(NSDate *)latestMessageTimeStamp
+                 withUnreadNum:(NSInteger)unreadNum {
     self = [super init];
     if (self)
     {
@@ -19,6 +24,7 @@
         self.profilePicture = profilePicture;
         self.latestMessageContent = latestMessageContent;
         self.latestMessageTimeStamp = latestMessageTimeStamp;
+        self.unreadNum = unreadNum;
     }
     return self;
 }

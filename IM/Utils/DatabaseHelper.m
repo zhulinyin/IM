@@ -159,10 +159,19 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
+    NSDictionary *dict = [[NSDictionary alloc] init];
+    
     for(int i = 0; i < messages.count; i++) {
         MessageModel *message = messages[i];
         NSString *sendId = [message SenderID];
-        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp];
+        if ([[dict allKeys] containsObject:sendId]) {
+            NSInteger num = [[dict objectForKey:sendId] integerValue];
+            [dict setValue:@(num+1) forKey:sendId];
+        }
+        else {
+            [dict setValue:@1 forKey:sendId];
+        }
+        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
         [self insertSessionWithSession:session];
         [self insertMessageWithMessage:message];
     }
