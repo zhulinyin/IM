@@ -26,7 +26,6 @@
 		D775CAA1229934530081CDD6 /* SessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D775CAA0229934530081CDD6 /* SessionModel.m */; };
 		DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */; };
 		EF4CC41922A211C300B799B7 /* URLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4CC41822A211C300B799B7 /* URLHelper.m */; };
-		EF4CC41D22A22B6B00B799B7 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4CC41C22A22B6B00B799B7 /* SessionHelper.m */; };
 		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
 		FAF4463522865F0E00B74A13 /* SocketRocketUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF4463422865F0E00B74A13 /* SocketRocketUtility.m */; };
 		FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD085DA7226D64A500968B28 /* AppDelegate.m */; };
@@ -95,7 +94,6 @@
 		EA2F166862D806281915123F /* Pods-IM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.release.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.release.xcconfig"; sourceTree = "<group>"; };
 		EF4CC41722A211C300B799B7 /* URLHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLHelper.h; sourceTree = "<group>"; };
 		EF4CC41822A211C300B799B7 /* URLHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = URLHelper.m; sourceTree = "<group>"; };
-		EF4CC41C22A22B6B00B799B7 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
 		FA9A78F5228667D800CC26CF /* UserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
 		FA9A78F6228667D800CC26CF /* UserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		FAF4463322865F0E00B74A13 /* SocketRocketUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SocketRocketUtility.h; sourceTree = "<group>"; };
@@ -210,7 +208,6 @@
 				EF4CC41822A211C300B799B7 /* URLHelper.m */,
 				3FD78A8A228FA0EE00B89353 /* DatabaseHelper.h */,
 				3FD78A8B228FA0EE00B89353 /* DatabaseHelper.m */,
-				EF4CC41C22A22B6B00B799B7 /* SessionHelper.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -536,7 +533,6 @@
 				FD085DB6226D64A800968B28 /* main.m in Sources */,
 				712782382276A0D7002729E3 /* UserModel.m in Sources */,
 				7127821022740806002729E3 /* ContactTableViewCell.m in Sources */,
-				EF4CC41D22A22B6B00B799B7 /* SessionHelper.m in Sources */,
 				DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */,
 				FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */,
 				7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */,

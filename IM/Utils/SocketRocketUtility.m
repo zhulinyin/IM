@@ -164,62 +164,43 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 - (void) getMessage{
+        UserManager* userManager = [UserManager getInstance];
+        NSMutableArray *textMessages = [[NSMutableArray alloc] init];
+        NSMutableArray *addRequests = [[NSMutableArray alloc] init];
     
-    UserManager* userManager = [UserManager getInstance];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq]];
-    
-    [manager GET:url parameters:nil progress:nil
-        success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/message/%ld", userManager.seq]];
+    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if([responseObject[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"get message success");
+            NSArray *messages = responseObject[@"data"];
+            NSLog(@"new messages num: %lu", messages.count);
+            for (int i = 0; i < messages.count; i++) {
+                MessageModel *message = [self changeToMessageModel:messages[i]];
+                if ([message.Type isEqualToString:@"text"]) {
+                    [textMessages addObject:message];
+                }
+                else if ([message.Type isEqualToString:@"addRequest"]) {
+                    [addRequests addObject:message];
+                }
+            }
             
-            if([responseObject[@"state"] isEqualToString:@"ok"])
-            {
-                NSLog(@"get message success");
-                NSArray *messages = result[@"data"];
-                NSLog(@"new messages num: %lu", messages.count);
-                for (int i = 0; i < messages.count; i++) {
-                    MessageModel *message = [self changeToMessageModel:messages[i]];
-                    if ([message.Type isEqualToString:@"text"]) {
-                        [textMessages addObject:message];
-                    }
-                    else if ([message.Type isEqualToString:@"addRequest"]) {
-                        [addRequests addObject:message];
-                    }
-                }
-                
-                userManager.seq += messages.count;
-                [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
-                if (textMessages.count > 0)
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:textMessages];
-                if (addRequests.count > 0)
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
-            }
-            else
-            {
-                NSLog(@"get message fail");
-            }
-                        [addRequests addObject:message];
-                    }
-                }
-                
-                userManager.seq += messages.count;
-                [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
-                if (textMessages.count > 0)
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:textMessages];
-                if (addRequests.count > 0)
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
-            }
-            else
-            {
-                NSLog(@"get message fail");
-            }
+            userManager.seq += messages.count;
+            [[NSUserDefaults standardUserDefaults] setInteger:userManager.seq forKey:[NSString stringWithFormat:@"%@seq", userManager.getLoginModel.UserID]];
+            if (textMessages.count > 0)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:textMessages];
+            if (addRequests.count > 0)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
         }
-        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        else
+        {
             NSLog(@"get message fail");
-            NSLog(@"%@", error.localizedDescription);
-        }];
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"get message fail");
+    }];
 }
-
 -(MessageModel *) changeToMessageModel:(NSDictionary *)data {
     MessageModel* message = [[MessageModel alloc] init];
     message.SenderID = data[@"From"];
