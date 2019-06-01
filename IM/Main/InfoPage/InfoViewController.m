@@ -123,12 +123,20 @@
     }
     else{
         cell.accessoryView = ({
-            UIImageView *imgV;
+            UIImageView *imgV = [[UIImageView alloc] init];
             if ([self.User.ProfilePicture isEqualToString:@"image"]){
                 imgV = self.head;
             }
             else{
-                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+//                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
+                
+                // 使用SDWebImage第三方库加载网络图片
+                NSString *imagePath = [@"http://118.89.65.154:8000" stringByAppendingString:self.User.ProfilePicture];
+                NSLog(imagePath);
+                [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                   NSLog(@"error== %@",error);
+                }];
             }
             CGRect frame = imgV.frame;
             frame = CGRectMake(0, 0, 100, 55);

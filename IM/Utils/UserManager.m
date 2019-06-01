@@ -60,7 +60,8 @@ static UserManager *instance = nil;
                                                         RemarkName:responseObject[@"data"][@"Username"]
                                                             Gender:responseObject[@"data"][@"Gender"]
                                                          Birthplace:responseObject[@"data"][@"Region"]
-                                                    ProfilePicture:@"peppa"];
+                                                    ProfilePicture:responseObject[@"data"][@"Avatar"]];
+            NSLog(responseObject[@"data"][@"Avatar"]);
             [[DatabaseHelper getInstance] registerNewMessagesListener];
             [self.socket SRWebSocketOpen];
     }
