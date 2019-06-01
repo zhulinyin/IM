@@ -61,7 +61,7 @@ static UserManager *instance = nil;
                                                             Gender:responseObject[@"data"][@"Gender"]
                                                          Birthplace:responseObject[@"data"][@"Region"]
                                                     ProfilePicture:responseObject[@"data"][@"Avatar"]];
-            NSLog(responseObject[@"data"][@"Avatar"]);
+            NSLog(@"%@", responseObject[@"data"][@"Avatar"]);
             [[DatabaseHelper getInstance] registerNewMessagesListener];
             [self.socket SRWebSocketOpen];
     }
@@ -150,7 +150,7 @@ static UserManager *instance = nil;
          {
              NSLog(@"%@", responseObject[@"msg"]);
              self.loginUser = nil;
-             self.loginUserId = nil;
+             self.loginUserId = @"";
              [self.socket SRWebSocketClose];
              [[DatabaseHelper getInstance] unregisterNewMessageListener];
              UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
@@ -182,10 +182,6 @@ static UserManager *instance = nil;
            if([responseObject[@"state"] isEqualToString:@"ok"])
            {
                NSLog(@"register success");
-               // 登陆成功后，获取用户的个人信息
-               [self getInfo];
-               //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
-               [self.socket SRWebSocketOpen];
                //sign in automatically after successfully signing up
                [self login:username withPassword:password];
            }

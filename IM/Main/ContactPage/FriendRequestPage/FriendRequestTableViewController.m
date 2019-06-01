@@ -81,15 +81,19 @@
         
         [manager GET:url parameters:nil progress:nil
              success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                 if ([responseObject[@"msg"] isEqualToString:@"ok"])
+                 NSLog(@"%@", responseObject);
+                 if ([responseObject[@"state"] isEqualToString:@"ok"])
                  {
+                     
                      UserModel* friend = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
                                                                             NickName:responseObject[@"data"][@"Nickname"]
                                                                           RemarkName:responseObject[@"data"][@"Username"]
                                                                               Gender:responseObject[@"data"][@"Gender"]
                                                                           Birthplace:responseObject[@"data"][@"Region"]
-                                                                      ProfilePicture:@"peppa"];
+                                                                      ProfilePicture:responseObject[@"data"][@"Avatar"]];
                      [self.RequestList addObject:friend];
+                     NSLog(@"%lu", (unsigned long)self.RequestList.count);
+                     [self.FriendRequestTableView reloadData];
                  }
                  else
                  {
@@ -101,7 +105,8 @@
                  NSLog(@"%@", error.localizedDescription);
              }];
 
-            [self.FriendRequestTableView reloadData];
+        //
+        //[self.FriendRequestTableView reloadData];
     }
 }
 

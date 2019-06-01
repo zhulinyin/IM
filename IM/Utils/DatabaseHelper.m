@@ -61,7 +61,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) createSessionListTable {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@session] (chatId text PRIMARY KEY, chatName text NOT NULL, profilePicture text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", self.userManager.loginUserId];
+            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@session] (chatId text PRIMARY KEY, chatName text NOT NULL, profilePicture text NOT NULL, content text NOT NULL, timestamp text NOT NULL, unread integer NOT NULL);", self.userManager.loginUserId];
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
         }
@@ -73,7 +73,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
-                             @"CREATE TABLE IF NOT EXISTS %@ (          \
+                             @"CREATE TABLE IF NOT EXISTS [%@friendList] (          \
                              UserID INTEGER PRIMARY KEY AUTOINCREMENT,  \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
@@ -89,6 +89,19 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
+-(void)rebuildFriendListTable
+{
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            NSString* sql = [NSString stringWithFormat: @"DROP TABLE [%@friendList]);", self.userManager.loginUserId];
+            BOOL res = [db executeUpdate:sql];
+            NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
+        }
+        [db close];
+    }];
+    [self createFriendListTable];
+}
+
 -(NSMutableArray *) querySessions {
     NSMutableArray *sessions = [[NSMutableArray alloc] init];
     
@@ -102,6 +115,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                 session.profilePicture = [set stringForColumnIndex:2];
                 session.latestMessageContent = [set stringForColumnIndex:3];
                 session.latestMessageTimeStamp = [self.dateFormatter dateFromString:[set stringForColumnIndex:4]];
+                session.unreadNum = [set intForColumnIndex:5];
                 [sessions addObject:session];
             }
         }
@@ -110,12 +124,26 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return sessions;
 }
 
+-(NSInteger)queryUnreadNumByChatId:(NSString *)chatId {
+    static NSInteger num = 0;
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT unread FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, chatId]];
+            if ([set next]) {
+                num = [set intForColumnIndex:0];
+            }
+        }
+        [db close];
+    }];
+    return num;
+}
+
 -(void) insertSessionWithSession:(SessionModel *)session {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             BOOL res1 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, session.chatId]];
             NSLog(@"%@", res1 ? @"delete session successfully" : @"delete session failed");
-            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp]]];
+            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp, unread) VALUES ('%@', '%@', '%@', '%@', '%@', %ld);", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp], session.unreadNum]];
             NSLog(@"%@", res2 ? @"insert session successfully" : @"insert session failed");
         }
         [db close];
@@ -142,7 +170,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO %@ (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
             
             NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
         }
@@ -153,6 +181,31 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) selectFriendByID:(NSString*) UserID
 {
     
+}
+
+-(NSMutableArray *) getAllFriends
+{
+    NSMutableArray *friendList = [[NSMutableArray alloc] init];
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db)
+    {
+        if([db open])
+        {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@friendList]", self.userManager.loginUserId]];
+            while([set next])
+            {
+                UserModel* friend = [[UserModel alloc] initWithProperties:[set stringForColumnIndex:0]
+                                                                 NickName:[set stringForColumnIndex:1]
+                                                               RemarkName:[set stringForColumnIndex:2]
+                                                                   Gender:[set stringForColumnIndex:3]
+                                                               Birthplace:[set stringForColumnIndex:4]
+                                                           ProfilePicture:[set stringForColumnIndex:5]];
+            
+                [friendList addObject:friend];
+            }
+        }
+        [db close];
+    }];
+    return friendList;
 }
 
 -(NSMutableArray *) queryAllMessagesWithChatId:(NSString *) chatId{
@@ -201,10 +254,20 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
     for(int i = 0; i < messages.count; i++) {
         MessageModel *message = messages[i];
         NSString *sendId = [message SenderID];
-        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp];
+        if ([[dict allKeys] containsObject:sendId]) {
+            NSInteger num = [[dict objectForKey:sendId] integerValue];
+            [dict setValue:@(num+1) forKey:sendId];
+        }
+        else {
+            NSInteger num = [self queryUnreadNumByChatId:sendId];
+            [dict setValue:@(num+1) forKey:sendId];
+        }
+        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
         [self insertSessionWithSession:session];
         [self insertMessageWithMessage:message];
     }
