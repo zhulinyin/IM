@@ -51,7 +51,7 @@ static UserManager *instance = nil;
 // 获取用户的信息
 -(void) getInfo{
     AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSString *url = @"http://118.89.65.154:8000/account/info";
+    NSString *url = @"http://172.18.32.97:8000/account/info";
     [manger GET:url parameters:nil progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"getInfo success");
