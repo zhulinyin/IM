@@ -5,4 +5,5 @@ target 'IM' do
     pod 'SocketRocket'
     pod 'FMDB'
     pod 'AFNetworking'
+    pod 'SDWebImage'
 end

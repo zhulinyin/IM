@@ -60,7 +60,8 @@ static UserManager *instance = nil;
                                                         RemarkName:responseObject[@"data"][@"Username"]
                                                             Gender:responseObject[@"data"][@"Gender"]
                                                          Birthplace:responseObject[@"data"][@"Region"]
-                                                    ProfilePicture:@"peppa"];
+                                                    ProfilePicture:responseObject[@"data"][@"Avatar"]];
+            NSLog(responseObject[@"data"][@"Avatar"]);
             [[DatabaseHelper getInstance] registerNewMessagesListener];
             [self.socket SRWebSocketOpen];
     }
@@ -217,8 +218,8 @@ static UserManager *instance = nil;
     [session.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
     
     // 处理url
-    NSString* serverDomain = @"http://172.18.32.97:8000";
-//    NSString* serverDomain = @"http://118.89.65.154:8000";
+//    NSString* serverDomain = @"http://172.18.32.97:8000";
+    NSString* serverDomain = @"http://118.89.65.154:8000";
     NSString* urlString = [serverDomain stringByAppendingString:path];
     NSLog(urlString);
     [session POST:urlString parameters:nil constructingBodyWithBlock:
