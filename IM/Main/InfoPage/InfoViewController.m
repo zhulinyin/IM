@@ -123,17 +123,18 @@
     }
     else{
         cell.accessoryView = ({
-            UIImageView *imgV = [[UIImageView alloc] init];
+            UIImageView *imgV = [[UIImageView alloc]init];
             if ([self.User.ProfilePicture isEqualToString:@"image"]){
                 imgV = self.head;
             }
             else{
 //                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
                 
-                // 使用SDWebImage第三方库加载网络图片
-                NSString *imagePath = [@"http://118.89.65.154:8000" stringByAppendingString:self.User.ProfilePicture];
+                // 使用SDWebImage第三方库加载网络图片,先设置默认头像等待网络请求
+                NSString *imagePath = [SERVER_DOMAIN stringByAppendingString:self.User.ProfilePicture];
                 NSLog(imagePath);
                 [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                        placeholderImage:[UIImage imageNamed:@"peppa"]
                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                    NSLog(@"error== %@",error);
                 }];
