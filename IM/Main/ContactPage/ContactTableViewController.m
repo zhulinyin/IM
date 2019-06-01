@@ -227,8 +227,8 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     else if (indexPath.section == 0 && self.isSearching == YES)
     {
         AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-        NSString *url = [[NSString alloc] initWithFormat:@"http://118.89.65.154:8000/account/info/user/%@", self.searchController.searchBar.text];
-        [manger GET:url parameters:nil progress:nil
+        NSString *url = [[NSString alloc] initWithFormat:@"/account/info/user/%@", self.searchController.searchBar.text];
+        [manger GET:[SERVER_DOMAIN stringByAppendingString:url] parameters:nil progress:nil
             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if ([responseObject[@"msg"] isEqualToString:@"ok"])
                 {

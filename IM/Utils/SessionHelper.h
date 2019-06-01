@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)sendRequest:(NSString*)path method:(NSString*)method parameters:(NSString*)parameters handler:(void(^)(id))handler;
 
+extern NSString* const SERVER_DOMAIN;
 @end
 
 NS_ASSUME_NONNULL_END

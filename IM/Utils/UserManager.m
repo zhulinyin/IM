@@ -51,7 +51,7 @@ static UserManager *instance = nil;
 // 获取用户的信息
 -(void) getInfo{
     AFHTTPSessionManager *manger = [AFHTTPSessionManager manager];
-    NSString *url = @"http://172.18.32.97:8000/account/info";
+    NSString *url = [SERVER_DOMAIN stringByAppendingString:@"/account/info"];
     [manger GET:url parameters:nil progress:nil
         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             NSLog(@"getInfo success");
@@ -216,9 +216,7 @@ static UserManager *instance = nil;
     [session.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
     
     // 处理url
-//    NSString* serverDomain = @"http://172.18.32.97:8000";
-    NSString* serverDomain = @"http://118.89.65.154:8000";
-    NSString* urlString = [serverDomain stringByAppendingString:path];
+    NSString* urlString = [SERVER_DOMAIN stringByAppendingString:path];
     NSLog(urlString);
     [session POST:urlString parameters:nil constructingBodyWithBlock:
      ^(id<AFMultipartFormData> _Nonnull formData){
