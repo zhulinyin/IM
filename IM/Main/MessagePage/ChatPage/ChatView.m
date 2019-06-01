@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UITextField *inputText;
 @property (nonatomic, assign) CGFloat keyboardHeight;
 
+
 @end
 
 @implementation ChatView
@@ -49,12 +50,17 @@
     [self addSubview:self.chatTable];
     
     self.inputText = [[UITextField alloc] init];
-    self.inputText.frame = CGRectMake(10, SCREEN_HEIGHT - 45, SCREEN_WIDTH-20, 40);
+    self.inputText.frame = CGRectMake(10, SCREEN_HEIGHT - 45, SCREEN_WIDTH-20-60, 40);
     self.inputText.returnKeyType = UIReturnKeySend;
     self.inputText.delegate = self;
     self.inputText.backgroundColor = [UIColor whiteColor];
     self.inputText.layer.cornerRadius = 5;
     [self addSubview:self.inputText];
+    
+    self.imageButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    self.imageButton.frame = CGRectMake(SCREEN_WIDTH - 65, SCREEN_HEIGHT - 45, 40, 40);
+//    self.imageButton.backgroundColor = [UIColor whiteColor];
+    [self addSubview:self.imageButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -121,7 +127,7 @@
 
 - (void)updataFrame {
     self.chatTable.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50 - self.keyboardHeight);
-    self.inputText.frame = CGRectMake(10, SCREEN_HEIGHT - 45 - self.keyboardHeight , SCREEN_WIDTH - 20, 40);
+    self.inputText.frame = CGRectMake(10, SCREEN_HEIGHT - 45 - self.keyboardHeight , SCREEN_WIDTH - 20 - 60, 40);
     [self tableViewScrollToBottom];
 }
 
@@ -139,5 +145,7 @@
     //[self.inputText resignFirstResponder];
     return YES;
 }
+
+
 
 @end

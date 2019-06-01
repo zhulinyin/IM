@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import<Photos/Photos.h>
 #import "ChatTableViewCell.h"
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSMutableArray *chatMsg;
 @property (nonatomic, weak) id<ChatViewDelegate> delegate;
+
+@property (nonatomic, strong) UIButton *imageButton;
 - (void)addMessage:(MessageModel *)message;
 - (void)tableViewScrollToBottom;
 @end

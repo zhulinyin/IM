@@ -250,5 +250,33 @@ static UserManager *instance = nil;
     }];
 }
 
+// 发送图片e给好友
+-(void) sendImage:(NSString* )path withImage:(UIImage* )image
+       withToUser:(NSString* )userName
+         withDate:(NSDate* )timestamp
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    
+    // 处理url
+    NSString* urlString = [URLHelper getURLwithPath:path];
+    NSLog(@"%@", urlString);
+    // 添加参数
+    NSDictionary* params = @{@"to":userName, @"timestamp":timestamp};
+    // 发送图片
+    [manager POST:urlString parameters:params constructingBodyWithBlock:
+     ^(id<AFMultipartFormData> _Nonnull formData){
+         // 图片转data
+         NSData *data = UIImagePNGRepresentation(image);
+         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
+                                  mimeType:@"multipart/form-data"];
+     } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
+         NSLog(responseObject[@"msg"]);
+     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
+         NSLog(@"sendImage fail");
+         NSLog(@"%@", error.localizedDescription);
+     }];
+}
+
 
 @end

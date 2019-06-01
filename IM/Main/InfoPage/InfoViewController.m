@@ -131,7 +131,6 @@
 //                imgV = [[UIImageView alloc] initWithImage:[UIImage imageNamed:self.User.ProfilePicture]];
                 
                 // 使用SDWebImage第三方库加载网络图片,先设置默认头像等待网络请求
-                
                 NSString *imagePath = [URLHelper getURLwithPath:self.User.ProfilePicture];
                 NSLog(imagePath);
                 [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
