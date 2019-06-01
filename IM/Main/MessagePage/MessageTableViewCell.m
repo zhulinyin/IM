@@ -13,7 +13,7 @@
 @property (strong, nonatomic) UILabel *ContactName;
 @property (strong, nonatomic) UILabel *MessageAbstract;
 @property (strong, nonatomic) UILabel *TimeStamp;
-@property (strong, nonatomic) UIView *Circle;
+@property (strong, nonatomic) UILabel *Circle;
 
 @end
 
@@ -25,11 +25,20 @@
         self.layoutMargins = UIEdgeInsetsZero;
         //头像
         self.ContactProfilePicture = [[UIImageView alloc] init];
-        self.ContactProfilePicture.frame = CGRectMake(0, 0, ICON_WH, ICON_WH);
         self.ContactProfilePicture.contentMode = UIViewContentModeScaleAspectFit;
         self.ContactProfilePicture.image = [UIImage imageNamed:@"default_icon"];
         self.ContactProfilePicture.frame = CGRectMake(15, 10, ICON_WH, ICON_WH);
         [self.contentView addSubview:self.ContactProfilePicture];
+        
+        //未读消息
+        self.Circle = [[UILabel alloc] init];
+        self.Circle.font = [UIFont systemFontOfSize:10];
+        self.Circle.textColor = [UIColor whiteColor];
+        self.Circle.backgroundColor = [UIColor redColor];
+        self.Circle.textAlignment = NSTextAlignmentCenter;
+        self.Circle.frame = CGRectMake(7+ICON_WH, 7, 15, 15);
+        self.Circle.layer.cornerRadius = self.Circle.frame.size.width*0.5;
+        self.Circle.layer.masksToBounds = YES;
         
         //昵称
         self.ContactName = [[UILabel alloc] init];
@@ -66,6 +75,15 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
     self.TimeStamp.text = [dateFormatter stringFromDate:session.latestMessageTimeStamp];
+    if (session.unreadNum > 0) {
+        if (session.unreadNum > 99)
+            self.Circle.text = @"...";
+        else
+            self.Circle.text = [NSString stringWithFormat:@"%ld", session.unreadNum];
+        [self.contentView addSubview:self.Circle];
+    }
+    else
+        [self.Circle removeFromSuperview];
 }
 
 @end

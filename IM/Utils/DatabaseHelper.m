@@ -61,7 +61,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) createSessionListTable {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@session] (chatId text PRIMARY KEY, chatName text NOT NULL, profilePicture text NOT NULL, content text NOT NULL, timestamp text NOT NULL);", self.userManager.loginUserId];
+            NSString* sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS [%@session] (chatId text PRIMARY KEY, chatName text NOT NULL, profilePicture text NOT NULL, content text NOT NULL, timestamp text NOT NULL, unread integer NOT NULL);", self.userManager.loginUserId];
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
         }
@@ -102,6 +102,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                 session.profilePicture = [set stringForColumnIndex:2];
                 session.latestMessageContent = [set stringForColumnIndex:3];
                 session.latestMessageTimeStamp = [self.dateFormatter dateFromString:[set stringForColumnIndex:4]];
+                session.unreadNum = [set intForColumnIndex:5];
                 [sessions addObject:session];
             }
         }
@@ -110,12 +111,26 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return sessions;
 }
 
+-(NSInteger)queryUnreadNumByChatId:(NSString *)chatId {
+    static NSInteger num = 0;
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT unread FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, chatId]];
+            if ([set next]) {
+                num = [set intForColumnIndex:0];
+            }
+        }
+        [db close];
+    }];
+    return num;
+}
+
 -(void) insertSessionWithSession:(SessionModel *)session {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             BOOL res1 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, session.chatId]];
             NSLog(@"%@", res1 ? @"delete session successfully" : @"delete session failed");
-            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp) VALUES ('%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp]]];
+            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp, unread) VALUES ('%@', '%@', '%@', '%@', '%@', %ld);", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp], session.unreadNum]];
             NSLog(@"%@", res2 ? @"insert session successfully" : @"insert session failed");
         }
         [db close];
@@ -201,7 +216,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 - (void)getNewMessages:(NSNotification *)notification{
     NSArray *messages = [notification object];
-    NSDictionary *dict = [[NSDictionary alloc] init];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     
     for(int i = 0; i < messages.count; i++) {
         MessageModel *message = messages[i];
@@ -211,7 +226,8 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
             [dict setValue:@(num+1) forKey:sendId];
         }
         else {
-            [dict setValue:@1 forKey:sendId];
+            NSInteger num = [self queryUnreadNumByChatId:sendId];
+            [dict setValue:@(num+1) forKey:sendId];
         }
         SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
         [self insertSessionWithSession:session];
