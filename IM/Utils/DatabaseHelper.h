@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DatabaseHelper : NSObject
 +(instancetype) getInstance;
++(void)attemptDealloc;
 -(void) insertMessageWithMessage:(MessageModel* ) message;
 -(NSMutableArray *) queryAllMessagesWithChatId:(NSString *) chatId;
 -(void) insertMessagesWithTableName:(NSString *)tableName withMessages:(NSArray* ) messages;

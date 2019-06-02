@@ -153,6 +153,7 @@ static UserManager *instance = nil;
              self.loginUserId = @"";
              [self.socket SRWebSocketClose];
              [[DatabaseHelper getInstance] unregisterNewMessageListener];
+             [DatabaseHelper attemptDealloc];
              UIStoryboard *indexStoryboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
              [UIApplication sharedApplication].keyWindow.rootViewController = indexStoryboard.instantiateInitialViewController;
          }

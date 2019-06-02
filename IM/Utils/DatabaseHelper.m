@@ -11,17 +11,15 @@
 
 @interface DatabaseHelper()
 @property(strong, nonatomic) FMDatabaseQueue* databaseQueue;
-@property(strong, nonatomic) FMDatabase* database;
 @property(strong, nonatomic) NSDateFormatter* dateFormatter;
 @property(strong, nonatomic) UserManager *userManager;
 @end
-
+static DatabaseHelper *instance;
+static dispatch_once_t onceToken;
 NSString* const MESSAGE_TABLE_NAME = @"message";
 @implementation DatabaseHelper
 
 +(instancetype) getInstance {
-    static DatabaseHelper* instance;
-    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[DatabaseHelper alloc] init];
         instance.dateFormatter = [[NSDateFormatter alloc]init];
@@ -32,6 +30,10 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return instance;
 }
 
++(void)attemptDealloc {
+    onceToken = 0;
+    instance = nil;
+}
 -(void) createQueue {
     NSString* queuePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"IM.db"];
     
@@ -107,7 +109,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@session] order by timestamp;", self.userManager.loginUserId]];
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@session] order by timestamp desc;", self.userManager.loginUserId]];
             while([set next]) {
                 SessionModel* session = [[SessionModel alloc] init];
                 session.chatId = [set stringForColumnIndex:0];
@@ -143,7 +145,8 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             BOOL res1 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, session.chatId]];
             NSLog(@"%@", res1 ? @"delete session successfully" : @"delete session failed");
-            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp, unread) VALUES ('%@', '%@', '%@', '%@', '%@', %ld);", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp], session.unreadNum]];
+            NSString *sql = [NSString stringWithFormat:@"INSERT INTO [%@session] (chatId, chatName, profilePicture, content, timestamp, unread) VALUES ('%@', '%@', '%@', '%@', '%@', %ld);", self.userManager.loginUserId, session.chatId, session.chatName, session.profilePicture, session.latestMessageContent, [self.dateFormatter stringFromDate:session.latestMessageTimeStamp], session.unreadNum];
+            BOOL res2 = [db executeStatements:sql];
             NSLog(@"%@", res2 ? @"insert session successfully" : @"insert session failed");
         }
         [db close];

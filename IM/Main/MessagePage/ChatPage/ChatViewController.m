@@ -14,7 +14,7 @@
 @property (nonatomic, strong) UserModel *chatUser;
 @property (nonatomic, strong) DatabaseHelper *databaseHelper;
 @property (nonatomic, strong) NSMutableArray *chatMsg;
-@property(strong, nonatomic) NSDateFormatter* dateFormatter;
+@property (strong, nonatomic) NSDateFormatter* dateFormatter;
 @end
 
 @implementation ChatViewController
@@ -28,6 +28,7 @@
         self.chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
         self.chatMsg = [self.databaseHelper queryAllMessagesWithChatId:chatUser.UserID];
+        self.dateFormatter = [[NSDateFormatter alloc] init];
         self.dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
     }
     return self;
@@ -38,7 +39,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.navigationController.tabBarItem.title = self.chatUser.UserID;
+
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     self.chatView.delegate = self;
@@ -87,7 +88,7 @@
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/content/%@", type]];
-    NSDictionary* params = @{@"to":self.chatUser.UserID, @"data":text, @"timestamp":message.TimeStamp};
+    NSDictionary* params = @{@"to":self.chatUser.UserID, @"data":text, @"timestamp":[self.dateFormatter stringFromDate:message.TimeStamp]};
     
     [manager POST:url parameters:params progress:nil
          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {

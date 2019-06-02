@@ -29,6 +29,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 @property (nonatomic,strong) SRWebSocket *socket;
+@property (strong, nonatomic) NSDateFormatter* dateFormatter;
 
 @end
 
@@ -39,6 +40,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
     static dispatch_once_t predicate;
     dispatch_once(&predicate, ^{
         Instance = [[SocketRocketUtility alloc] init];
+        Instance.dateFormatter = [[NSDateFormatter alloc]init];
+        Instance.dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
     });
     return Instance;
 }
@@ -207,7 +210,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     message.ReceiverID = data[@"Username"];
     message.Type = data[@"Type"];
     message.Content = data[@"content"][@"Cstr"];
-    message.TimeStamp = data[@"content"][@"Timestamp"];
+    message.TimeStamp = [self.dateFormatter dateFromString:data[@"content"][@"Timestamp"]];
     return message;
 }
 // 关闭连接
