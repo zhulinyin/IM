@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) selectFriendByID:(NSString*) UserID;
 -(void) rebuildFriendListTable;
 -(NSMutableArray *) getAllFriends;
-
+-(void) deleteMessages:(NSString *) chatId;
 @end
 
 NS_ASSUME_NONNULL_END

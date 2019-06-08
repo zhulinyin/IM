@@ -86,8 +86,6 @@ static UserManager *instance = nil;
                 self.loginUserId = username;
                 // 登陆成功后，获取用户的个人信息
                 [self getInfo];
-                
-                //            self.loginUser = [[UserModel alloc] initWithProperties:username NickName:username RemarkName:username Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"peppa"];
                 self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
                 [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
                 

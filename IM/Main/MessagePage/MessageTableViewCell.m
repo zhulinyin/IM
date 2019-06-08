@@ -32,11 +32,11 @@
         
         //未读消息
         self.Circle = [[UILabel alloc] init];
-        self.Circle.font = [UIFont systemFontOfSize:10];
+        self.Circle.font = [UIFont systemFontOfSize:12];
         self.Circle.textColor = [UIColor whiteColor];
         self.Circle.backgroundColor = [UIColor redColor];
         self.Circle.textAlignment = NSTextAlignmentCenter;
-        self.Circle.frame = CGRectMake(7+ICON_WH, 7, 15, 15);
+        self.Circle.frame = CGRectMake(3+ICON_WH, 7, 18, 18);
         self.Circle.layer.cornerRadius = self.Circle.frame.size.width*0.5;
         self.Circle.layer.masksToBounds = YES;
         
@@ -86,4 +86,10 @@
         [self.Circle removeFromSuperview];
 }
 
+- (void)addLongGes:(id)target action:(SEL)action {
+    UILongPressGestureRecognizer *longGes = [[UILongPressGestureRecognizer alloc]initWithTarget:target action:action];
+    //设定最小的长按时间 按不够这个时间不响应手势
+    longGes.minimumPressDuration = 1;
+    [self.contentView addGestureRecognizer:longGes];
+}
 @end

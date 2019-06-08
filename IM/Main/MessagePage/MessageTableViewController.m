@@ -60,6 +60,33 @@
     return self.sessionsArray.count;
 }
 
+- (void)longGes:(UILongPressGestureRecognizer *)longGes{
+    if (longGes.state == UIGestureRecognizerStateBegan) {//手势开始
+        CGPoint point = [longGes locationInView:self.MessageTableView];
+        NSIndexPath *index = [self.MessageTableView indexPathForRowAtPoint:point];
+        SessionModel *selectedSession = self.sessionsArray[index.row];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"是否删除聊天记录？" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            //响应事件
+            [[DatabaseHelper getInstance] deleteMessages:selectedSession.chatId];
+            [self.sessionsArray removeObject:selectedSession];
+            [self.MessageTableView reloadData];
+            NSLog(@"action = %@", action);
+        }];
+        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+            //响应事件
+            NSLog(@"action = %@", action);
+        }];
+        
+        [alert addAction:defaultAction];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    if (longGes.state == UIGestureRecognizerStateEnded){//手势结束
+        
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SessionModel *session = self.sessionsArray[indexPath.row];
@@ -71,6 +98,7 @@
         cell = [[MessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell2"];
         //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    [cell addLongGes:self action:@selector(longGes:)];
     cell.session = session;
     return cell;
 }

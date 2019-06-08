@@ -232,6 +232,18 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return messages;
 }
 
+-(void) deleteMessages:(NSString *) chatId {
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@session] WHERE chatId = '%@';", self.userManager.loginUserId, chatId]];
+            NSLog(@"%@", res ? @"delete session successfully" : @"delete session failed");
+            
+            BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@message] WHERE chatId = '%@';", self.userManager.loginUserId, chatId]];
+            NSLog(@"%@", res2 ? @"delete messages successfully" : @"delete messages failed");
+        }
+        [db close];
+    }];
+}
 /*
 -(void) insertMessagesWithTableName:(NSString *)tableName withMessages:(NSArray* ) messages {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
