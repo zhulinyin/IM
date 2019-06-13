@@ -72,10 +72,11 @@
 - (void)getNewFriendRequest:(NSNotification *)notification
 {
     NSArray *messages = [notification object];
+    
     for (int i=0; i<messages.count; i++)
     {
         MessageModel *message = messages[i];
-        
+        NSLog(@"%@", message);
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", message.SenderID]];
         

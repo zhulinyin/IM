@@ -76,7 +76,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
                              @"CREATE TABLE IF NOT EXISTS [%@friendList] (          \
-                             UserID INTEGER PRIMARY KEY AUTOINCREMENT,  \
+                             UserID TEXT PRIMARY KEY,       \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
                              Gender TEXT DEFAULT '',        \
@@ -85,7 +85,28 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                              Description TEXT DEFAULT ''    \
                              );", self.userManager.loginUserId];
             BOOL res = [db executeUpdate:sql];
-            NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
+            NSLog(@"%@", res ? @"create firend table successfully" : @"create firend table failed");
+        }
+        [db close];
+    }];
+}
+
+-(void) createFriendRequestTable {
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            NSString* sql = [NSString stringWithFormat:
+                             @"CREATE TABLE IF NOT EXISTS [%@friendRequest] (          \
+                             UserID TEXT PRIMARY KEY,       \
+                             NickName TEXT NOT NULL,        \
+                             RemarkName TEXT DEFAULT '',    \
+                             Gender TEXT DEFAULT '',        \
+                             Birthplace TEXT DEFAULT '',    \
+                             ProfilePicture TEXT DEFAULT '',\
+                             Description TEXT DEFAULT ''   ,\
+                             CID INTEGER                   \
+                             );", self.userManager.loginUserId];
+            BOOL res = [db executeUpdate:sql];
+            NSLog(@"%@", res ? @"create request table successfully" : @"create request table failed");
         }
         [db close];
     }];
@@ -97,7 +118,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             NSString* sql = [NSString stringWithFormat: @"DROP TABLE [%@friendList]);", self.userManager.loginUserId];
             BOOL res = [db executeUpdate:sql];
-            NSLog(@"%@", res ? @"create session table successfully" : @"create session table failed");
+            NSLog(@"%@", res ? @"drop firend table successfully" : @"drop friend table failed");
         }
         [db close];
     }];
@@ -175,7 +196,19 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
             
-            NSLog(@"%@", res ? @"insert message successfully" : @"insert message failed");
+            NSLog(@"%@", res ? @"insert friend successfully" : @"insert friend failed");
+        }
+        [db close];
+    }];
+}
+
+-(void) insertRequestWithUser:(UserModel *) User cid:(NSInteger)cid
+{
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld');", self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)cid]];
+            
+            NSLog(@"%@", res ? @"insert request successfully" : @"insert request failed");
         }
         [db close];
     }];
@@ -261,6 +294,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 
 -(void) registerNewMessagesListener {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewFriendRequest:) name:@"newFriends" object:nil];
 }
 
 -(void) unregisterNewMessageListener {
@@ -288,4 +322,46 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
 }
+
+- (void)getNewFriendRequest:(NSNotification *)notification
+{
+    NSArray *messages = [notification object];
+    
+    for (int i=0; i<messages.count; i++)
+    {
+        MessageModel *message = messages[i];
+        NSLog(@"%@", message);
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", message.SenderID]];
+        
+        [manager GET:url parameters:nil progress:nil
+             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                 NSLog(@"%@", responseObject);
+                 if ([responseObject[@"state"] isEqualToString:@"ok"])
+                 {
+                     
+                     UserModel* user = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                                                      NickName:responseObject[@"data"][@"Nickname"]
+                                                                    RemarkName:responseObject[@"data"][@"Username"]
+                                                                        Gender:responseObject[@"data"][@"Gender"]
+                                                                    Birthplace:responseObject[@"data"][@"Region"]
+                                                                ProfilePicture:responseObject[@"data"][@"Avatar"]];
+                     [self insertRequestWithUser:user cid:0];
+                 }
+                 else
+                 {
+                     NSLog(@"%@", responseObject[@"msg"]);
+                 }
+             }
+             failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                 
+                 NSLog(@"%@", error.localizedDescription);
+             }];
+        
+        
+        //[self.FriendRequestTableView reloadData];
+        
+    }
+}
+
 @end
