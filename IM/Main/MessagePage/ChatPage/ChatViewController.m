@@ -122,7 +122,7 @@
     message.SenderID = self.loginUser.UserID;
     message.ReceiverID = self.chatUser.UserID;
     message.Content = @"";
-    message.ContentImage = image;
+//    message.ContentImage = image;
     message.TimeStamp = [NSDate date];
     [self addMessage:message];
     
@@ -153,10 +153,6 @@
          NSLog(@"%@", error.localizedDescription);
      }];
     
-    //     测试，成功读取图片
-//    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-//    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
-//    [self.view addSubview:imageView];
 }
 
 // 选择图片

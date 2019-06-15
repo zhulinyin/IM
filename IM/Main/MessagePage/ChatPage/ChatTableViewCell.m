@@ -69,17 +69,30 @@
         self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
     }
     else if ([model.Type isEqualToString:@"image"]){
+        // 使用url来获取图片，而不是传参数
+        UIImageView *imgV = [[UIImageView alloc]init];
+        NSString *imagePath = [URLHelper getURLwithPath:model.Content];
+        NSLog(imagePath);
+        [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                placeholderImage:[UIImage imageNamed:@"peppa"]
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                           NSLog(@"error== %@",error);
+                       }];
+        
+        
         //2.初始化富文本对象
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
         //3.初始化NSTextAttachment对象
         NSTextAttachment *attchment = [[NSTextAttachment alloc]init];
         attchment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
-        attchment.image = model.ContentImage;//设置图片
+//        attchment.image = model.ContentImage;//设置图片
+        attchment.image = imgV.image;//设置图片
         
         //4.创建带有图片的富文本
         NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attchment)];
         [attributedString appendAttributedString:string];   //添加到尾部
         self.contentLabel.attributedText = attributedString;
+        
         
         labelSize = [attributedString boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
                                                        options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "../../Model/MessageModel.h"
 #import "../../../Utils/UserManager.h"
+#import "UIImageView+WebCache.h"
 #define SCREEN_WIDTH    [[UIScreen mainScreen] bounds].size.width
 #define SCREEN_HEIGHT   [[UIScreen mainScreen] bounds].size.height
 

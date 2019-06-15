@@ -98,8 +98,16 @@
         //3.初始化NSTextAttachment对象
         NSTextAttachment *attchment = [[NSTextAttachment alloc]init];
         attchment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
-        attchment.image = msgModel.ContentImage;//设置图片
-        
+        //        attchment.image = msgModel.ContentImage;//设置图片
+        UIImageView *imgV = [[UIImageView alloc]init];
+        NSString *imagePath = [URLHelper getURLwithPath:msgModel.Content];
+        NSLog(imagePath);
+        [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                placeholderImage:[UIImage imageNamed:@"peppa"]
+                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                           NSLog(@"error== %@",error);
+                       }];
+        attchment.image = imgV.image;
         //4.创建带有图片的富文本
         NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attchment)];
         [attributedString appendAttributedString:string];   //添加到尾部
