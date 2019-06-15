@@ -85,11 +85,31 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     //计算文字高度需和自定义cell内容尺寸同步
     MessageModel *msgModel = self.chatMsg[indexPath.row];
-    CGSize labelSize = [msgModel.Content boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
-                                                      options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
-                                                   attributes: @{NSFontAttributeName:[UIFont systemFontOfSize:15]}
-                                                      context: nil].size;
-    return labelSize.height + 40;
+    if ([msgModel.Type isEqualToString:@"text"]){
+        CGSize labelSize = [msgModel.Content boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
+                                                          options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
+                                                       attributes: @{NSFontAttributeName:[UIFont systemFontOfSize:15]}
+                                                          context: nil].size;
+        return labelSize.height + 40;
+    }
+    else {
+        //2.初始化富文本对象
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+        //3.初始化NSTextAttachment对象
+        NSTextAttachment *attchment = [[NSTextAttachment alloc]init];
+        attchment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
+        attchment.image = msgModel.ContentImage;//设置图片
+        
+        //4.创建带有图片的富文本
+        NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attchment)];
+        [attributedString appendAttributedString:string];   //添加到尾部
+        
+        CGSize labelSize = [attributedString boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
+                                                   options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
+                                                   context: nil].size;
+        return labelSize.height + 40;
+    }
+    
 }
 
 - (void)tableViewScrollToBottom {

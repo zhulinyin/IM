@@ -39,11 +39,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor lightGrayColor];
-
+    
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     self.chatView.delegate = self;
-
+    
     self.chatView.chatMsg = self.chatMsg;
     [self.view addSubview:self.chatView];
     
@@ -58,7 +58,7 @@
     [super viewWillDisappear:animated];
     if(self.chatMsg.count > 0) {
         SessionModel *session = [[SessionModel alloc] initWithChatId:self.chatUser.UserID withChatName:self.chatUser.NickName withProfilePicture:self.chatUser.ProfilePicture withLatestMessageContent:[self.chatMsg[self.chatMsg.count-1] Content] withLatestMessageTimeStamp:[self.chatMsg[self.chatMsg.count-1] TimeStamp]
-                                 withUnreadNum:0];
+                                                       withUnreadNum:0];
         [self.databaseHelper insertSessionWithSession:session];
     }
     
@@ -91,27 +91,72 @@
     NSDictionary* params = @{@"to":self.chatUser.UserID, @"data":text, @"timestamp":[self.dateFormatter stringFromDate:message.TimeStamp]};
     
     [manager POST:url parameters:params progress:nil
-         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-             if([responseObject[@"state"] isEqualToString:@"ok"])
-             {
-                 NSLog(@"send success");
-                 [self.databaseHelper insertMessageWithMessage:message];
-             }
-             else
-             {
-                 NSLog(@"send fail");
-             }
-         }
-         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             NSLog(@"send fail");
-             NSLog(@"%@", error.localizedDescription);
-         }];
+          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+              if([responseObject[@"state"] isEqualToString:@"ok"])
+              {
+                  NSLog(@"send success");
+                  [self.databaseHelper insertMessageWithMessage:message];
+              }
+              else
+              {
+                  NSLog(@"send fail");
+              }
+          }
+          failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+              NSLog(@"send fail");
+              NSLog(@"%@", error.localizedDescription);
+          }];
 }
 
 //新增消息
 - (void)addMessage:(MessageModel* )message {
     [self.chatMsg addObject:message];
     self.chatView.chatMsg = self.chatMsg;
+}
+
+// 发送图片
+- (void)sendImage:(UIImage *)image {
+    // 本地显示部分
+    MessageModel* message = [[MessageModel alloc] init];
+    message.Type = @"image";
+    message.SenderID = self.loginUser.UserID;
+    message.ReceiverID = self.chatUser.UserID;
+    message.Content = @"";
+    message.ContentImage = image;
+    message.TimeStamp = [NSDate date];
+    [self addMessage:message];
+    
+    // 网络部分
+    NSString* path = @"/content/image";
+    NSDate* timestamp = [NSDate date];
+    NSString* userName = self.chatUser.UserID;
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager.requestSerializer setValue:@"multipart/form-data" forHTTPHeaderField:@"Content-Type"];
+    
+    // 处理url
+    NSString* urlString = [URLHelper getURLwithPath:path];
+    NSLog(@"%@", urlString);
+    // 添加参数
+    NSDictionary* params = @{@"to":userName, @"timestamp":timestamp};
+    // 发送图片
+    [manager POST:urlString parameters:params constructingBodyWithBlock:
+     ^(id<AFMultipartFormData> _Nonnull formData){
+         // 图片转data
+         NSData *data = UIImagePNGRepresentation(image);
+         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
+                                  mimeType:@"multipart/form-data"];
+     } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
+         NSLog(responseObject[@"msg"]);
+     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
+         NSLog(@"sendImage fail");
+         NSLog(@"%@", error.localizedDescription);
+     }];
+    
+    //     测试，成功读取图片
+//    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+//    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
+//    [self.view addSubview:imageView];
 }
 
 // 选择图片
@@ -157,13 +202,13 @@
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     //    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
     // 上传到云端
-    [[UserManager getInstance] sendImage:@"/content/image" withImage:newPhoto withToUser:self.chatUser.UserID withDate:[NSDate date]];
+    [self sendImage:newPhoto];
     
-    // 测试，成功读取图片
-//    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
-//    [self.view addSubview:imageView];
+    //     测试，成功读取图片
+    //    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+    //    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
+    //    [self.view addSubview:imageView];
 }
 
 @end
