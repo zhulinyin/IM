@@ -27,7 +27,9 @@
     [super viewDidLoad];
     
     //initializing
-    self.ContactsArray = [NSMutableArray array];
+    //self.ContactsArray = [[DatabaseHelper getInstance] getAllFriends];
+    [self getFriendsFromDatabase];
+    
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
@@ -36,12 +38,46 @@
     
     //observer
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFriendConfirm:) name:@"newFriendConfirm" object:nil];
     
     // view relative
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self getFriendsFromDatabase];
+    
 }
 
+- (void)newFriendConfirm:(NSNotification *)notification
+{
+    NSString* newFriendID = notification.object;
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", newFriendID]];
+    
+    [manager GET:url parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             if ([responseObject[@"msg"] isEqualToString:@"ok"])
+             {
+                 UserModel* newFriend =
+                 [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                    NickName:responseObject[@"data"][@"Nickname"]
+                                    RemarkName:responseObject[@"data"][@"Username"]
+                                    Gender:responseObject[@"data"][@"Gender"]
+                                    Birthplace:responseObject[@"data"][@"Region"]
+                                    ProfilePicture:responseObject[@"data"][@"Avatar"]];
+                 [[DatabaseHelper getInstance] insertFriendWithFriend:newFriend];
+                 [self willChangeValueForKey:@"ContactsArray"];
+                 [self.ContactsArray addObject:newFriend];
+                 [self didChangeValueForKey:@"ContactsArray"];
+             }
+             else
+             {
+                 NSLog(@"error: %@", responseObject[@"msg"]);
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"%@", error.localizedDescription);
+         }];
+    
+}
 
 // search delegate begin
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController
@@ -160,12 +196,13 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
                  if ([responseObject[@"msg"] isEqualToString:@"ok"])
                  {
                      NSLog(@"here");
-                     UserModel* searchedUser = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
-                                                                            NickName:responseObject[@"data"][@"Nickname"]
-                                                                          RemarkName:responseObject[@"data"][@"Username"]
-                                                                              Gender:responseObject[@"data"][@"Gender"]
-                                                                          Birthplace:responseObject[@"data"][@"Region"]
-                                                                      ProfilePicture:responseObject[@"data"][@"Avatar"]];
+                     UserModel* searchedUser =
+                     [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                        NickName:responseObject[@"data"][@"Nickname"]
+                                        RemarkName:responseObject[@"data"][@"Username"]
+                                        Gender:responseObject[@"data"][@"Gender"]
+                                        Birthplace:responseObject[@"data"][@"Region"]
+                                        ProfilePicture:responseObject[@"data"][@"Avatar"]];
                      UIStoryboard *searchUserInfoStoryboard = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
                      
                      InfoViewController *InfoVC = [searchUserInfoStoryboard instantiateViewControllerWithIdentifier:@"personal_info"];
@@ -218,59 +255,10 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 - (IBAction)freshContactList:(id)sender
 {
     [[DatabaseHelper getInstance] rebuildFriendListTable];
-    [self getFriendsFromServer];
+    [[DatabaseHelper getInstance] getFriendsFromServer];
     self.ContactsArray = [NSMutableArray array];
 }
 
-- (void)getFriendsFromServer
-{
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [URLHelper getURLwithPath:@"/contact/info"];
-    NSMutableArray *friendIDList = [[NSMutableArray alloc] init];
-    
-    [manager GET:url parameters:nil progress:nil
-         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-             NSLog(@"%@", responseObject);
-             if([responseObject[@"state"] isEqualToString:@"ok"])
-             {
-                 for (id user in responseObject[@"data"])
-                 {
-                     NSString *friendUrl = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", user[@"Friend"]]];
-                     [manager GET:friendUrl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable friendsInfo) {
-                         if ([friendsInfo[@"state"] isEqualToString:@"ok"])
-                         {
-                             UserModel* friend = [[UserModel alloc] initWithProperties:friendsInfo[@"data"][@"Username"]
-                                                                              NickName:friendsInfo[@"data"][@"Nickname"]
-                                                                            RemarkName:friendsInfo[@"data"][@"Nickname"]
-                                                                                Gender:friendsInfo[@"data"][@"Gender"]
-                                                                            Birthplace:friendsInfo[@"data"][@"Region"]
-                                                                        ProfilePicture:friendsInfo[@"data"][@"Avatar"]];
-                         
-                             [[DatabaseHelper getInstance] insertFriendWithFriend:friend];
-                             [self willChangeValueForKey:@"ContactsArray"];
-                             [self.ContactsArray addObject:friend];
-                             [self didChangeValueForKey:@"ContactsArray"];
-                         }
-                         else
-                         {
-                             NSLog(@"%@", friendsInfo[@"msg"]);
-                         }
-                         
-                     } failure:
-                      ^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                         NSLog(@"get friend info fail");
-                      }];
-                 }
-             }
-             else
-             {
-                 NSLog(@"%@", responseObject[@"msg"]);
-             }
-         }
-         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             NSLog(@"%@", error.localizedDescription);
-         }];
-}
 
 -(void)getFriendsFromDatabase
 {

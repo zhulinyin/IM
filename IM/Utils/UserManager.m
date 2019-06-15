@@ -90,6 +90,13 @@ static UserManager *instance = nil;
                 self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
                 [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
                 
+                // 查询该用户的好友列表是否存在与数据库中
+                if (![[DatabaseHelper getInstance] isFriendTableExist])
+                {
+                    [[DatabaseHelper getInstance] createFriendListTable];
+                    [[DatabaseHelper getInstance] getFriendsFromServer];
+                }
+                
                 MainViewController *vc = [[MainViewController alloc] init];
                 [UIApplication sharedApplication].keyWindow.rootViewController = vc;
             }

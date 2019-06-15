@@ -42,7 +42,6 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         NSLog(@"Database create successfully");
         [self createMessageTable];
         [self createSessionListTable];
-        [self createFriendListTable];
         [self createRequestTable];
     }
     else {
@@ -126,6 +125,27 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
     [self createFriendListTable];
 }
+
+-(BOOL)isFriendTableExist
+{
+    static BOOL result = NO;
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            FMResultSet* set = [db executeQuery:[NSString stringWithFormat: @"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='%@friendList'", self.userManager.loginUserId]];
+
+            while ([set next])
+            {
+                
+                result = [set intForColumnIndex:0];
+                NSLog(@"%d", result);
+            }
+        }
+        [db close];
+    }];
+    return result;
+}
+
+
 
 -(NSMutableArray *) querySessions {
     NSMutableArray *sessions = [[NSMutableArray alloc] init];
@@ -219,9 +239,32 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) selectFriendByID:(NSString*) UserID
+-(UserModel *) getFriendByID:(NSString *)friendID
 {
-    
+    static UserModel* friend;
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db)
+     {
+         if([db open])
+         {
+             FMResultSet* set = [db executeQuery:[NSString stringWithFormat:
+                                                  @"SELECT *\
+                                                  FROM [%@friendList]\
+                                                  WHERE UserID='%@'"
+                                                  , self.userManager.loginUserId, friendID]];
+             if ([set next])
+             {
+                 friend = [[UserModel alloc] initWithProperties:[set stringForColumnIndex:0]
+                                                                  NickName:[set stringForColumnIndex:1]
+                                                                RemarkName:[set stringForColumnIndex:2]
+                                                                    Gender:[set stringForColumnIndex:3]
+                                                                Birthplace:[set stringForColumnIndex:4]
+                                                            ProfilePicture:[set stringForColumnIndex:5]];
+                 
+             }
+         }
+         [db close];
+     }];
+    return friend;
 }
 
 -(NSMutableArray *) getAllFriends
@@ -361,40 +404,64 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
             NSInteger num = [self queryUnreadNumByChatId:sendId];
             [dict setValue:@(num+1) forKey:sendId];
         }
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", sendId]];
-        [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSString *imagePath;
-            NSString *chatName;
-            if([responseObject[@"state"] isEqualToString:@"ok"])
-            {
-                NSLog(@"get Info success");
-                imagePath = responseObject[@"data"][@"Avatar"];
-                chatName = responseObject[@"data"][@"Nickname"];
-            }
-            else
-            {
-                NSLog(@"%@", responseObject[@"msg"]);
-                imagePath = @"default";
-                chatName = @"fresh";
-                NSLog(@"get Info fail1");
-            }
-            NSString *content = [message.Type isEqualToString:@"text"] ? message.Content : @"[图片]";
-            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:chatName withProfilePicture:imagePath withLatestMessageContent:content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
-            [self insertSessionWithSession:session];
-            [self insertMessageWithMessage:message];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"get Info fail2");
-            NSLog(@"%@", error.localizedDescription);
-            NSString *content = [message.Type isEqualToString:@"text"] ? message.Content : @"[图片]";
-            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:@"fresh" withProfilePicture:@"default" withLatestMessageContent:content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
-            [self insertSessionWithSession:session];
-            [self insertMessageWithMessage:message];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
-        }];
+        UserModel* friend = [self getFriendByID:sendId];
+        
+        NSString *imagePath = friend.ProfilePicture;
+        NSString *chatName = friend.NickName;
+        NSString *content = [message.Type isEqualToString:@"text"] ? message.Content : @"[图片]";
+        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:chatName withProfilePicture:imagePath withLatestMessageContent:content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
+        [self insertSessionWithSession:session];
+        [self insertMessageWithMessage:message];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
     }
 }
+
+- (void)getFriendsFromServer
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/contact/info"];
+    
+    [manager GET:url parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             NSLog(@"%@", responseObject);
+             if([responseObject[@"state"] isEqualToString:@"ok"])
+             {
+                 for (id user in responseObject[@"data"])
+                 {
+                     NSString *friendUrl = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", user[@"Friend"]]];
+                     [manager GET:friendUrl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable friendsInfo) {
+                         if ([friendsInfo[@"state"] isEqualToString:@"ok"])
+                         {
+                             UserModel* friend = [[UserModel alloc] initWithProperties:friendsInfo[@"data"][@"Username"]
+                                                                              NickName:friendsInfo[@"data"][@"Nickname"]
+                                                                            RemarkName:friendsInfo[@"data"][@"Nickname"]
+                                                                                Gender:friendsInfo[@"data"][@"Gender"]
+                                                                            Birthplace:friendsInfo[@"data"][@"Region"]
+                                                                        ProfilePicture:friendsInfo[@"data"][@"Avatar"]];
+                             
+                             [[DatabaseHelper getInstance] insertFriendWithFriend:friend];
+                         }
+                         else
+                         {
+                             NSLog(@"%@", friendsInfo[@"msg"]);
+                         }
+                         
+                     } failure:
+                      ^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                          NSLog(@"get friend info fail");
+                      }];
+                 }
+             }
+             else
+             {
+                 NSLog(@"%@", responseObject[@"msg"]);
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"%@", error.localizedDescription);
+         }];
+}
+
 
 - (void)getNewFriendRequest:(NSNotification *)notification
 {

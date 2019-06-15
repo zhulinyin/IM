@@ -23,13 +23,18 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) unregisterNewMessageListener;
 -(NSMutableArray *) querySessions;
 -(void) insertSessionWithSession:(SessionModel *)session;
+-(void) createFriendListTable;
 -(void) insertFriendWithFriend:(UserModel *) Friend;
 -(void) selectFriendByID:(NSString*) UserID;
 -(void) rebuildFriendListTable;
+-(NSString *) getProfilePictureURLwithUserID:(NSString*) FriendID;
+-(BOOL)isFriendTableExist;
+- (void)getFriendsFromServer;
 -(NSMutableArray *) getAllFriends;
 -(NSMutableArray *) getAllRequest;
 -(void) updateRequestStateWithID:(NSString *) userID state:(NSString *)state;
 -(void) deleteMessages:(NSString *) chatId;
+
 @end
 
 NS_ASSUME_NONNULL_END

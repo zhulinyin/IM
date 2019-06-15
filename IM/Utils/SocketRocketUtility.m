@@ -187,6 +187,9 @@ dispatch_async(dispatch_get_main_queue(), block);\
                 else if ([message.Type isEqualToString:@"addRequest"]) {
                     [addRequests addObject:message];
                 }
+                else if ([message.Type isEqualToString:@"addConfirm"]){
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriendConfirm" object:message.SenderID];
+                }
             }
             
             userManager.seq += messages.count;
@@ -204,6 +207,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         NSLog(@"get message fail: web disconnect");
     }];
 }
+
 -(MessageModel *) changeToMessageModel:(NSDictionary *)data {
     NSLog(@"%@", data);
     MessageModel* message = [[MessageModel alloc] init];
@@ -227,6 +231,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
     
     return message;
 }
+
+
 // 关闭连接
 -(void)SRWebSocketClose{
     if (self.socket){
