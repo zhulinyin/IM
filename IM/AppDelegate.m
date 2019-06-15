@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "Main/MainViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -27,32 +27,8 @@
     NSString *result = [notification object];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     if ([result isEqualToString:@"success"]) {
-        //storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-
-        UITabBarController *tb = [[UITabBarController alloc] init];
-
-        UIStoryboard *messageSB = [UIStoryboard storyboardWithName:@"MessagePage" bundle:nil];
-        UIStoryboard *contactSB = [UIStoryboard storyboardWithName:@"ContactPage" bundle:nil];
-        UIStoryboard *infoSB = [UIStoryboard storyboardWithName:@"Info" bundle:nil];
-        
-        UINavigationController *messageNav = [messageSB instantiateInitialViewController];
-        UIViewController *messageVc = messageNav.topViewController;
-        messageVc.tabBarItem.title = @"消息";
-        messageVc.tabBarItem.image = [UIImage imageNamed:@"xiaoxi"];
-        
-        UINavigationController *contactNav = [contactSB instantiateInitialViewController];
-        UIViewController *contactVc = contactNav.topViewController;
-        contactVc.tabBarItem.title = @"联系人";
-        contactVc.tabBarItem.image = [UIImage imageNamed:@"tongxunlu"];
-        
-        UINavigationController *infoNav = [infoSB instantiateInitialViewController];
-        UIViewController *infoVc = infoNav.topViewController;
-        infoVc.tabBarItem.title = @"个人信息";
-        infoVc.tabBarItem.image = [UIImage imageNamed:@"wode"];
-        
-        tb.viewControllers = @[messageNav, contactNav, infoNav];
-        
-        self.window.rootViewController = tb;
+        MainViewController *vc = [[MainViewController alloc] init];
+        self.window.rootViewController = vc;
     }
     else {
         self.window.rootViewController = [[UIStoryboard storyboardWithName:@"Index" bundle:nil] instantiateInitialViewController];

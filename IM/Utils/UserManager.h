@@ -12,6 +12,7 @@
 #import "SocketRocketUtility.h"
 #import "URLHelper.h"
 #import <AFNetworking/AFNetworking.h>
+#import "MainViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -23,6 +23,7 @@
 		7156844D229C2F58006A1530 /* FriendRequestPage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71568449229C2F58006A1530 /* FriendRequestPage.storyboard */; };
 		7156844E229C2F58006A1530 /* FriendRequestTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */; };
 		D775CAA1229934530081CDD6 /* SessionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D775CAA0229934530081CDD6 /* SessionModel.m */; };
+		D7FC061522B49FE2005F5A99 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7FC061422B49FE2005F5A99 /* MainViewController.m */; };
 		DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */; };
 		EF4CC42022A2309000B799B7 /* URLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EF4CC41E22A2309000B799B7 /* URLHelper.m */; };
 		FA9A78F7228667D800CC26CF /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9A78F6228667D800CC26CF /* UserManager.m */; };
@@ -87,6 +88,8 @@
 		7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FriendRequestTableViewController.m; path = IM/Main/ContactPage/FriendRequestPage/FriendRequestTableViewController.m; sourceTree = SOURCE_ROOT; };
 		D775CA9F229934530081CDD6 /* SessionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionModel.h; sourceTree = "<group>"; };
 		D775CAA0229934530081CDD6 /* SessionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionModel.m; sourceTree = "<group>"; };
+		D7FC061322B49FE1005F5A99 /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		D7FC061422B49FE2005F5A99 /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DFDD795C228FAECB008AAA7F /* InfoModifiedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InfoModifiedViewController.m; sourceTree = "<group>"; };
 		DFDD795E228FAEDC008AAA7F /* InfoModifiedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InfoModifiedViewController.h; sourceTree = "<group>"; };
 		EA2F166862D806281915123F /* Pods-IM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IM.release.xcconfig"; path = "Target Support Files/Pods-IM/Pods-IM.release.xcconfig"; sourceTree = "<group>"; };
@@ -298,6 +301,8 @@
 				FDEBADBF22768F7700EAE88F /* MessagePage */,
 				FDEBADC022768F8B00EAE88F /* ContactPage */,
 				FDEBADC122768FA300EAE88F /* InfoPage */,
+				D7FC061322B49FE1005F5A99 /* MainViewController.h */,
+				D7FC061422B49FE2005F5A99 /* MainViewController.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -529,6 +534,7 @@
 				FD085DB6226D64A800968B28 /* main.m in Sources */,
 				712782382276A0D7002729E3 /* UserModel.m in Sources */,
 				7127821022740806002729E3 /* ContactTableViewCell.m in Sources */,
+				D7FC061522B49FE2005F5A99 /* MainViewController.m in Sources */,
 				DFDD795D228FAECB008AAA7F /* InfoModifiedViewController.m in Sources */,
 				FD085DA8226D64A500968B28 /* AppDelegate.m in Sources */,
 				7127822E22769C6A002729E3 /* MessageTableViewCell.m in Sources */,
