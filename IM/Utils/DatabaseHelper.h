@@ -10,6 +10,7 @@
 #import "../Main/Model/MessageModel.h"
 #import "SessionModel.h"
 #import "UserManager.h"
+#import "REquestModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DatabaseHelper : NSObject
@@ -26,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) selectFriendByID:(NSString*) UserID;
 -(void) rebuildFriendListTable;
 -(NSMutableArray *) getAllFriends;
+-(NSMutableArray *) getAllRequest;
+-(void) updateRequestStateWithID:(NSString *) userID state:(NSString *)state;
 -(void) deleteMessages:(NSString *) chatId;
 @end
 

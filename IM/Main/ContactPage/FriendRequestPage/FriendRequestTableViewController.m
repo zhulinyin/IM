@@ -10,7 +10,7 @@
 
 @interface FriendRequestTableViewController ()
 
-@property (nonatomic, strong) NSMutableArray<UserModel*> *RequestList;
+@property (nonatomic, strong) NSMutableArray<RequestModel*> *requestList;
 @property (strong, nonatomic) IBOutlet UITableView *FriendRequestTableView;
 @end
 
@@ -19,11 +19,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.RequestList = [NSMutableArray array];
+    self.requestList = [[DatabaseHelper getInstance] getAllRequest];
     
     //[self initializeTestData];
     self.FriendRequestTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewFriendRequest:) name:@"newFriends" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequest:) name:@"requestChange" object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -33,13 +34,10 @@
 
 #pragma mark - Table view data source
 
-- (void)initializeTestData
-{
-    
-    UserModel* TestUser1 = [[UserModel alloc] initWithProperties:@"123" NickName:@"teemo" RemarkName:@"teemo" Gender:@"male" Birthplace:@"Jodl" ProfilePicture:@"teemo.jpg"];
-    UserModel* TestUser2 = [[UserModel alloc] initWithProperties:@"321" NickName:@"peppa" RemarkName:@"peppa" Gender:@"female" Birthplace:@"UK" ProfilePicture:@"peppa.jpg"];
-    [self.RequestList addObject:TestUser1];
-    [self.RequestList addObject:TestUser2];
+
+- (void)updateRequest:(NSNotification *)notification{
+    self.requestList = [[DatabaseHelper getInstance] getAllRequest];
+    [self.FriendRequestTableView reloadData];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -48,7 +46,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return self.RequestList.count;
+    return self.requestList.count;
 }
 
 
@@ -63,13 +61,34 @@
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
-    cell.ProfilePicture.image = [UIImage imageNamed:self.RequestList[indexPath.row].ProfilePicture];
-    cell.Nickname.text = self.RequestList[indexPath.row].NickName;
+    RequestModel* request =  self.requestList[indexPath.row];
+    UserModel* user = request.User;
+    cell.Nickname.text = user.NickName;
+    NSString *imagePath = [URLHelper getURLwithPath:user.ProfilePicture];
+    [cell.ProfilePicture sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                                  placeholderImage:[UIImage imageNamed:@"peppa"]
+                                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                             NSLog(@"error== %@",error);
+                                         }];
+    if ([request.State isEqualToString:@"accepcted"])
+    {
+        [self AcceptCell:cell];
+    }
+    else if ([request.State isEqualToString:@"rejected"])
+    {
+        [self RejectCell:cell];
+    }
+    else
+    {
+        // do nothing
+    }
+    
+    NSLog(@"UserID:%@ CID:%ld state:%@", user.UserID, (long)request.Cid, request.State);
     
     return cell;
 }
 
-- (void)getNewFriendRequest:(NSNotification *)notification
+/*- (void)getNewFriendRequest:(NSNotification *)notification
 {
     NSArray *messages = [notification object];
     
@@ -109,35 +128,64 @@
         //
         //[self.FriendRequestTableView reloadData];
     }
+}*/
+
+- (void)AcceptCell:(FriendRequestTableViewCell *)cell
+{
+    [self DeactivateCell:cell];
+    cell.RejectButton.backgroundColor = [UIColor grayColor];
+    
+}
+
+- (void)RejectCell:(FriendRequestTableViewCell *)cell
+{
+    [self DeactivateCell:cell];
+    cell.AcceptButton.backgroundColor = [UIColor grayColor];
+    cell.RejectButton.backgroundColor = [UIColor grayColor];
+}
+
+-(void)DeactivateCell:(FriendRequestTableViewCell *)cell
+{
+    cell.AcceptButton.enabled = NO;
+    cell.RejectButton.enabled = NO;
+}
+
+-(void)ReactivateCell:(FriendRequestTableViewCell *)cell
+{
+    cell.AcceptButton.enabled = YES;
+    cell.RejectButton.enabled = YES;
 }
 
 - (IBAction)AcceptRequest:(id)sender
 {
-    
-    
+    //get the cell
     UIButton *AcceptButton = sender;
     FriendRequestTableViewCell *cell = [[AcceptButton superview] superview];
     NSIndexPath *indexPath = [self.FriendRequestTableView indexPathForCell:cell];
-    cell.AcceptButton.enabled = NO;
-    cell.RejectButton.enabled = NO;
-    NSString* FriendID = self.RequestList[indexPath.row].UserID;
-    NSDictionary* params = @{@"cid":@0, @"to":FriendID, @"info":@"hello"};
+   
+    [self DeactivateCell:cell];
+    
+    
+    NSString* FriendID = self.requestList[indexPath.row].User.UserID;
+    NSString* Cid = [[NSString alloc] initWithFormat:@"%ld", (long)self.requestList[indexPath.row].Cid];
+    
+    NSDictionary* params = @{@"cid":Cid, @"to":FriendID, @"info":@"hello"};
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [URLHelper getURLwithPath:@"/content/add"];
     
-    [manager GET:url parameters:params progress:nil
+    [manager POST:url parameters:params progress:nil
      success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
          if([responseObject[@"state"] isEqualToString:@"ok"])
          {
              NSLog(@"%@", responseObject[@"msg"]);
-             cell.RejectButton.backgroundColor = [UIColor grayColor];
+             [self AcceptCell:cell];
+             [[DatabaseHelper getInstance] updateRequestStateWithID:FriendID state:@"accepted"];
          }
          else
          {
              NSLog(@"%@", responseObject[@"msg"]);
-             cell.AcceptButton.enabled = YES;
-             cell.RejectButton.enabled = YES;
+             [self ReactivateCell:cell];
          }
      }
      failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -148,17 +196,14 @@
 
 - (IBAction)RejectFriend:(id)sender
 {
-    //https://stackoverflow.com/questions/31649220/detect-tap-on-a-button-in-uitableviewcell-for-uitableview-containing-multiple-se/31649321#31649321
-    CGPoint touchPoint = [sender convertPoint:CGPointZero toView:self.FriendRequestTableView]; // maintable --> replace your tableview name
-    NSIndexPath *clickedButtonIndexPath = [self.FriendRequestTableView indexPathForRowAtPoint:touchPoint];
-    
-    //FriendRequestTableViewCell *cell = [self tableView:self.FriendRequestTableView cellForRowAtIndexPath:clickedButtonIndexPath];
+    //get the cell
     UIButton *RejectButton = sender;
     FriendRequestTableViewCell *cell = [[RejectButton superview] superview];
-    cell.AcceptButton.backgroundColor = [UIColor grayColor];
-    cell.RejectButton.backgroundColor = [UIColor grayColor];
-    cell.AcceptButton.enabled = NO;
-    cell.RejectButton.enabled = NO;
+    NSIndexPath *indexPath = [self.FriendRequestTableView indexPathForCell:cell];
+    
+    NSString* FriendID = self.requestList[indexPath.row].User.UserID;
+    [[DatabaseHelper getInstance] updateRequestStateWithID:FriendID state:@"rejected"];
+    [self RejectCell:cell];
 }
 
 /*

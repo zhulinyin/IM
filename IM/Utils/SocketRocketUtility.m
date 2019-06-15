@@ -198,19 +198,33 @@ dispatch_async(dispatch_get_main_queue(), block);\
         }
         else
         {
-            NSLog(@"get message fail");
+            NSLog(@"get message fail: %@", responseObject[@"msg"]);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"get message fail");
+        NSLog(@"get message fail: web disconnect");
     }];
 }
 -(MessageModel *) changeToMessageModel:(NSDictionary *)data {
+    NSLog(@"%@", data);
     MessageModel* message = [[MessageModel alloc] init];
     message.SenderID = data[@"From"];
     message.ReceiverID = data[@"Username"];
     message.Type = data[@"Type"];
-    message.Content = data[@"content"][@"Cstr"];
-    message.TimeStamp = [self.dateFormatter dateFromString:data[@"content"][@"Timestamp"]];
+    if ([message.Type isEqualToString:@"text"])
+    {
+        message.Content = data[@"content"][@"Cstr"];
+        message.TimeStamp = [self.dateFormatter dateFromString:data[@"content"][@"Timestamp"]];
+    }
+    else if ([message.Type isEqualToString:@"addRequest"])
+    {
+        message.Content = data[@"content"][@"Cid"];
+        message.TimeStamp = [self.dateFormatter dateFromString:data[@"content"][@"Timestamp"]];
+    }
+    else
+    {
+        message.Content = @"";
+    }
+    
     return message;
 }
 // 关闭连接
