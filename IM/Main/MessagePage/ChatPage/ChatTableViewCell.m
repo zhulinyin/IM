@@ -71,6 +71,7 @@
     else if ([model.Type isEqualToString:@"image"]){
         // 使用url来获取图片，而不是传参数
         UIImageView *imgV = [[UIImageView alloc]init];
+        NSLog(model.Content);
         NSString *imagePath = [URLHelper getURLwithPath:model.Content];
         NSLog(imagePath);
         [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]

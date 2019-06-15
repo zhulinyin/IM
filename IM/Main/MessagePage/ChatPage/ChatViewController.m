@@ -118,19 +118,19 @@
 
 // 发送图片
 - (void)sendImage:(UIImage *)image {
+    NSDate* timestamp = [NSDate date];
     // 本地显示部分
     MessageModel* message = [[MessageModel alloc] init];
     message.Type = @"image";
     message.SenderID = self.loginUser.UserID;
     message.ReceiverID = self.chatUser.UserID;
     message.Content = @"";
-//    message.ContentImage = image;
-    message.TimeStamp = [NSDate date];
+    //    message.ContentImage = image;
+    message.TimeStamp = timestamp;
     [self addMessage:message];
     
     // 网络部分
     NSString* path = @"/content/image";
-    NSDate* timestamp = [NSDate date];
     NSString* userName = self.chatUser.UserID;
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -140,7 +140,7 @@
     NSString* urlString = [URLHelper getURLwithPath:path];
     NSLog(@"%@", urlString);
     // 添加参数
-    NSDictionary* params = @{@"to":userName, @"timestamp":timestamp};
+    NSDictionary* params = @{@"to":userName, @"timestamp":[self.dateFormatter stringFromDate:message.TimeStamp]};
     // 发送图片
     [manager POST:urlString parameters:params constructingBodyWithBlock:
      ^(id<AFMultipartFormData> _Nonnull formData){
@@ -150,11 +150,11 @@
                                   mimeType:@"multipart/form-data"];
      } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
          NSLog(responseObject[@"msg"]);
+         [self.databaseHelper insertMessageWithMessage:message];
      } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
          NSLog(@"sendImage fail");
          NSLog(@"%@", error.localizedDescription);
      }];
-    
 }
 
 // 选择图片
