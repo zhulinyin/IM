@@ -112,6 +112,7 @@
                         <outlet property="loginBtn" destination="4XB-c6-8a4" id="Agz-dr-fjV"/>
                         <outlet property="passwordText" destination="qKv-Lz-qOe" id="B9D-e1-TGR"/>
                         <outlet property="registerBtn" destination="Csw-Ig-8hG" id="WHh-H7-Qys"/>
+                        <outlet property="userLoginAvatar" destination="7J1-Eo-Jg4" id="Ear-eg-pRK"/>
                         <outlet property="usernameText" destination="IpD-dU-h1h" id="gnS-1h-e3u"/>
                     </connections>
                 </viewController>
