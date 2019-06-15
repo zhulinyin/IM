@@ -132,7 +132,6 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
             friend = self.ContactsArray[indexPath.row];
 
         NSString *imagePath = [URLHelper getURLwithPath:friend.ProfilePicture];
-        NSLog(@"%@", imagePath);
         [cell.ContactProfilePicture sd_setImageWithURL:[NSURL URLWithString:imagePath]
                 placeholderImage:[UIImage imageNamed:@"peppa"]
                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {

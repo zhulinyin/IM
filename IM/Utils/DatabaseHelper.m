@@ -43,6 +43,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         [self createMessageTable];
         [self createSessionListTable];
         [self createFriendListTable];
+        [self createRequestTable];
     }
     else {
         NSLog(@"Database create failed");
@@ -91,20 +92,21 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) createFriendRequestTable {
+-(void) createRequestTable {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
-                             @"CREATE TABLE IF NOT EXISTS [%@friendRequest] (          \
+                             @"CREATE TABLE IF NOT EXISTS [%@requestList] (          \
                              UserID TEXT PRIMARY KEY,       \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
                              Gender TEXT DEFAULT '',        \
                              Birthplace TEXT DEFAULT '',    \
                              ProfilePicture TEXT DEFAULT '',\
-                             Description TEXT DEFAULT ''   ,\
-                             CID INTEGER                   \
-                             );", self.userManager.loginUserId];
+                             Description TEXT DEFAULT '',   \
+                             CID INTEGER,                   \
+                             State TEXT                     \
+                             );", self.userManager.loginUserId]; // State : {"accepted", "rejected", "pending"}
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create request table successfully" : @"create request table failed");
         }
@@ -116,7 +118,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            NSString* sql = [NSString stringWithFormat: @"DROP TABLE [%@friendList]);", self.userManager.loginUserId];
+            NSString* sql = [NSString stringWithFormat: @"DROP TABLE [%@friendList];", self.userManager.loginUserId];
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"drop firend table successfully" : @"drop friend table failed");
         }
@@ -202,11 +204,14 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) insertRequestWithUser:(UserModel *) User cid:(NSInteger)cid
+-(void) insertRequestWithUser:(UserModel *) User Cid:(NSInteger)Cid state:(NSString*)state
 {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
-            BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld');", self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)cid]];
+            BOOL res = [db executeStatements:[NSString stringWithFormat:
+                                              @"INSERT INTO [%@requestList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description, CID, State) \
+                                              VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld', '%@');"
+                                              , self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)Cid, state]];
             
             NSLog(@"%@", res ? @"insert request successfully" : @"insert request failed");
         }
@@ -244,6 +249,31 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     return friendList;
 }
 
+-(NSMutableArray *) getAllRequest
+{
+    NSMutableArray *requestList = [[NSMutableArray alloc] init];
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db)
+     {
+         if([db open])
+         {
+             FMResultSet* set = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM [%@requestList]", self.userManager.loginUserId]];
+             while([set next])
+             {
+                 UserModel* user = [[UserModel alloc] initWithProperties:[set stringForColumnIndex:0]
+                                                                  NickName:[set stringForColumnIndex:1]
+                                                                RemarkName:[set stringForColumnIndex:2]
+                                                                    Gender:[set stringForColumnIndex:3]
+                                                                Birthplace:[set stringForColumnIndex:4]
+                                                            ProfilePicture:[set stringForColumnIndex:5]];
+                 RequestModel* request = [[RequestModel alloc] initWithProperties:user State:[set stringForColumnIndex:8] Cid:[[set stringForColumnIndex:7] integerValue]];
+                 [requestList addObject:request];
+             }
+         }
+         [db close];
+     }];
+    return requestList;
+}
+
 -(NSMutableArray *) queryAllMessagesWithChatId:(NSString *) chatId{
     NSMutableArray *messages = [[NSMutableArray alloc] init];
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
@@ -273,6 +303,21 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
             
             BOOL res2 = [db executeStatements:[NSString stringWithFormat:@"DELETE FROM [%@message] WHERE chatId = '%@';", self.userManager.loginUserId, chatId]];
             NSLog(@"%@", res2 ? @"delete messages successfully" : @"delete messages failed");
+        }
+        [db close];
+    }];
+}
+
+-(void) updateRequestStateWithID:(NSString *) userID state:(NSString *)state
+{
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res = [db executeStatements:[NSString stringWithFormat:
+                                              @"UPDATE [%@requestList]   \
+                                              SET STATE = '%@'          \
+                                              WHERE UserID = '%@'       "
+                                            , self.userManager.loginUserId, state, userID]];
+            NSLog(@"%@", res ? @"update request state successfully" : @"update request state failed");
         }
         [db close];
     }];
@@ -326,7 +371,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 - (void)getNewFriendRequest:(NSNotification *)notification
 {
     NSArray *messages = [notification object];
-    
+    NSLog(@"%@", messages);
     for (int i=0; i<messages.count; i++)
     {
         MessageModel *message = messages[i];
@@ -346,7 +391,8 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                                                                         Gender:responseObject[@"data"][@"Gender"]
                                                                     Birthplace:responseObject[@"data"][@"Region"]
                                                                 ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                     [self insertRequestWithUser:user cid:0];
+                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending"];
+                     [[NSNotificationCenter defaultCenter] postNotificationName:@"requestChange" object:nil];
                  }
                  else
                  {
