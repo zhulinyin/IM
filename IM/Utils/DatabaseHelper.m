@@ -387,7 +387,8 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"get Info fail2");
             NSLog(@"%@", error.localizedDescription);
-            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:@"fresh" withProfilePicture:@"default" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
+            NSString *content = [message.Type isEqualToString:@"text"] ? message.Content : @"[图片]";
+            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:@"fresh" withProfilePicture:@"default" withLatestMessageContent:content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
             [self insertSessionWithSession:session];
             [self insertMessageWithMessage:message];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
