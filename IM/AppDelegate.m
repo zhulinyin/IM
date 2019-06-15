@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "Main/MainViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -26,14 +26,13 @@
 - (void)tryLogin:(NSNotification *)notification{
     NSString *result = [notification object];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIStoryboard *storyboard;
     if ([result isEqualToString:@"success"]) {
-        storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        MainViewController *vc = [[MainViewController alloc] init];
+        self.window.rootViewController = vc;
     }
     else {
-        storyboard = [UIStoryboard storyboardWithName:@"Index" bundle:nil];
+        self.window.rootViewController = [[UIStoryboard storyboardWithName:@"Index" bundle:nil] instantiateInitialViewController];
     }
-    self.window.rootViewController = [storyboard instantiateInitialViewController];
     [self.window makeKeyAndVisible];
 }
 

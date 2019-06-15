@@ -89,8 +89,8 @@ static UserManager *instance = nil;
                 self.seq = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@seq", username]];
                 [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"loginUsername"];
                 
-                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                [UIApplication sharedApplication].keyWindow.rootViewController = mainStoryboard.instantiateInitialViewController;
+                MainViewController *vc = [[MainViewController alloc] init];
+                [UIApplication sharedApplication].keyWindow.rootViewController = vc;
             }
             else
             {
