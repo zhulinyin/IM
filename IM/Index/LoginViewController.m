@@ -23,6 +23,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    NSString *username = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUsername"];
+    NSString *avatar = [[NSUserDefaults standardUserDefaults] stringForKey:@"loginUserAvatar"];
+    NSString *imagePath = [URLHelper getURLwithPath:avatar];
+    self.usernameText.text = username;
+    [self.userLoginAvatar sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                            placeholderImage:[UIImage imageNamed:@"default"]
+                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                       NSLog(@"error== %@",error);
+                                   }];
 }
 /*
  登录功能
@@ -32,8 +41,8 @@
 }
 - (IBAction)usernameInputDone:(id)sender {
     
-    if ([_usernameText.text  isEqual: @""]) {
-        _userLoginAvatar.image = [UIImage imageNamed:@"peppa"];
+    if ([_usernameText.text isEqualToString:@""]) {
+        _userLoginAvatar.image = [UIImage imageNamed:@"default"];
         return;
     }
     
@@ -44,25 +53,23 @@
         if([responseObject[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"get Info success");
-            [_userLoginAvatar sd_setImageWithURL:[NSURL URLWithString:[[NSString alloc] initWithFormat:@"http://118.89.65.154:8000%@", responseObject[@"data"][@"Avatar"]]]
-                placeholderImage:[UIImage imageNamed:@"peppa"]
+            NSString *imagePath = [URLHelper getURLwithPath:responseObject[@"data"][@"Avatar"]];
+            [self.userLoginAvatar sd_setImageWithURL:[NSURL URLWithString:imagePath]
+                placeholderImage:[UIImage imageNamed:@"default"]
                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                    NSLog(@"error== %@",error);
-                   if (error) {
-                       _userLoginAvatar.image = [UIImage imageNamed:@"peppa"];
-                   }
                }];
         }
         else
         {
             NSLog(@"%@", responseObject[@"msg"]);
-            _userLoginAvatar.image = [UIImage imageNamed:@"peppa"];
+            self.userLoginAvatar.image = [UIImage imageNamed:@"default"];
             NSLog(@"get Info fail1");
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"get Info fail2");
         NSLog(@"%@", error.localizedDescription);
-        _userLoginAvatar.image = [UIImage imageNamed:@"peppa"];
+        self.userLoginAvatar.image = [UIImage imageNamed:@"default"];
     }];
 }
 

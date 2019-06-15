@@ -17,7 +17,10 @@ NSString* const SERVER_DOMAIN = @"http://118.89.65.154:8000";
 
 + (NSString*)getURLwithPath:(NSString*)path
 {
-    return [SERVER_DOMAIN stringByAppendingString:path];
+    if (path)
+        return [SERVER_DOMAIN stringByAppendingString:path];
+    else
+        return nil;
 }
 
 + (NSString*)getSocketDomain

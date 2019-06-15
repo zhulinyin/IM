@@ -181,7 +181,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
             NSLog(@"new messages num: %lu", messages.count);
             for (int i = 0; i < messages.count; i++) {
                 MessageModel *message = [self changeToMessageModel:messages[i]];
-                if ([message.Type isEqualToString:@"text"]) {
+                if ([message.Type isEqualToString:@"text"] || [message.Type isEqualToString:@"image"]) {
                     [textMessages addObject:message];
                 }
                 else if ([message.Type isEqualToString:@"addRequest"]) {
@@ -210,7 +210,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     message.SenderID = data[@"From"];
     message.ReceiverID = data[@"Username"];
     message.Type = data[@"Type"];
-    if ([message.Type isEqualToString:@"text"])
+    if ([message.Type isEqualToString:@"text"] || [message.Type isEqualToString:@"image"])
     {
         message.Content = data[@"content"][@"Cstr"];
         message.TimeStamp = [self.dateFormatter dateFromString:data[@"content"][@"Timestamp"]];

@@ -361,11 +361,38 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
             NSInteger num = [self queryUnreadNumByChatId:sendId];
             [dict setValue:@(num+1) forKey:sendId];
         }
-        SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:sendId withProfilePicture:@"peppa" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
-        [self insertSessionWithSession:session];
-        [self insertMessageWithMessage:message];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", sendId]];
+        [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            NSString *imagePath;
+            NSString *chatName;
+            if([responseObject[@"state"] isEqualToString:@"ok"])
+            {
+                NSLog(@"get Info success");
+                imagePath = responseObject[@"data"][@"Avatar"];
+                chatName = responseObject[@"data"][@"Nickname"];
+            }
+            else
+            {
+                NSLog(@"%@", responseObject[@"msg"]);
+                imagePath = @"default";
+                chatName = @"fresh";
+                NSLog(@"get Info fail1");
+            }
+            NSString *content = [message.Type isEqualToString:@"text"] ? message.Content : @"[图片]";
+            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:chatName withProfilePicture:imagePath withLatestMessageContent:content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
+            [self insertSessionWithSession:session];
+            [self insertMessageWithMessage:message];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"get Info fail2");
+            NSLog(@"%@", error.localizedDescription);
+            SessionModel *session = [[SessionModel alloc] initWithChatId:sendId withChatName:@"fresh" withProfilePicture:@"default" withLatestMessageContent:message.Content withLatestMessageTimeStamp:message.TimeStamp withUnreadNum:[dict[sendId] integerValue]];
+            [self insertSessionWithSession:session];
+            [self insertMessageWithMessage:message];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
+        }];
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"sessionChange" object:nil];
 }
 
 - (void)getNewFriendRequest:(NSNotification *)notification

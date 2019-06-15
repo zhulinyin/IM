@@ -62,6 +62,7 @@ static UserManager *instance = nil;
                                                          Birthplace:responseObject[@"data"][@"Region"]
                                                     ProfilePicture:responseObject[@"data"][@"Avatar"]];
             NSLog(@"%@", responseObject[@"data"][@"Avatar"]);
+            [[NSUserDefaults standardUserDefaults] setValue:responseObject[@"data"][@"Avatar"] forKey:@"loginUserAvatar"];
             [[DatabaseHelper getInstance] registerNewMessagesListener];
             [self.socket SRWebSocketOpen];
     }
