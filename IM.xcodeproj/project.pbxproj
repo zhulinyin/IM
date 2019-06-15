@@ -13,7 +13,6 @@
 		7127821022740806002729E3 /* ContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127820D22740805002729E3 /* ContactTableViewCell.m */; };
 		7127821122740806002729E3 /* ContactTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127820E22740806002729E3 /* ContactTableViewController.m */; };
 		7127821A2274081B002729E3 /* MessagePage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 712782122274081B002729E3 /* MessagePage.storyboard */; };
-		7127821B2274081B002729E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 712782142274081B002729E3 /* Main.storyboard */; };
 		7127821C2274081B002729E3 /* Info.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 712782162274081B002729E3 /* Info.storyboard */; };
 		7127821F22740918002729E3 /* ContactPage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7127821E22740918002729E3 /* ContactPage.storyboard */; };
 		7127822B22769C43002729E3 /* MessageTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7127822A22769C43002729E3 /* MessageTableViewController.m */; };
@@ -71,7 +70,6 @@
 		7127820E22740806002729E3 /* ContactTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactTableViewController.m; sourceTree = "<group>"; };
 		7127820F22740806002729E3 /* ContactTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactTableViewController.h; sourceTree = "<group>"; };
 		712782132274081B002729E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MessagePage.storyboard; sourceTree = "<group>"; };
-		712782152274081B002729E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		712782172274081B002729E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Info.storyboard; sourceTree = "<group>"; };
 		7127821E22740918002729E3 /* ContactPage.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ContactPage.storyboard; sourceTree = "<group>"; };
 		7127822922769C43002729E3 /* MessageTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MessageTableViewController.h; sourceTree = "<group>"; };
@@ -300,7 +298,6 @@
 				FDEBADBF22768F7700EAE88F /* MessagePage */,
 				FDEBADC022768F8B00EAE88F /* ContactPage */,
 				FDEBADC122768FA300EAE88F /* InfoPage */,
-				712782142274081B002729E3 /* Main.storyboard */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -451,7 +448,6 @@
 				7127821C2274081B002729E3 /* Info.storyboard in Resources */,
 				7156844D229C2F58006A1530 /* FriendRequestPage.storyboard in Resources */,
 				FD085DB3226D64A800968B28 /* LaunchScreen.storyboard in Resources */,
-				7127821B2274081B002729E3 /* Main.storyboard in Resources */,
 				FD085DB0226D64A800968B28 /* Assets.xcassets in Resources */,
 				FD085DAE226D64A500968B28 /* Index.storyboard in Resources */,
 				7127821F22740918002729E3 /* ContactPage.storyboard in Resources */,
@@ -585,14 +581,6 @@
 				712782132274081B002729E3 /* Base */,
 			);
 			name = MessagePage.storyboard;
-			sourceTree = "<group>";
-		};
-		712782142274081B002729E3 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				712782152274081B002729E3 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		712782162274081B002729E3 /* Info.storyboard */ = {
