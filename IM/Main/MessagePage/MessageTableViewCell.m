@@ -26,7 +26,7 @@
         //头像
         self.ContactProfilePicture = [[UIImageView alloc] init];
         self.ContactProfilePicture.contentMode = UIViewContentModeScaleAspectFit;
-        self.ContactProfilePicture.image = [UIImage imageNamed:@"default_icon"];
+        self.ContactProfilePicture.image = [UIImage imageNamed:@"default"];
         self.ContactProfilePicture.frame = CGRectMake(15, 10, ICON_WH, ICON_WH);
         [self.contentView addSubview:self.ContactProfilePicture];
         
@@ -69,8 +69,13 @@
 }
 
 -(void)setSession:(SessionModel *)session {
-    self.ContactProfilePicture.image = [UIImage imageNamed:@"peppa"];
-    self.ContactName.text = session.chatId;
+    NSString *imagePath = [URLHelper getURLwithPath:session.profilePicture];
+    [self.ContactProfilePicture sd_setImageWithURL:[NSURL URLWithString:imagePath]
+            placeholderImage:[UIImage imageNamed:@"default"]
+                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                       NSLog(@"error== %@",error);
+                   }];
+    self.ContactName.text = session.chatName;
     self.MessageAbstract.text = session.latestMessageContent;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";

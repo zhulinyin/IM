@@ -37,7 +37,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="wIt-wi-9X1">
                                 <rect key="frame" x="87.5" y="205" width="200" height="257"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="peppa" translatesAutoresizingMaskIntoConstraints="NO" id="7J1-Eo-Jg4">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default" translatesAutoresizingMaskIntoConstraints="NO" id="7J1-Eo-Jg4">
                                         <rect key="frame" x="50" y="0.0" width="100" height="100"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="100" id="pPs-QF-OrM"/>
@@ -192,6 +192,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="peppa" width="1024" height="1024"/>
+        <image name="default" width="144" height="144"/>
     </resources>
 </document>

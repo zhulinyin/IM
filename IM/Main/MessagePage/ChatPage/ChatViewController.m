@@ -57,7 +57,9 @@
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if(self.chatMsg.count > 0) {
-        SessionModel *session = [[SessionModel alloc] initWithChatId:self.chatUser.UserID withChatName:self.chatUser.NickName withProfilePicture:self.chatUser.ProfilePicture withLatestMessageContent:[self.chatMsg[self.chatMsg.count-1] Content] withLatestMessageTimeStamp:[self.chatMsg[self.chatMsg.count-1] TimeStamp]
+        MessageModel *lastMessage = self.chatMsg[self.chatMsg.count-1];
+        NSString *content = [lastMessage.Type isEqualToString:@"text"] ? lastMessage.Content : @"[图片]";
+        SessionModel *session = [[SessionModel alloc] initWithChatId:self.chatUser.UserID withChatName:self.chatUser.NickName withProfilePicture:self.chatUser.ProfilePicture withLatestMessageContent:content withLatestMessageTimeStamp:lastMessage.TimeStamp
                                                        withUnreadNum:0];
         [self.databaseHelper insertSessionWithSession:session];
     }
