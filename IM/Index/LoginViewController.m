@@ -29,5 +29,24 @@
 - (IBAction)loginEvent:(id)sender {
     [[UserManager getInstance] login:self.usernameText.text withPassword:self.passwordText.text];
 }
+- (IBAction)usernameInputDone:(id)sender {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", _usernameText.text]];
+    
+    [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if([responseObject[@"state"] isEqualToString:@"ok"])
+        {
+            NSLog(@"get Info success");
+        }
+        else
+        {
+            NSLog(@"%@", responseObject[@"msg"]);
+            NSLog(@"modifyInfo fail");
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"get Info fail");
+        NSLog(@"%@", error.localizedDescription);
+    }];
+}
 
 @end
