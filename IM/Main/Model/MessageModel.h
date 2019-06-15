@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSDate* TimeStamp;
 @property (strong, nonatomic) NSString* Type;
 @property (strong, nonatomic) NSString* Content;
+
+@property (strong, nonatomic) UIImage* ContentImage;
 
 - (instancetype)initWithProperties:(NSInteger)Seq
                           SenderID:(NSString *)SenderID

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIImageView *iconIV;      //头像
 @property (nonatomic, strong) UILabel *contentLabel;    //文字
 
+
 @end
 @implementation ChatTableViewCell
 
@@ -56,15 +57,35 @@
 }
 
 - (void)setModel:(MessageModel *)model {
-    //计算文字长度
-    self.contentLabel.text = model.Content;
-    CGSize labelSize = [model.Content boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
-                                                   options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
-                                                attributes: @{NSFontAttributeName:self.contentLabel.font}
-                                                   context: nil].size;
     UserModel *loginUser = [[UserManager getInstance] getLoginModel];
-    self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
-    
+    CGSize labelSize;
+    if ([model.Type isEqualToString:@"text"]){
+        //计算文字长度
+        self.contentLabel.text = model.Content;
+        labelSize = [model.Content boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
+                                                       options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
+                                                    attributes: @{NSFontAttributeName:self.contentLabel.font}
+                                                       context: nil].size;
+        self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
+    }
+    else if ([model.Type isEqualToString:@"image"]){
+        //2.初始化富文本对象
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
+        //3.初始化NSTextAttachment对象
+        NSTextAttachment *attchment = [[NSTextAttachment alloc]init];
+        attchment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
+        attchment.image = model.ContentImage;//设置图片
+        
+        //4.创建带有图片的富文本
+        NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attchment)];
+        [attributedString appendAttributedString:string];   //添加到尾部
+        self.contentLabel.attributedText = attributedString;
+        
+        labelSize = [attributedString boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
+                                                       options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
+                                                       context: nil].size;
+        self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
+    }
     //计算气泡位置
     CGFloat bubbleX = [model.SenderID isEqualToString:loginUser.UserID] ? (SCREEN_WIDTH - ICON_WH - 25 - labelSize.width - 30) : (ICON_WH + 25);
     self.bubbleIV.frame = CGRectMake(bubbleX, 20, self.contentLabel.frame.size.width + 30, self.contentLabel.frame.size.height+10);
