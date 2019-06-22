@@ -102,6 +102,30 @@ static UserManager *instance = nil;
             }
             else
             {
+                UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                
+                while (topController.presentedViewController) {
+                    topController = topController.presentedViewController;
+                }
+                
+                NSString* msg = @"账户或密码错误";
+                UIAlertController * alert = [UIAlertController
+                                             alertControllerWithTitle:msg
+                                             message:@""
+                                             preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* yesButton = [UIAlertAction
+                                            actionWithTitle:@"确定"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action) {
+                                                //Handle your yes please button action here
+                                            }];
+                
+                [alert addAction:yesButton];
+                
+                
+                [topController presentViewController:alert animated:YES completion:nil];
+                
                 NSLog(@"login fail");
             }
         }
@@ -165,8 +189,30 @@ static UserManager *instance = nil;
          }
          else
          {
-             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"登出失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-             [alertView show];
+             UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+             
+             while (topController.presentedViewController) {
+                 topController = topController.presentedViewController;
+             }
+             
+             NSString* msg = @"退出登录失败";
+             UIAlertController * alert = [UIAlertController
+                                          alertControllerWithTitle:msg
+                                          message:@""
+                                          preferredStyle:UIAlertControllerStyleAlert];
+             
+             UIAlertAction* yesButton = [UIAlertAction
+                                         actionWithTitle:@"确定"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             //Handle your yes please button action here
+                                         }];
+             
+             [alert addAction:yesButton];
+             
+             
+             [topController presentViewController:alert animated:YES completion:nil];
+             
              NSLog(@"logout fail");
          }
      } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error)
@@ -194,14 +240,58 @@ static UserManager *instance = nil;
            }
            else
            {
-               UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"注册失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-               [alertView show];
+               UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+               
+               while (topController.presentedViewController) {
+                   topController = topController.presentedViewController;
+               }
+               
+               NSString* msg = @"注册失败";
+               UIAlertController * alert = [UIAlertController
+                                            alertControllerWithTitle:msg
+                                            message:@""
+                                            preferredStyle:UIAlertControllerStyleAlert];
+               
+               UIAlertAction* yesButton = [UIAlertAction
+                                           actionWithTitle:@"确定"
+                                           style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * action) {
+                                               //Handle your yes please button action here
+                                           }];
+               
+               [alert addAction:yesButton];
+               
+               
+               [topController presentViewController:alert animated:YES completion:nil];
+               
                NSLog(@"register fail");
            }
        }
        failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-           UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:@"注册失败" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-           [alertView show];
+           UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+           
+           while (topController.presentedViewController) {
+               topController = topController.presentedViewController;
+           }
+           
+           NSString* msg = @"注册失败";
+           UIAlertController * alert = [UIAlertController
+                                        alertControllerWithTitle:msg
+                                        message:@""
+                                        preferredStyle:UIAlertControllerStyleAlert];
+           
+           UIAlertAction* yesButton = [UIAlertAction
+                                       actionWithTitle:@"确定"
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction * action) {
+                                           //Handle your yes please button action here
+                                       }];
+           
+           [alert addAction:yesButton];
+           
+           
+           [topController presentViewController:alert animated:YES completion:nil];
+           
            NSLog(@"register fail");
            NSLog(@"%@", error.localizedDescription);
        }];
