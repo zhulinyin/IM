@@ -70,7 +70,7 @@
                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                                              NSLog(@"error== %@",error);
                                          }];
-    if ([request.State isEqualToString:@"accepcted"])
+    if ([request.State isEqualToString:@"accepted"])
     {
         [self AcceptCell:cell];
     }
@@ -134,14 +134,14 @@
 {
     [self DeactivateCell:cell];
     cell.RejectButton.backgroundColor = [UIColor grayColor];
-    
+    [cell.AcceptButton setTitle:@"已接受" forState:UIControlStateNormal];
 }
 
 - (void)RejectCell:(FriendRequestTableViewCell *)cell
 {
     [self DeactivateCell:cell];
     cell.AcceptButton.backgroundColor = [UIColor grayColor];
-    cell.RejectButton.backgroundColor = [UIColor grayColor];
+    [cell.RejectButton setTitle:@"已拒绝" forState:UIControlStateNormal];
 }
 
 -(void)DeactivateCell:(FriendRequestTableViewCell *)cell
