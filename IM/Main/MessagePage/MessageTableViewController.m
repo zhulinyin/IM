@@ -105,7 +105,7 @@
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     SessionModel *session = self.sessionsArray[indexPath.row];
-    UserModel *chatUser = [[UserModel alloc] initWithProperties:session.chatId NickName:session.chatName RemarkName:session.chatName Gender:@"man" Birthplace:@"guangzhou" ProfilePicture:@"teemo"];
+    UserModel *chatUser = [[DatabaseHelper getInstance] getFriendByID:session.chatId];
     ChatViewController *viewController = [[ChatViewController alloc] initWithContact:chatUser];
     viewController.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewController animated:YES];

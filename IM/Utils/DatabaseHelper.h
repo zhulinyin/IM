@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(NSMutableArray *) getAllRequest;
 -(void) updateRequestStateWithID:(NSString *) userID state:(NSString *)state;
 -(void) deleteMessages:(NSString *) chatId;
+-(UserModel *) getFriendByID:(NSString *)friendID;
 
 @end
 

@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UserManager : NSObject
 @property(strong, nonatomic) NSString *loginUserId;
 @property NSInteger seq;
+@property(strong, nonatomic) UserModel *chatUser;
 +(instancetype) getInstance;
 -(void) login:(NSString *)username withPassword:(NSString *)password;
 -(void) register:(NSString *)username withPassword:(NSString *)password;

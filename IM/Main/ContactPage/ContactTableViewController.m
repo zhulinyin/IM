@@ -39,10 +39,54 @@
     //observer
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFriendConfirm:) name:@"newFriendConfirm" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendComing:) name:@"friendComing" object:nil];
     // view relative
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
+    
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                     action:@selector(leftSwipe:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+    [self.tableView addGestureRecognizer:recognizer];
+    
+    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(rightSwipe:)];
+    recognizer.delegate = self;
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [self.tableView addGestureRecognizer:recognizer];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        //add code here for when you hit delete
+        NSLog(@"delete");
+    }
+}
+
+- (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
+{
+    //do you left swipe stuff here.
+}
+
+- (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
+{
+    //do you right swipe stuff here. Something usually using theindexPath that you get that way
+    CGPoint location = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+}
+
+- (void)friendComing:(NSNotification *)notification
+{
+    [self willChangeValueForKey:@"ContactsArray"];
+    [self.ContactsArray addObject:notification.object];
+    [self didChangeValueForKey:@"ContactsArray"];
 }
 
 - (void)newFriendConfirm:(NSNotification *)notification
@@ -112,6 +156,8 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     self.ContactTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.isSearching = false;
+    [self.ContactTableView reloadData];
 }
 
 // search end
@@ -155,9 +201,20 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0)
     {
         if (self.isSearching)
+        {
             cell.ContactName.text = [[NSString alloc] initWithFormat:@"查找用户：%@", self.searchController.searchBar.text];
+            cell.ContactProfilePicture.image = [UIImage imageNamed:@"search"];
+        }
         else
+        {
             cell.ContactName.text = @"新的好友";
+            cell.ContactProfilePicture.image = [UIImage imageNamed:@"friendRequest"];
+        }
+        /*CGSize newSize = CGSizeMake(20, 20);
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+        [cell.ContactProfilePicture.image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+        cell.ContactProfilePicture.image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();*/
     }
     else if (indexPath.section == 1)
     {
@@ -184,7 +241,9 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0 && self.isSearching == NO)
     {
         UIStoryboard *FriendRequestStoryboard = [UIStoryboard storyboardWithName:@"FriendRequestPage" bundle:nil];
-        [self.navigationController pushViewController:FriendRequestStoryboard.instantiateInitialViewController animated:YES];
+        FriendRequestTableViewController* FriendVC = FriendRequestStoryboard.instantiateInitialViewController;
+        FriendVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:FriendVC animated:YES];
     }
     else if (indexPath.section == 0 && self.isSearching == YES)
     {
@@ -214,16 +273,46 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
                  else
                  {
                      NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
-                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                     [alertView show];
+                     UIAlertController * alert = [UIAlertController
+                                                  alertControllerWithTitle:msg
+                                                  message:@""
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+                     
+                     UIAlertAction* yesButton = [UIAlertAction
+                                                 actionWithTitle:@"确定"
+                                                 style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction * action) {
+                                                     //Handle your yes please button action here
+                                                 }];
+                     
+                     [alert addAction:yesButton];
+                     
+                     
+                     [self presentViewController:alert animated:YES completion:nil];
+                    
                  }
              }
              failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                  NSLog(@"search User fail");
                  NSLog(@"%@", error.localizedDescription);
                  NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
-                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                 [alertView show];
+                 UIAlertController * alert = [UIAlertController
+                                              alertControllerWithTitle:msg
+                                              message:@""
+                                              preferredStyle:UIAlertControllerStyleAlert];
+                 
+                 UIAlertAction* yesButton = [UIAlertAction
+                                             actionWithTitle:@"确定"
+                                             style:UIAlertActionStyleDefault
+                                             handler:^(UIAlertAction * action) {
+                                                 //Handle your yes please button action here
+                                             }];
+                 
+                 [alert addAction:yesButton];
+                 
+                 
+                 [self presentViewController:alert animated:YES completion:nil];
+                 
              }];
     }
     else if (indexPath.section == 1)
@@ -256,8 +345,10 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 {
     [[DatabaseHelper getInstance] rebuildFriendListTable];
     [[DatabaseHelper getInstance] getFriendsFromServer];
-    self.ContactsArray = [NSMutableArray array];
+    self.ContactsArray = [[NSMutableArray alloc] init];
 }
+
+
 
 
 -(void)getFriendsFromDatabase

@@ -219,6 +219,8 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
             BOOL res = [db executeStatements:[NSString stringWithFormat:@"INSERT INTO [%@friendList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description) VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@');", self.userManager.loginUserId, Friend.UserID, Friend.NickName, Friend.RemarkName, Friend.Gender, Friend.Birthplace, Friend.ProfilePicture, @""]];
             
             NSLog(@"%@", res ? @"insert friend successfully" : @"insert friend failed");
+            if (res)
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"friendComing" object:Friend];
         }
         [db close];
     }];
@@ -438,7 +440,6 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                                                                                 Gender:friendsInfo[@"data"][@"Gender"]
                                                                             Birthplace:friendsInfo[@"data"][@"Region"]
                                                                         ProfilePicture:friendsInfo[@"data"][@"Avatar"]];
-                             
                              [[DatabaseHelper getInstance] insertFriendWithFriend:friend];
                          }
                          else
