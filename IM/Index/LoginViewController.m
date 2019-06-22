@@ -58,16 +58,16 @@
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", _usernameText.text]];
     
-    [manager GET:url parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if([responseObject[@"state"] isEqualToString:@"ok"])
         {
             NSLog(@"get Info success");
             NSString *imagePath = [URLHelper getURLwithPath:responseObject[@"data"][@"Avatar"]];
             [self.userLoginAvatar sd_setImageWithURL:[NSURL URLWithString:imagePath]
-                placeholderImage:[UIImage imageNamed:@"default"]
-               completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                   NSLog(@"error== %@",error);
-               }];
+                                    placeholderImage:[UIImage imageNamed:@"default"]
+                                           completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                                               NSLog(@"error== %@",error);
+                                           }];
         }
         else
         {
@@ -80,6 +80,7 @@
         NSLog(@"%@", error.localizedDescription);
         self.userLoginAvatar.image = [UIImage imageNamed:@"default"];
     }];
+    
 }
 
 @end
