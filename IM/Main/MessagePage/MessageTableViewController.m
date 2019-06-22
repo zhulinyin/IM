@@ -19,6 +19,15 @@
 
 @implementation MessageTableViewController
 
+//设置状态栏颜色
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -29,6 +38,16 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    
+    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:0 green:111/255.0f blue:236/255.0f alpha:1.0f];
+    [self setStatusBarBackgroundColor:[UIColor colorWithRed:0 green:111/255.0f blue:236/255.0f alpha:1.0f]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationItem.title = @"消息";
+    NSDictionary *attributes=[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil];
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
