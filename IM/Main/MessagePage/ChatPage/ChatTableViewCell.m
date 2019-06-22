@@ -76,11 +76,10 @@
         NSLog(imagePath);
         [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
                 placeholderImage:[UIImage imageNamed:@"peppa"]
+//                         options:SDWebImageRefreshCached
                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                            NSLog(@"error== %@",error);
                        }];
-        
-        
         //2.初始化富文本对象
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
         //3.初始化NSTextAttachment对象

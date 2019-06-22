@@ -119,15 +119,6 @@
 // 发送图片
 - (void)sendImage:(UIImage *)image {
     NSDate* timestamp = [NSDate date];
-    // 本地显示部分
-    MessageModel* message = [[MessageModel alloc] init];
-    message.Type = @"image";
-    message.SenderID = self.loginUser.UserID;
-    message.ReceiverID = self.chatUser.UserID;
-    message.Content = @"";
-    //    message.ContentImage = image;
-    message.TimeStamp = timestamp;
-    [self addMessage:message];
     
     // 网络部分
     NSString* path = @"/content/image";
@@ -140,21 +131,33 @@
     NSString* urlString = [URLHelper getURLwithPath:path];
     NSLog(@"%@", urlString);
     // 添加参数
-    NSDictionary* params = @{@"to":userName, @"timestamp":[self.dateFormatter stringFromDate:message.TimeStamp]};
+    NSDictionary* params = @{@"to":userName, @"timestamp":[self.dateFormatter stringFromDate:timestamp]};
     // 发送图片
     [manager POST:urlString parameters:params constructingBodyWithBlock:
      ^(id<AFMultipartFormData> _Nonnull formData){
          // 图片转data
-         NSData *data = UIImagePNGRepresentation(image);
+         // 压缩图片
+         NSData *data = UIImageJPEGRepresentation(image,0.3);
          [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
                                   mimeType:@"multipart/form-data"];
      } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
          NSLog(responseObject[@"msg"]);
+         NSLog(responseObject[@"data"]);
+         // 本地显示部分
+         MessageModel* message = [[MessageModel alloc] init];
+         message.Type = @"image";
+         message.SenderID = self.loginUser.UserID;
+         message.ReceiverID = self.chatUser.UserID;
+         message.Content = responseObject[@"data"];
+         //    message.ContentImage = image;
+         message.TimeStamp = timestamp;
+         [self addMessage:message];
          [self.databaseHelper insertMessageWithMessage:message];
      } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
          NSLog(@"sendImage fail");
          NSLog(@"%@", error.localizedDescription);
      }];
+    
 }
 
 // 选择图片
@@ -200,6 +203,9 @@
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
     //    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
+    // 压缩一下图片
+//    NSData *imageData = UIImageJPEGRepresentation(newPhoto, 0.3);
+//    UIImage *image2 = [UIImage imageWithData: imageData];
     // 上传到云端
     [self sendImage:newPhoto];
     
@@ -207,6 +213,14 @@
     //    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
     //    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
     //    [self.view addSubview:imageView];
+}
+// 等比缩放图片
+- (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize {
+    UIGraphicsBeginImageContext(CGSizeMake(image.size.width *scaleSize, image.size.height * scaleSize));
+    [image drawInRect:CGRectMake(0, 0, image.size.width * scaleSize, image.size.height * scaleSize)];
+    UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
 }
 
 @end
