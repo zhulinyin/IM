@@ -25,6 +25,10 @@
     self.FriendRequestTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequest:) name:@"requestChange" object:nil];
+    
+    
+    NSNumber* unreadNum = [[NSNumber alloc] initWithInteger:0];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:unreadNum];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -88,47 +92,6 @@
     return cell;
 }
 
-/*- (void)getNewFriendRequest:(NSNotification *)notification
-{
-    NSArray *messages = [notification object];
-    
-    for (int i=0; i<messages.count; i++)
-    {
-        MessageModel *message = messages[i];
-        NSLog(@"%@", message);
-        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-        NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", message.SenderID]];
-        
-        [manager GET:url parameters:nil progress:nil
-             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                 NSLog(@"%@", responseObject);
-                 if ([responseObject[@"state"] isEqualToString:@"ok"])
-                 {
-                     
-                     UserModel* friend = [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
-                                                                            NickName:responseObject[@"data"][@"Nickname"]
-                                                                          RemarkName:responseObject[@"data"][@"Username"]
-                                                                              Gender:responseObject[@"data"][@"Gender"]
-                                                                          Birthplace:responseObject[@"data"][@"Region"]
-                                                                      ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                     [self.RequestList addObject:friend];
-                     NSLog(@"%lu", (unsigned long)self.RequestList.count);
-                     [self.FriendRequestTableView reloadData];
-                 }
-                 else
-                 {
-                     NSLog(@"%@", responseObject[@"msg"]);
-                 }
-             }
-             failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                
-                 NSLog(@"%@", error.localizedDescription);
-             }];
-
-        //
-        //[self.FriendRequestTableView reloadData];
-    }
-}*/
 
 - (void)AcceptCell:(FriendRequestTableViewCell *)cell
 {
@@ -181,6 +144,7 @@
              NSLog(@"%@", responseObject[@"msg"]);
              [self AcceptCell:cell];
              [[DatabaseHelper getInstance] updateRequestStateWithID:FriendID state:@"accepted"];
+             [[DatabaseHelper getInstance] insertFriendWithFriend:self.requestList[indexPath.row].User];
          }
          else
          {

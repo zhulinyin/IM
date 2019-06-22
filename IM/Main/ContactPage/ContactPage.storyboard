@@ -18,31 +18,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ContactTableCell" id="nGD-av-7X1" customClass="ContactTableViewCell">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="nGD-av-7X1" customClass="ContactTableViewCell">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nGD-av-7X1" id="sxw-ub-LC3">
                                     <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gBr-CA-cYZ">
-                                            <rect key="frame" x="16" y="1" width="40" height="40"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q8Z-cg-CAB">
-                                            <rect key="frame" x="79" y="0.0" width="254" height="40"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <color key="highlightedColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                        </label>
-                                    </subviews>
                                 </tableViewCellContentView>
                                 <accessibility key="accessibilityConfiguration" identifier="ContactTableCell"/>
-                                <connections>
-                                    <outlet property="ContactName" destination="q8Z-cg-CAB" id="7SG-Sd-4iK"/>
-                                    <outlet property="ContactProfilePicture" destination="gBr-CA-cYZ" id="4cH-Tp-3Gg"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -54,11 +37,13 @@
                     <navigationItem key="navigationItem" id="1UO-mq-ehd">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="search" id="JCB-3J-hPP">
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <action selector="showSearchBar:" destination="6X2-IJ-PmU" id="2yQ-a0-B3U"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem systemItem="refresh" id="zF1-rq-Mye">
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
                                     <action selector="freshContactList:" destination="6X2-IJ-PmU" id="GuZ-tD-7nn"/>
                                 </connections>

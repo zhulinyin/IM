@@ -197,7 +197,11 @@ dispatch_async(dispatch_get_main_queue(), block);\
             if (textMessages.count > 0)
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"newMessages" object:textMessages];
             if (addRequests.count > 0)
+            {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
+                NSNumber* unreadNum = [[NSNumber alloc] initWithInteger:addRequests.count];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:unreadNum];
+            }
         }
         else
         {

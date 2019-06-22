@@ -16,6 +16,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
 @property (strong, nonatomic) UISearchController *searchController;
+@property (strong, nonatomic) NSNumber* unreadNum;
 @property BOOL isSearching;
 
 @end
@@ -27,7 +28,6 @@
     [super viewDidLoad];
     
     //initializing
-    //self.ContactsArray = [[DatabaseHelper getInstance] getAllFriends];
     [self getFriendsFromDatabase];
     
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
@@ -40,53 +40,23 @@
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFriendConfirm:) name:@"newFriendConfirm" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendComing:) name:@"friendComing" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadRequest:) name:@"updateUnreadRequest" object:nil];
+    
     // view relative
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    
-    
-    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                     action:@selector(leftSwipe:)];
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
-    [self.tableView addGestureRecognizer:recognizer];
-    
-    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                           action:@selector(rightSwipe:)];
-    recognizer.delegate = self;
-    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
-    [self.tableView addGestureRecognizer:recognizer];
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return YES if you want the specified item to be editable.
-    return YES;
-}
-
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete)
-    {
-        //add code here for when you hit delete
-        NSLog(@"delete");
-    }
-}
-
-- (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
-{
-    //do you left swipe stuff here.
-}
-
-- (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
-{
-    //do you right swipe stuff here. Something usually using theindexPath that you get that way
-    CGPoint location = [gestureRecognizer locationInView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
-}
 
 - (void)friendComing:(NSNotification *)notification
 {
     [self willChangeValueForKey:@"ContactsArray"];
     [self.ContactsArray addObject:notification.object];
     [self didChangeValueForKey:@"ContactsArray"];
+}
+
+- (void)updateUnreadRequest:(NSNotification *)notification
+{
+    self.unreadNum = notification.object;
 }
 
 - (void)newFriendConfirm:(NSNotification *)notification
@@ -139,7 +109,6 @@
     }
     else
     {
-        
         self.isSearching = true;
         NSPredicate *resultPredicate = [NSPredicate predicateWithFormat:@"UserID contains[c] %@", searchText];
         self.searchResults = [self.ContactsArray filteredArrayUsingPredicate:resultPredicate];
@@ -187,34 +156,34 @@
     return @"";
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 70;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
 cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSString *reuseID = @"ContactTableCell";
+    NSString *reuseID = @"ContactTableCell233";
     ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseID];
 
     if (cell == nil)
     {
         cell = [[ContactTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseID];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     if (indexPath.section == 0)
     {
         if (self.isSearching)
         {
-            cell.ContactName.text = [[NSString alloc] initWithFormat:@"查找用户：%@", self.searchController.searchBar.text];
-            cell.ContactProfilePicture.image = [UIImage imageNamed:@"search"];
+            [cell setTitle:[[NSString alloc] initWithFormat:@"查找用户：%@", self.searchController.searchBar.text]];
+            [cell setPictureOfAsset:@"search"];
         }
         else
         {
-            cell.ContactName.text = @"新的好友";
-            cell.ContactProfilePicture.image = [UIImage imageNamed:@"friendRequest"];
+            [cell setTitle:@"新的好友"];
+            [cell setPictureOfAsset:@"friendRequest"];
+            [cell setUnreadRequestNum:[self.unreadNum intValue]];
         }
-        /*CGSize newSize = CGSizeMake(20, 20);
-        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-        [cell.ContactProfilePicture.image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-        cell.ContactProfilePicture.image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();*/
     }
     else if (indexPath.section == 1)
     {
@@ -224,13 +193,8 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
         else
             friend = self.ContactsArray[indexPath.row];
 
-        NSString *imagePath = [URLHelper getURLwithPath:friend.ProfilePicture];
-        [cell.ContactProfilePicture sd_setImageWithURL:[NSURL URLWithString:imagePath]
-                placeholderImage:[UIImage imageNamed:@"peppa"]
-                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                           NSLog(@"error== %@",error);
-                       }];
-        cell.ContactName.text = friend.NickName;
+        [cell setPictureWithURL:friend.ProfilePicture];
+        [cell setTitle:friend.NickName];
     }
     
     return cell;
@@ -328,10 +292,82 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
             InfoVC.User = self.ContactsArray[indexPath.row];
         [self.navigationController pushViewController:InfoVC animated:YES];
     }
-    
 }
 // table view delegate end
 
+
+// delete swipe
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        //add code here for when you hit delete
+        UserModel* selectedFriend = self.ContactsArray[indexPath.row];
+        
+        NSLog(@"%@", selectedFriend);
+        
+        NSString* msg = [[NSString alloc] initWithFormat:@"确认删除%@?", selectedFriend.NickName];
+        UIAlertController * alert = [UIAlertController
+                                     alertControllerWithTitle:msg
+                                     message:@""
+                                     preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* yesButton = [UIAlertAction
+                                    actionWithTitle:@"删除"
+                                    style:UIAlertActionStyleDestructive
+                                    handler:^(UIAlertAction * action) {
+                                        //Handle your yes please button action here
+                                        [self deleteFriend:selectedFriend];
+                                    }];
+        
+        UIAlertAction* noButton = [UIAlertAction
+                                   actionWithTitle:@"取消"
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction * action) {
+                                       //Handle your no please button action here
+                                   }];
+        
+        [alert addAction:yesButton];
+        [alert addAction:noButton];
+        
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+- (void)deleteFriend:(UserModel* )friend
+{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:@"/contact/delete"];
+    
+    NSDictionary* parameters = @{@"username": friend.UserID};
+    [manager POST:url parameters:parameters progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             NSLog(@"%@", responseObject);
+             if ([responseObject[@"state"] isEqualToString:@"ok"])
+             {
+                 [[DatabaseHelper getInstance] deleteFriendByID:friend.UserID];
+                 NSLog(@"delete %@ successfully", friend.UserID);
+                 [self getFriendsFromDatabase];
+             }
+             else
+             {
+                 NSLog(@"%@", responseObject[@"msg"]);
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             
+             NSLog(@"%@", error.localizedDescription);
+         }];
+}
+// delete swipe end
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {

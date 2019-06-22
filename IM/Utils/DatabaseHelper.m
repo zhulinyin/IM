@@ -96,7 +96,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
                              @"CREATE TABLE IF NOT EXISTS [%@requestList] (          \
-                             UserID TEXT PRIMARY KEY,       \
+                             UserID TEXT,                   \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
                              Gender TEXT DEFAULT '',        \
@@ -105,6 +105,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                              Description TEXT DEFAULT '',   \
                              CID INTEGER,                   \
                              State TEXT                     \
+                             TimeStamp TEXT PRIMARY KEY     \
                              );", self.userManager.loginUserId]; // State : {"accepted", "rejected", "pending"}
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create request table successfully" : @"create request table failed");
@@ -226,14 +227,14 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) insertRequestWithUser:(UserModel *) User Cid:(NSInteger)Cid state:(NSString*)state
+-(void) insertRequestWithUser:(UserModel *) User Cid:(NSInteger)Cid state:(NSString*)state timeStamp:(NSString*)timeStamp
 {
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
             BOOL res = [db executeStatements:[NSString stringWithFormat:
-                                              @"INSERT INTO [%@requestList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description, CID, State) \
-                                              VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld', '%@');"
-                                              , self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)Cid, state]];
+                                              @"INSERT INTO [%@requestList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description, CID, State, TimeStamp) \
+                                              VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld', '%@', '%@');"
+                                              , self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)Cid, state, timeStamp]];
             
             NSLog(@"%@", res ? @"insert request successfully" : @"insert request failed");
         }
@@ -267,6 +268,22 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
          [db close];
      }];
     return friend;
+}
+
+-(void) deleteFriendByID:(NSString *)friendID
+{
+    [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
+        if([db open]) {
+            BOOL res = [db executeStatements:[NSString stringWithFormat:
+                                              @"DELETE              \
+                                              FROM [%@friendList]\
+                                              WHERE UserID='%@'"
+                                              , self.userManager.loginUserId, friendID]];
+            
+            NSLog(@"%@", res ? @"delete friend successfully" : @"delete friend failed");
+        }
+        [db close];
+    }];
 }
 
 -(NSMutableArray *) getAllFriends
@@ -487,7 +504,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                                                                         Gender:responseObject[@"data"][@"Gender"]
                                                                     Birthplace:responseObject[@"data"][@"Region"]
                                                                 ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending"];
+                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending" timeStamp:message.TimeStamp];
                      [[NSNotificationCenter defaultCenter] postNotificationName:@"requestChange" object:nil];
                  }
                  else
