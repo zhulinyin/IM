@@ -46,12 +46,21 @@
     self.Gender.text = self.User.Gender;
     self.Birthplace.text = self.User.Birthplace;
     
-    if (self.User == [[UserManager getInstance] getLoginModel])
+    if (self.User == [[UserManager getInstance] getLoginModel]) {
         self.logoutButton.hidden = NO;
-    else if (self.isFriend)
+        
+        self.logoutButton.layer.cornerRadius = 20;
+        self.logoutButton.backgroundColor = [UIColor redColor];
+    }
+    else if (self.isFriend) {
         self.sendButton.hidden = NO;
-    else
+        self.sendButton.layer.cornerRadius = 20;
+    }
+    else {
         self.addButton.hidden = NO;
+        self.addButton.layer.cornerRadius = 20;
+        self.addButton.backgroundColor = [UIColor colorWithRed:110/255.0f green:176/255.0f blue:54/255.0f alpha:1.0f];
+    }
         
         
     
