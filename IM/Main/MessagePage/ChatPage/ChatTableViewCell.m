@@ -15,6 +15,7 @@
 @property (nonatomic, strong) UIImageView  *bubbleIV;   //气泡
 @property (nonatomic, strong) UIImageView *iconIV;      //头像
 @property (nonatomic, strong) UILabel *contentLabel;    //文字
+@property (nonatomic, strong) UIImageView *contentImage;      //图片
 
 
 @end
@@ -54,6 +55,7 @@
     self.contentLabel.numberOfLines = 0;
     self.contentLabel.textColor = [UIColor grayColor];
     [self.bubbleIV addSubview:self.contentLabel];
+    
 }
 
 - (void)setModel:(MessageModel *)model {
@@ -70,30 +72,30 @@
     }
     else if ([model.Type isEqualToString:@"image"]){
         // 使用url来获取图片，而不是传参数
-        UIImageView *imgV = [[UIImageView alloc]init];
-        NSLog(model.Content);
+        self.contentImage = [[UIImageView alloc]init];
+//        NSLog(model.Content);
         NSString *imagePath = [URLHelper getURLwithPath:model.Content];
-        NSLog(imagePath);
-        [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
-                placeholderImage:[UIImage imageNamed:@"peppa"]
-//                         options:SDWebImageRefreshCached
-                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                           NSLog(@"error== %@",error);
-                       }];
+        
         //2.初始化富文本对象
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:@""];
         //3.初始化NSTextAttachment对象
-        NSTextAttachment *attchment = [[NSTextAttachment alloc]init];
-        attchment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
-//        attchment.image = model.ContentImage;//设置图片
-        attchment.image = imgV.image;//设置图片
+        NSTextAttachment *attachment = [[NSTextAttachment alloc]init];
+        attachment.bounds = CGRectMake(0, 0, 100, 100);//设置frame
+        
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager loadImageWithURL:[NSURL URLWithString:imagePath]
+                          options:0
+                         progress:nil
+                        completed:^(UIImage *image, NSData *imageData, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            if (image) {
+                                attachment.image = image;//设置图片
+                            }
+                        }];
         
         //4.创建带有图片的富文本
-        NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attchment)];
+        NSAttributedString *string = [NSAttributedString attributedStringWithAttachment:(NSTextAttachment *)(attachment)];
         [attributedString appendAttributedString:string];   //添加到尾部
         self.contentLabel.attributedText = attributedString;
-        
-        
         labelSize = [attributedString boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
                                                        options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
                                                        context: nil].size;
