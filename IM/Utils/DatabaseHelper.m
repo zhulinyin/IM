@@ -104,7 +104,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                              ProfilePicture TEXT DEFAULT '',\
                              Description TEXT DEFAULT '',   \
                              CID INTEGER,                   \
-                             State TEXT                     \
+                             State TEXT,                    \
                              TimeStamp TEXT PRIMARY KEY     \
                              );", self.userManager.loginUserId]; // State : {"accepted", "rejected", "pending"}
             BOOL res = [db executeUpdate:sql];
@@ -504,7 +504,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                                                                         Gender:responseObject[@"data"][@"Gender"]
                                                                     Birthplace:responseObject[@"data"][@"Region"]
                                                                 ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending" timeStamp:message.TimeStamp];
+                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending" timeStamp:[self.dateFormatter stringFromDate:message.TimeStamp]];
                      [[NSNotificationCenter defaultCenter] postNotificationName:@"requestChange" object:nil];
                  }
                  else

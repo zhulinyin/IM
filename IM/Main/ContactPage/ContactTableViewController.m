@@ -75,6 +75,7 @@
 - (void)updateUnreadRequest:(NSNotification *)notification
 {
     self.unreadNum = notification.object;
+    [self.ContactTableView reloadData];
 }
 
 - (void)newFriendConfirm:(NSNotification *)notification
@@ -391,7 +392,7 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 {
     if ([keyPath isEqualToString:@"ContactsArray"])
     {
-        [self.tableView reloadData];
+        [self.ContactTableView reloadData];
     }
 }
 
