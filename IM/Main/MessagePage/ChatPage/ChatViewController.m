@@ -39,7 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor lightGrayColor];
+    self.view.backgroundColor = [UIColor colorWithRed:240/255.0f green:240/255.0f blue:240/255.0f alpha:1.0];
     
     self.chatView = [[ChatView alloc] init];
     self.chatView.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -86,7 +86,7 @@
     message.ReceiverID = self.chatUser.UserID;
     message.Content = text;
     message.TimeStamp = [NSDate date];
-    [self addMessage:message];
+    
     
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -98,11 +98,27 @@
               if([responseObject[@"state"] isEqualToString:@"ok"])
               {
                   NSLog(@"send success");
+                  [self addMessage:message];
                   [self.databaseHelper insertMessageWithMessage:message];
               }
               else
               {
                   NSLog(@"send fail");
+                  NSString* msg = @"你不是对方的好友";
+                  UIAlertController * alert = [UIAlertController
+                                               alertControllerWithTitle:msg
+                                               message:@""
+                                               preferredStyle:UIAlertControllerStyleAlert];
+                  
+                  UIAlertAction* yesButton = [UIAlertAction
+                                              actionWithTitle:@"确定"
+                                              style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * action) {
+                                                  //Handle your yes please button action here
+                                              }];
+                  
+                  [alert addAction:yesButton];
+                  [self presentViewController:alert animated:YES completion:nil];
               }
           }
           failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -138,22 +154,46 @@
      ^(id<AFMultipartFormData> _Nonnull formData){
          // 图片转data
          // 压缩图片
-         NSData *data = UIImageJPEGRepresentation(image,0.3);
-         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
+         NSData *data = UIImageJPEGRepresentation(image,0.1);
+         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.jpeg"
                                   mimeType:@"multipart/form-data"];
      } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
-         NSLog(responseObject[@"msg"]);
-         NSLog(responseObject[@"data"]);
-         // 本地显示部分
-         MessageModel* message = [[MessageModel alloc] init];
-         message.Type = @"image";
-         message.SenderID = self.loginUser.UserID;
-         message.ReceiverID = self.chatUser.UserID;
-         message.Content = responseObject[@"data"];
-         //    message.ContentImage = image;
-         message.TimeStamp = timestamp;
-         [self addMessage:message];
-         [self.databaseHelper insertMessageWithMessage:message];
+         NSLog(@"%@", responseObject[@"msg"]);
+         NSLog(@"%@", responseObject[@"data"]);
+         if([responseObject[@"state"] isEqualToString:@"ok"])
+         {
+             NSLog(@"send success");
+             // 本地显示部分
+             MessageModel* message = [[MessageModel alloc] init];
+             message.Type = @"image";
+             message.SenderID = self.loginUser.UserID;
+             message.ReceiverID = self.chatUser.UserID;
+             message.Content = responseObject[@"data"];
+             //    message.ContentImage = image;
+             message.TimeStamp = timestamp;
+             [self addMessage:message];
+             [self.databaseHelper insertMessageWithMessage:message];
+         }
+         else
+         {
+             NSLog(@"send fail");
+             NSString* msg = @"你不是对方的好友";
+             UIAlertController * alert = [UIAlertController
+                                          alertControllerWithTitle:msg
+                                          message:@""
+                                          preferredStyle:UIAlertControllerStyleAlert];
+             
+             UIAlertAction* yesButton = [UIAlertAction
+                                         actionWithTitle:@"确定"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             //Handle your yes please button action here
+                                         }];
+             
+             [alert addAction:yesButton];
+             [self presentViewController:alert animated:YES completion:nil];
+         }
+         
      } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
          NSLog(@"sendImage fail");
          NSLog(@"%@", error.localizedDescription);
@@ -211,9 +251,9 @@
     [self sendImage:newPhoto];
     
     //     测试，成功读取图片
-    //    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
-    //    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
-    //    [self.view addSubview:imageView];
+//        UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+//        [imageView setFrame:CGRectMake(0, 0, 200, 200)];
+//        [self.view addSubview:imageView];
 }
 // 等比缩放图片
 - (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize {

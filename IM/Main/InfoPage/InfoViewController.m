@@ -30,6 +30,15 @@
     return self;
 }
 
+//设置状态栏颜色
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -59,13 +68,20 @@
     else {
         self.addButton.hidden = NO;
         self.addButton.layer.cornerRadius = 20;
-        self.addButton.backgroundColor = [UIColor colorWithRed:110/255.0f green:176/255.0f blue:54/255.0f alpha:1.0f];
+        //self.addButton.backgroundColor = [UIColor colorWithRed:110/255.0f green:176/255.0f blue:54/255.0f alpha:1.0f];
     }
         
         
-    
+    self.navigationController.navigationBar.backgroundColor = [UIColor colorWithRed:0 green:111/255.0f blue:236/255.0f alpha:1.0f];
+    [self setStatusBarBackgroundColor:[UIColor colorWithRed:0 green:111/255.0f blue:236/255.0f alpha:1.0f]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
     
     self.navigationItem.title = @"个人信息";
+    NSDictionary *attributes=[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,nil];
+    [self.navigationController.navigationBar setTitleTextAttributes:attributes];
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    
     // 获取屏幕的宽高
     CGRect rect = [[UIScreen mainScreen] bounds];
     CGSize size = rect.size;
@@ -290,15 +306,26 @@
     // UIImagePickerControllerMediaURL 获取媒体的url
 //    NSString *urlStr = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    
+    NSData *data = UIImageJPEGRepresentation(newPhoto,0.1);
+    UIImage *newPhoto2 = [UIImage imageWithData: data];
+    
+    // resize photo
+    CGSize size={100, 100};
+    UIGraphicsBeginImageContext(CGSizeMake(size.width, size.height));
+    [newPhoto2 drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *reSizeImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
 //    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
     self.User.ProfilePicture = @"image";
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:reSizeImage];
     self.head = imageView;
     [self.tableView reloadData];
     
     // 上传到云端
-    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto];
+    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:reSizeImage];
     
     // 测试，成功读取图片
 //    NSData *data = [NSData  dataWithContentsOfURL:[NSURL URLWithString:urlStr]];

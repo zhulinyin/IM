@@ -48,7 +48,9 @@
                             <outlet property="delegate" destination="UX9-vg-WBD" id="tpW-Sj-VWU"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="消息" id="fbM-h5-hN4"/>
+                    <tabBarItem key="tabBarItem" title="消息" id="fbM-h5-hN4">
+                        <color key="badgeColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBarItem>
                     <navigationItem key="navigationItem" id="437-Xs-70j"/>
                     <connections>
                         <outlet property="MessageTableView" destination="9eZ-7h-oPI" id="Qtk-0q-dS5"/>

@@ -21,6 +21,15 @@
 
 @implementation LoginViewController
 
+//设置状态栏颜色
+- (void)setStatusBarBackgroundColor:(UIColor *)color {
+    
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
+        statusBar.backgroundColor = color;
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -36,8 +45,9 @@
     _regBtn.layer.borderColor = [[UIColor colorWithRed:0 green:111/255.0f blue:236/255.0f alpha:1.0f] CGColor];
     //[self.navigationController.navigationBar setTintColor:color(0xFF9C9C9C)[UIColor ]];
     self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];//以及隐隐都得设置为[UIImage new]
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
+    [self setStatusBarBackgroundColor:[UIColor whiteColor]];
 }
 /*
  登录功能
