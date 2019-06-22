@@ -39,10 +39,17 @@
     //observer
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFriendConfirm:) name:@"newFriendConfirm" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendComing:) name:@"friendComing" object:nil];
     // view relative
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
+}
+
+- (void)friendComing:(NSNotification *)notification
+{
+    [self willChangeValueForKey:@"ContactsArray"];
+    [self.ContactsArray addObject:notification.object];
+    [self didChangeValueForKey:@"ContactsArray"];
 }
 
 - (void)newFriendConfirm:(NSNotification *)notification
@@ -112,6 +119,8 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     self.ContactTableView.tableHeaderView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.isSearching = false;
+    [self.ContactTableView reloadData];
 }
 
 // search end
@@ -155,9 +164,20 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0)
     {
         if (self.isSearching)
+        {
             cell.ContactName.text = [[NSString alloc] initWithFormat:@"查找用户：%@", self.searchController.searchBar.text];
+            cell.ContactProfilePicture.image = [UIImage imageNamed:@"search"];
+        }
         else
+        {
             cell.ContactName.text = @"新的好友";
+            cell.ContactProfilePicture.image = [UIImage imageNamed:@"friendRequest"];
+        }
+        /*CGSize newSize = CGSizeMake(20, 20);
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+        [cell.ContactProfilePicture.image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+        cell.ContactProfilePicture.image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();*/
     }
     else if (indexPath.section == 1)
     {
@@ -184,7 +204,9 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.section == 0 && self.isSearching == NO)
     {
         UIStoryboard *FriendRequestStoryboard = [UIStoryboard storyboardWithName:@"FriendRequestPage" bundle:nil];
-        [self.navigationController pushViewController:FriendRequestStoryboard.instantiateInitialViewController animated:YES];
+        FriendRequestTableViewController* FriendVC = FriendRequestStoryboard.instantiateInitialViewController;
+        FriendVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:FriendVC animated:YES];
     }
     else if (indexPath.section == 0 && self.isSearching == YES)
     {
@@ -256,8 +278,10 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 {
     [[DatabaseHelper getInstance] rebuildFriendListTable];
     [[DatabaseHelper getInstance] getFriendsFromServer];
-    self.ContactsArray = [NSMutableArray array];
+    self.ContactsArray = [[NSMutableArray alloc] init];
 }
+
+
 
 
 -(void)getFriendsFromDatabase
