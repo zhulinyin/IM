@@ -190,6 +190,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
                 else if ([message.Type isEqualToString:@"addConfirm"]){
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriendConfirm" object:message.SenderID];
                 }
+                NSLog(@"%@", message.Type);
             }
             
             userManager.seq += messages.count;
