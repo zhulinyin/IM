@@ -154,8 +154,8 @@
      ^(id<AFMultipartFormData> _Nonnull formData){
          // 图片转data
          // 压缩图片
-         NSData *data = UIImageJPEGRepresentation(image,0.3);
-         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
+         NSData *data = UIImageJPEGRepresentation(image,0.1);
+         [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.jpeg"
                                   mimeType:@"multipart/form-data"];
      } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
          NSLog(@"%@", responseObject[@"msg"]);
@@ -251,9 +251,9 @@
     [self sendImage:newPhoto];
     
     //     测试，成功读取图片
-    //    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
-    //    [imageView setFrame:CGRectMake(0, 0, 200, 200)];
-    //    [self.view addSubview:imageView];
+//        UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+//        [imageView setFrame:CGRectMake(0, 0, 200, 200)];
+//        [self.view addSubview:imageView];
 }
 // 等比缩放图片
 - (UIImage *)scaleImage:(UIImage *)image toScale:(float)scaleSize {

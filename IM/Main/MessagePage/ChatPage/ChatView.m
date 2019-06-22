@@ -79,6 +79,7 @@
         cell = [[ChatTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     }
     cell.model = self.chatMsg[indexPath.row];
+    
     return cell;
 }
 
@@ -101,11 +102,11 @@
         //        attchment.image = msgModel.ContentImage;//设置图片
         UIImageView *imgV = [[UIImageView alloc]init];
         NSString *imagePath = [URLHelper getURLwithPath:msgModel.Content];
-        NSLog(imagePath);
+//        NSLog(imagePath);
         [imgV sd_setImageWithURL:[NSURL URLWithString:imagePath]
-                placeholderImage:[UIImage imageNamed:@"peppa"]
+//                placeholderImage:[UIImage imageNamed:@"peppa"]
                        completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                           NSLog(@"error== %@",error);
+//                           NSLog(@"error== %@",error);
                        }];
         attchment.image = imgV.image;
         //4.创建带有图片的富文本
@@ -173,7 +174,5 @@
     //[self.inputText resignFirstResponder];
     return YES;
 }
-
-
 
 @end
