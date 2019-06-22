@@ -43,6 +43,43 @@
     // view relative
     self.ContactTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     
+    
+    UISwipeGestureRecognizer *recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                     action:@selector(leftSwipe:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+    [self.tableView addGestureRecognizer:recognizer];
+    
+    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                           action:@selector(rightSwipe:)];
+    recognizer.delegate = self;
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [self.tableView addGestureRecognizer:recognizer];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        //add code here for when you hit delete
+        NSLog(@"delete");
+    }
+}
+
+- (void)leftSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
+{
+    //do you left swipe stuff here.
+}
+
+- (void)rightSwipe:(UISwipeGestureRecognizer *)gestureRecognizer
+{
+    //do you right swipe stuff here. Something usually using theindexPath that you get that way
+    CGPoint location = [gestureRecognizer locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
 }
 
 - (void)friendComing:(NSNotification *)notification
@@ -236,16 +273,46 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
                  else
                  {
                      NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
-                     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                     [alertView show];
+                     UIAlertController * alert = [UIAlertController
+                                                  alertControllerWithTitle:msg
+                                                  message:@""
+                                                  preferredStyle:UIAlertControllerStyleAlert];
+                     
+                     UIAlertAction* yesButton = [UIAlertAction
+                                                 actionWithTitle:@"确定"
+                                                 style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction * action) {
+                                                     //Handle your yes please button action here
+                                                 }];
+                     
+                     [alert addAction:yesButton];
+                     
+                     
+                     [self presentViewController:alert animated:YES completion:nil];
+                    
                  }
              }
              failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                  NSLog(@"search User fail");
                  NSLog(@"%@", error.localizedDescription);
                  NSString* msg = [[NSString alloc] initWithFormat:@"用户%@不存在", self.searchController.searchBar.text];
-                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                 [alertView show];
+                 UIAlertController * alert = [UIAlertController
+                                              alertControllerWithTitle:msg
+                                              message:@""
+                                              preferredStyle:UIAlertControllerStyleAlert];
+                 
+                 UIAlertAction* yesButton = [UIAlertAction
+                                             actionWithTitle:@"确定"
+                                             style:UIAlertActionStyleDefault
+                                             handler:^(UIAlertAction * action) {
+                                                 //Handle your yes please button action here
+                                             }];
+                 
+                 [alert addAction:yesButton];
+                 
+                 
+                 [self presentViewController:alert animated:YES completion:nil];
+                 
              }];
     }
     else if (indexPath.section == 1)

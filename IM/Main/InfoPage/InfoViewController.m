@@ -290,15 +290,18 @@
     // UIImagePickerControllerMediaURL 获取媒体的url
 //    NSString *urlStr = [info objectForKey:@"UIImagePickerControllerReferenceURL"];
     UIImage *newPhoto = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    
+    NSData *data = UIImageJPEGRepresentation(newPhoto,0.1);
+    UIImage *newPhoto2 = [UIImage imageWithData: data];
 //    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
     self.User.ProfilePicture = @"image";
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto2];
     self.head = imageView;
     [self.tableView reloadData];
     
     // 上传到云端
-    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto];
+    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto2];
     
     // 测试，成功读取图片
 //    NSData *data = [NSData  dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
