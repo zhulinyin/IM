@@ -59,7 +59,7 @@
     else {
         self.addButton.hidden = NO;
         self.addButton.layer.cornerRadius = 20;
-        self.addButton.backgroundColor = [UIColor colorWithRed:110/255.0f green:176/255.0f blue:54/255.0f alpha:1.0f];
+        //self.addButton.backgroundColor = [UIColor colorWithRed:110/255.0f green:176/255.0f blue:54/255.0f alpha:1.0f];
     }
         
         
