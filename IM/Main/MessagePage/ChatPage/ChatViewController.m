@@ -26,6 +26,7 @@
     {
         self.loginUser = [[UserManager getInstance] getLoginModel];
         self.chatUser = chatUser;
+        [UserManager getInstance].chatUser = chatUser;
         self.databaseHelper = [DatabaseHelper getInstance];
         self.chatMsg = [self.databaseHelper queryAllMessagesWithChatId:chatUser.UserID];
         self.dateFormatter = [[NSDateFormatter alloc] init];

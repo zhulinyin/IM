@@ -58,6 +58,7 @@
 
 - (void)setModel:(MessageModel *)model {
     UserModel *loginUser = [[UserManager getInstance] getLoginModel];
+    bool isLoginUser = [model.SenderID isEqualToString:loginUser.UserID];
     CGSize labelSize;
     if ([model.Type isEqualToString:@"text"]){
         //计算文字长度
@@ -66,7 +67,7 @@
                                                        options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
                                                     attributes: @{NSFontAttributeName:self.contentLabel.font}
                                                        context: nil].size;
-        self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
+        self.contentLabel.frame = CGRectMake(isLoginUser ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
     }
     else if ([model.Type isEqualToString:@"image"]){
         // 使用url来获取图片，而不是传参数
@@ -97,19 +98,25 @@
         labelSize = [attributedString boundingRectWithSize: CGSizeMake(SCREEN_WIDTH-160, MAXFLOAT)
                                                        options: NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingTruncatesLastVisibleLine
                                                        context: nil].size;
-        self.contentLabel.frame = CGRectMake([model.SenderID isEqualToString:loginUser.UserID] ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
+        self.contentLabel.frame = CGRectMake(isLoginUser ? 10 : 20 , 5, labelSize.width, labelSize.height + 10);
     }
     //计算气泡位置
-    CGFloat bubbleX = [model.SenderID isEqualToString:loginUser.UserID] ? (SCREEN_WIDTH - ICON_WH - 25 - labelSize.width - 30) : (ICON_WH + 25);
+    CGFloat bubbleX = isLoginUser ? (SCREEN_WIDTH - ICON_WH - 25 - labelSize.width - 30) : (ICON_WH + 25);
     self.bubbleIV.frame = CGRectMake(bubbleX, 20, self.contentLabel.frame.size.width + 30, self.contentLabel.frame.size.height+10);
     
     //头像位置
-    CGFloat iconX = [model.SenderID isEqualToString:loginUser.UserID] ? (SCREEN_WIDTH - ICON_WH - 15) : 15;
+    CGFloat iconX = isLoginUser ? (SCREEN_WIDTH - ICON_WH - 15) : 15;
     self.iconIV.frame = CGRectMake(iconX, 15, ICON_WH, ICON_WH);
-    self.iconIV.image = [UIImage imageNamed: [model.SenderID isEqualToString:loginUser.UserID] ? @"peppa" : @"teemo"];
+    
+    NSString *imagePath = [URLHelper getURLwithPath:isLoginUser ? loginUser.ProfilePicture : [UserManager getInstance].chatUser.ProfilePicture];
+    [self.iconIV sd_setImageWithURL:[NSURL URLWithString:imagePath]
+            placeholderImage:[UIImage imageNamed:@"peppa"]
+                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                       NSLog(@"error== %@",error);
+                   }];
     
     //拉伸气泡
-    UIImage *backImage = [UIImage imageNamed: [model.SenderID isEqualToString:loginUser.UserID] ?  @"bubble_right" : @"bubble_left"];
+    UIImage *backImage = [UIImage imageNamed: isLoginUser ?  @"bubble_right" : @"bubble_left"];
     backImage = [backImage resizableImageWithCapInsets:UIEdgeInsetsMake(30, 30, 10, 30) resizingMode:UIImageResizingModeStretch];
     self.bubbleIV.image = backImage;
 }
