@@ -60,28 +60,46 @@
     return self.sessionsArray.count;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        SessionModel *selectedSession = self.sessionsArray[indexPath.row];
+        [self deleteMessage:selectedSession];
+    }
+}
+
+-(void)deleteMessage:(SessionModel *)session {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"是否删除与%@聊天记录？", session.chatName] message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        //响应事件
+        [[DatabaseHelper getInstance] deleteMessages:session.chatId];
+        [self.sessionsArray removeObject:session];
+        [self.MessageTableView reloadData];
+        NSLog(@"action = %@", action);
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        //响应事件
+        NSLog(@"action = %@", action);
+    }];
+    
+    [alert addAction:defaultAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)longGes:(UILongPressGestureRecognizer *)longGes{
     if (longGes.state == UIGestureRecognizerStateBegan) {//手势开始
         CGPoint point = [longGes locationInView:self.MessageTableView];
         NSIndexPath *index = [self.MessageTableView indexPathForRowAtPoint:point];
         SessionModel *selectedSession = self.sessionsArray[index.row];
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"是否删除聊天记录？" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            //响应事件
-            [[DatabaseHelper getInstance] deleteMessages:selectedSession.chatId];
-            [self.sessionsArray removeObject:selectedSession];
-            [self.MessageTableView reloadData];
-            NSLog(@"action = %@", action);
-        }];
-        UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-            //响应事件
-            NSLog(@"action = %@", action);
-        }];
-        
-        [alert addAction:defaultAction];
-        [alert addAction:cancelAction];
-        [self presentViewController:alert animated:YES completion:nil];
+        [self deleteMessage:selectedSession];
     }
     if (longGes.state == UIGestureRecognizerStateEnded){//手势结束
         

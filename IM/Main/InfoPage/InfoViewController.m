@@ -293,15 +293,23 @@
     
     NSData *data = UIImageJPEGRepresentation(newPhoto,0.1);
     UIImage *newPhoto2 = [UIImage imageWithData: data];
+    
+    // resize photo
+    CGSize size={100, 100};
+    UIGraphicsBeginImageContext(CGSizeMake(size.width, size.height));
+    [newPhoto2 drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *reSizeImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
 //    NSLog(urlStr);
     [self dismissViewControllerAnimated:YES completion:nil];
     self.User.ProfilePicture = @"image";
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:newPhoto2];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:reSizeImage];
     self.head = imageView;
     [self.tableView reloadData];
     
     // 上传到云端
-    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:newPhoto2];
+    [[UserManager getInstance] uploadImage:@"/account/info/avatar" withImage:reSizeImage];
     
     // 测试，成功读取图片
 //    NSData *data = [NSData  dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
