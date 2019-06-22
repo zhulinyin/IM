@@ -58,7 +58,7 @@
     [self addSubview:self.inputText];
     
     self.imageButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    self.imageButton.frame = CGRectMake(SCREEN_WIDTH - 65, SCREEN_HEIGHT - 45, 40, 40);
+    self.imageButton.frame = CGRectMake(SCREEN_WIDTH - 55, SCREEN_HEIGHT - 45, 40, 40);
 //    self.imageButton.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.imageButton];
     
@@ -157,6 +157,7 @@
 - (void)updataFrame {
     self.chatTable.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50 - self.keyboardHeight);
     self.inputText.frame = CGRectMake(10, SCREEN_HEIGHT - 45 - self.keyboardHeight , SCREEN_WIDTH - 20 - 60, 40);
+    self.imageButton.frame = CGRectMake(SCREEN_WIDTH - 55, SCREEN_HEIGHT - 45 - self.keyboardHeight, 40, 40);
     [self tableViewScrollToBottom];
 }
 
