@@ -86,7 +86,7 @@
     message.ReceiverID = self.chatUser.UserID;
     message.Content = text;
     message.TimeStamp = [NSDate date];
-    [self addMessage:message];
+    
     
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -98,11 +98,27 @@
               if([responseObject[@"state"] isEqualToString:@"ok"])
               {
                   NSLog(@"send success");
+                  [self addMessage:message];
                   [self.databaseHelper insertMessageWithMessage:message];
               }
               else
               {
                   NSLog(@"send fail");
+                  NSString* msg = @"你不是对方的好友";
+                  UIAlertController * alert = [UIAlertController
+                                               alertControllerWithTitle:msg
+                                               message:@""
+                                               preferredStyle:UIAlertControllerStyleAlert];
+                  
+                  UIAlertAction* yesButton = [UIAlertAction
+                                              actionWithTitle:@"确定"
+                                              style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction * action) {
+                                                  //Handle your yes please button action here
+                                              }];
+                  
+                  [alert addAction:yesButton];
+                  [self presentViewController:alert animated:YES completion:nil];
               }
           }
           failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -142,18 +158,42 @@
          [formData appendPartWithFileData :data name:@"file" fileName:@"928-1.png"
                                   mimeType:@"multipart/form-data"];
      } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id _Nonnull responseObject){
-         NSLog(responseObject[@"msg"]);
-         NSLog(responseObject[@"data"]);
-         // 本地显示部分
-         MessageModel* message = [[MessageModel alloc] init];
-         message.Type = @"image";
-         message.SenderID = self.loginUser.UserID;
-         message.ReceiverID = self.chatUser.UserID;
-         message.Content = responseObject[@"data"];
-         //    message.ContentImage = image;
-         message.TimeStamp = timestamp;
-         [self addMessage:message];
-         [self.databaseHelper insertMessageWithMessage:message];
+         NSLog(@"%@", responseObject[@"msg"]);
+         NSLog(@"%@", responseObject[@"data"]);
+         if([responseObject[@"state"] isEqualToString:@"ok"])
+         {
+             NSLog(@"send success");
+             // 本地显示部分
+             MessageModel* message = [[MessageModel alloc] init];
+             message.Type = @"image";
+             message.SenderID = self.loginUser.UserID;
+             message.ReceiverID = self.chatUser.UserID;
+             message.Content = responseObject[@"data"];
+             //    message.ContentImage = image;
+             message.TimeStamp = timestamp;
+             [self addMessage:message];
+             [self.databaseHelper insertMessageWithMessage:message];
+         }
+         else
+         {
+             NSLog(@"send fail");
+             NSString* msg = @"你不是对方的好友";
+             UIAlertController * alert = [UIAlertController
+                                          alertControllerWithTitle:msg
+                                          message:@""
+                                          preferredStyle:UIAlertControllerStyleAlert];
+             
+             UIAlertAction* yesButton = [UIAlertAction
+                                         actionWithTitle:@"确定"
+                                         style:UIAlertActionStyleDefault
+                                         handler:^(UIAlertAction * action) {
+                                             //Handle your yes please button action here
+                                         }];
+             
+             [alert addAction:yesButton];
+             [self presentViewController:alert animated:YES completion:nil];
+         }
+         
      } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error){
          NSLog(@"sendImage fail");
          NSLog(@"%@", error.localizedDescription);
