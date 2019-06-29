@@ -373,6 +373,7 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
              if ([responseObject[@"state"] isEqualToString:@"ok"])
              {
                  [[DatabaseHelper getInstance] deleteFriendByID:friend.UserID];
+                 [[DatabaseHelper getInstance] deleteMessages:friend.UserID];
                  NSLog(@"delete %@ successfully", friend.UserID);
                  [self getFriendsFromDatabase];
              }
