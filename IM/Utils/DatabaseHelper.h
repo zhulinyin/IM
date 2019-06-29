@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) rebuildFriendListTable;
 -(NSString *) getProfilePictureURLwithUserID:(NSString*) FriendID;
 -(BOOL)isFriendTableExist;
-- (void)getFriendsFromServer;
+-(void)getFriendsFromServer;
 -(NSMutableArray *) getAllFriends;
 -(NSMutableArray *) getAllRequest;
 -(void) updateRequestStateWithID:(NSString *) userID state:(NSString *)state;

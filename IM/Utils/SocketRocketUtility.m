@@ -200,8 +200,11 @@ dispatch_async(dispatch_get_main_queue(), block);\
             if (addRequests.count > 0)
             {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"newFriends" object:addRequests];
-                NSNumber* unreadNum = [[NSNumber alloc] initWithInteger:addRequests.count];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:unreadNum];
+                
+                NSInteger unreadNum = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@unreadRequestNum", userManager.getLoginModel.UserID]];
+
+                [[NSUserDefaults standardUserDefaults] setInteger:(unreadNum + addRequests.count) forKey:[NSString stringWithFormat:@"%@unreadRequestNum", userManager.getLoginModel.UserID]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:nil];
             }
         }
         else

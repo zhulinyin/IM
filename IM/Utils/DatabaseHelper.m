@@ -96,7 +96,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
         if([db open]) {
             NSString* sql = [NSString stringWithFormat:
                              @"CREATE TABLE IF NOT EXISTS [%@requestList] (          \
-                             UserID TEXT,                   \
+                             UserID TEXT PRIMARY KEY,                   \
                              NickName TEXT NOT NULL,        \
                              RemarkName TEXT DEFAULT '',    \
                              Gender TEXT DEFAULT '',        \
@@ -104,8 +104,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                              ProfilePicture TEXT DEFAULT '',\
                              Description TEXT DEFAULT '',   \
                              CID INTEGER,                   \
-                             State TEXT,                    \
-                             TimeStamp TEXT PRIMARY KEY     \
+                             State TEXT                     \
                              );", self.userManager.loginUserId]; // State : {"accepted", "rejected", "pending"}
             BOOL res = [db executeUpdate:sql];
             NSLog(@"%@", res ? @"create request table successfully" : @"create request table failed");
@@ -227,14 +226,23 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
     }];
 }
 
--(void) insertRequestWithUser:(UserModel *) User Cid:(NSInteger)Cid state:(NSString*)state timeStamp:(NSString*)timeStamp
+-(void) insertRequestWithUser:(UserModel *) User Cid:(NSInteger)Cid state:(NSString*)state
 {
+    
     [self.databaseQueue inDatabase:^(FMDatabase * _Nonnull db) {
         if([db open]) {
+            BOOL resDel = [db executeStatements:[NSString stringWithFormat:
+                                   @"DELETE \
+                                   FROM [%@requestList]\
+                                   WHERE UserID='%@'"
+                                   , self.userManager.loginUserId, User.UserID]];
+            
+            NSLog(@"%@", resDel ? @"delete request successfully" : @"delete request failed");
+            
             BOOL res = [db executeStatements:[NSString stringWithFormat:
-                                              @"INSERT INTO [%@requestList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description, CID, State, TimeStamp) \
-                                              VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld', '%@', '%@');"
-                                              , self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)Cid, state, timeStamp]];
+                                              @"INSERT INTO [%@requestList] (UserID, NickName, RemarkName, Gender, Birthplace, ProfilePicture, Description, CID, State) \
+                                              VALUES ('%@', '%@', '%@', '%@', '%@', '%@', '%@', '%ld', '%@');"
+                                              , self.userManager.loginUserId, User.UserID, User.NickName, User.RemarkName, User.Gender, User.Birthplace, User.ProfilePicture, @"", (long)Cid, state]];
             
             NSLog(@"%@", res ? @"insert request successfully" : @"insert request failed");
         }
@@ -504,7 +512,7 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
                                                                         Gender:responseObject[@"data"][@"Gender"]
                                                                     Birthplace:responseObject[@"data"][@"Region"]
                                                                 ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending" timeStamp:[self.dateFormatter stringFromDate:message.TimeStamp]];
+                     [self insertRequestWithUser:user Cid:[message.Content integerValue]  state:@"pending"];
                      [[NSNotificationCenter defaultCenter] postNotificationName:@"requestChange" object:nil];
                  }
                  else

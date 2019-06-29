@@ -190,8 +190,7 @@
 				7156844A229C2F58006A1530 /* FriendRequestTableViewController.h */,
 				7156844B229C2F58006A1530 /* FriendRequestTableViewController.m */,
 			);
-			name = FriendRequestPage;
-			path = "New Group";
+			path = FriendRequestPage;
 			sourceTree = "<group>";
 		};
 		B099404EFA5C81A84530E3E2 /* Frameworks */ = {

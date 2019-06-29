@@ -16,7 +16,6 @@
 @property (strong, nonatomic) IBOutlet UITableView *ContactTableView;
 @property (nonatomic, strong) UserModel* SelectiveUser;
 @property (strong, nonatomic) UISearchController *searchController;
-@property (strong, nonatomic) NSNumber* unreadNum;
 @property BOOL isSearching;
 
 @end
@@ -74,7 +73,6 @@
 
 - (void)updateUnreadRequest:(NSNotification *)notification
 {
-    self.unreadNum = notification.object;
     [self.ContactTableView reloadData];
 }
 
@@ -201,7 +199,9 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
         {
             [cell setTitle:@"新的好友"];
             [cell setPictureOfAsset:@"friendRequest"];
-            [cell setUnreadRequestNum:[self.unreadNum intValue]];
+
+            NSInteger unreadNum = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@unreadRequestNum", [UserManager getInstance].getLoginModel.UserID]];
+            [cell setUnreadRequestNum:unreadNum];
         }
     }
     else if (indexPath.section == 1)

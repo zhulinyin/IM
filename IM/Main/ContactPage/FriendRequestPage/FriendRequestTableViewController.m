@@ -26,9 +26,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateRequest:) name:@"requestChange" object:nil];
     
-    
-    NSNumber* unreadNum = [[NSNumber alloc] initWithInteger:0];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:unreadNum];
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:[NSString stringWithFormat:@"%@unreadRequestNum", [UserManager getInstance].getLoginModel.UserID]];
+    //NSNumber* unreadNum = [[NSNumber alloc] initWithInteger:0];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUnreadRequest" object:nil];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
