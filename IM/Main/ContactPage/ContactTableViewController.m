@@ -55,7 +55,7 @@
     
     //observer
     [self addObserver:self forKeyPath:@"ContactsArray" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFriendConfirm:) name:@"newFriendConfirm" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addFriendSuccess:) name:@"addFriendSuccess" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(friendComing:) name:@"friendComing" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnreadRequest:) name:@"updateUnreadRequest" object:nil];
     
@@ -76,38 +76,9 @@
     [self.ContactTableView reloadData];
 }
 
-- (void)newFriendConfirm:(NSNotification *)notification
+- (void)addFriendSuccess:(NSNotification *)notification
 {
-    NSString* newFriendID = notification.object;
-    
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", newFriendID]];
-    
-    [manager GET:url parameters:nil progress:nil
-         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-             if ([responseObject[@"msg"] isEqualToString:@"ok"])
-             {
-                 UserModel* newFriend =
-                 [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
-                                    NickName:responseObject[@"data"][@"Nickname"]
-                                    RemarkName:responseObject[@"data"][@"Username"]
-                                    Gender:responseObject[@"data"][@"Gender"]
-                                    Birthplace:responseObject[@"data"][@"Region"]
-                                    ProfilePicture:responseObject[@"data"][@"Avatar"]];
-                 [[DatabaseHelper getInstance] insertFriendWithFriend:newFriend];
-                 [self willChangeValueForKey:@"ContactsArray"];
-                 [self.ContactsArray addObject:newFriend];
-                 [self didChangeValueForKey:@"ContactsArray"];
-             }
-             else
-             {
-                 NSLog(@"error: %@", responseObject[@"msg"]);
-             }
-         }
-         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-             NSLog(@"%@", error.localizedDescription);
-         }];
-    
+    [self getFriendsFromDatabase];
 }
 
 // search delegate begin
@@ -373,6 +344,7 @@ cellForRowAtIndexPath:(NSIndexPath *)indexPath{
              if ([responseObject[@"state"] isEqualToString:@"ok"])
              {
                  [[DatabaseHelper getInstance] deleteFriendByID:friend.UserID];
+                 [[DatabaseHelper getInstance] deleteMessages:friend.UserID];
                  NSLog(@"delete %@ successfully", friend.UserID);
                  [self getFriendsFromDatabase];
              }
