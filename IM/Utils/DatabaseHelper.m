@@ -402,6 +402,39 @@ NSString* const MESSAGE_TABLE_NAME = @"message";
 -(void) registerNewMessagesListener {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewMessages:) name:@"newMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewFriendRequest:) name:@"newFriends" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getNewFriendConfirm:) name:@"newFriendConfirm" object:nil];
+}
+
+- (void)getNewFriendConfirm:(NSNotification *)notification
+{
+    NSString* newFriendID = notification.object;
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    NSString *url = [URLHelper getURLwithPath:[[NSString alloc] initWithFormat:@"/account/info/user/%@", newFriendID]];
+    
+    [manager GET:url parameters:nil progress:nil
+         success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+             if ([responseObject[@"msg"] isEqualToString:@"ok"])
+             {
+                 UserModel* newFriend =
+                 [[UserModel alloc] initWithProperties:responseObject[@"data"][@"Username"]
+                                              NickName:responseObject[@"data"][@"Nickname"]
+                                            RemarkName:responseObject[@"data"][@"Username"]
+                                                Gender:responseObject[@"data"][@"Gender"]
+                                            Birthplace:responseObject[@"data"][@"Region"]
+                                        ProfilePicture:responseObject[@"data"][@"Avatar"]];
+                 [self insertFriendWithFriend:newFriend];
+                 [[NSNotificationCenter defaultCenter] postNotificationName:@"addFriendSuccess" object:newFriend.UserID];
+             }
+             else
+             {
+                 NSLog(@"error: %@", responseObject[@"msg"]);
+             }
+         }
+         failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"%@", error.localizedDescription);
+         }];
+    
 }
 
 -(void) unregisterNewMessageListener {
